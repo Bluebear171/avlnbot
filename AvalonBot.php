@@ -1417,8 +1417,8 @@ class AvalonBotChat extends TelegramBotChat {
 
     public function sendOberon(){
         $text = "<b>Oberon</b>".$this->unichr(Constant::EMO_EVIL)
-            . " is an evil player but all other evil players do not know the oberon identity. Merlin can still see Oberon though.. "
-            . " In this telegram, Oberon also do not know his teammate until quest 2 finished.\n\n"
+            . " is an evil player but all other evil players do not know the oberon identity. Merlin can still see Oberon though."
+            . " In this telegram, Oberon also do not know his teammate until quest 2 is finished.\n\n"
             . " Oberon's job is to find the other evil players as sson as possible then cooperate with them to fail the quests. ";
         $text .= "It is also crucial for Oberon to help assassin finding the Merlin throughout the game.";
         $this->apiSendMessage($text);
@@ -1682,7 +1682,7 @@ class AvalonBotChat extends TelegramBotChat {
     protected function sendHelp() {
         if ($this->isGroup) {
             $text = "Avalon bot for telegram.\n";
-            $text .= "Based on the <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a> (one of the Best Party Game)\n\n";
+            $text .= "Based on the <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a>.\n\n";
             $text .= "To start playing, type /start to start a normal game or /startlotl to start a lady of the lake mode.\n\n";
         } else {
             $text = "Avalon bot for telegram.\n";
