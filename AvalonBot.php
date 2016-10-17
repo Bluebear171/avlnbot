@@ -350,6 +350,31 @@ class AvalonBotChat extends TelegramBotChat {
         }
     }
 
+    public function command_howtoplay($params, $message) {
+        $this->sendHowToPlay();
+    }
+    public function command_merlin($params, $message) {
+        $this->sendMerlin();
+    }
+    public function command_percival($params, $message) {
+        $this->sendPercival();
+    }
+    public function command_servant($params, $message) {
+        $this->sendServant();
+    }
+    public function command_mordred($params, $message) {
+        $this->sendMordred();
+    }
+    public function command_morgana($params, $message) {
+        $this->sendMorgana();
+    }
+    public function command_assassin($params, $message) {
+        $this->sendAssassin();
+    }
+    public function command_oberon($params, $message) {
+        $this->sendOberon();
+    }
+
     // already count reject, reject is more or half the playercount
     public function rejectCurrentQuest(){
         $this->rejectCountInQuest++;
@@ -964,7 +989,7 @@ class AvalonBotChat extends TelegramBotChat {
         $this->questStatus[$this->currentQuestNumberStart0] = -1;
 
         // check if fail because reject token
-        if ($this->rejectAssignCount == 5) {
+        if ($this->rejectCountInQuest == 5) {
             $text = "Quest sudah di-reject 5 kali, sehingga dianggap gagal.\n";
         }
         else { // fail because fail_count is bigger than requirement
@@ -1332,12 +1357,71 @@ class AvalonBotChat extends TelegramBotChat {
 
 
 
-
+    public function command_contact($params, $message) {
+        $this->sendContact();
+    }
     public function command_help($params, $message) {
         $this->sendHelp();
     }
     public function bot_added_to_chat($message) {
         $this->sendHelp();
+    }
+
+    public function sendMerlin(){
+        $text = "<b>Merlin</b>".$this->unichr(Constant::EMO_SMILE)
+            . " knows all evil players except Mordred. He job is to give clues to the good team, "
+            ."so it will prevent the evil players to have a chance failing the quests.\n\n";
+        $text .= "Note that if Merlin is too obvious, even though 3 quests have succeed, the /assassin can "
+                . "guess the Merlin at the end of the game. If Assassin's guess is correct, the good side will lose no matter what.";
+        $this->apiSendMessage($text);
+    }
+
+    public function sendPercival(){
+        $text = "<b>Percival</b>".$this->unichr(Constant::EMO_SMILE)
+            . " knows the Merlin and Morgana at the start of the game. However, Percival do not know which is Merlin or Morgana\n\n";
+        $text .= "Percival's job is to guess the Merlin correctly between the 2 and then follow the Merlin's order. ".
+                 "Also, Percival needs to act as a Merlin so that assassin might kill Percival instead Merlin.";
+        $this->apiSendMessage($text);
+    }
+
+    public function sendServant(){
+        $text = "<b>Servant</b>".$this->unichr(Constant::EMO_SMILE)
+            . " is in a good side but do not know anything at the start of the game.\n\n";
+        $text .= "Servant's job is to try guess the Merlin correctly (mainly based on the deduction). ".
+            "Servant might also need to act as a Merlin so that assassin might guess the Merlin incorrectly.";
+        $this->apiSendMessage($text);
+    }
+
+    public function sendAssassin(){
+        $text = "<b>Assassin</b>".$this->unichr(Constant::EMO_EVIL)
+            . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
+            . "Also, Assassin can guess Merlin at the end of the game (if 3 quests already been succeed). If the guess is correct, whatever the result in the quests, Evil force will win.";
+        $this->apiSendMessage($text);
+    }
+
+    public function sendMorgana(){
+        $text = "<b>Morgana</b>".$this->unichr(Constant::EMO_EVIL)
+            . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
+            . "Because Percival can guess Merlin and Morgana, Morgana's primary job is to gain trust from Percival by acting as a Merlin. If Percival can be deceived, Merlin will be in trouble.\n\n";
+        $text .= "It is also crucial for Morgana to help assassin finding the Merlin throughout the game.";
+        $this->apiSendMessage($text);
+    }
+
+    public function sendMordred(){
+        $text = "<b>Mordred</b>".$this->unichr(Constant::EMO_EVIL)
+            . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
+            . "Merlin cannot see Mordred as an evil player. This will make the evil team have a huge benefit. Mordred may act as a good player as first then fail the important quest at the end.\n\n";
+        $text .= "It is also crucial for Mordred to help assassin finding the Merlin throughout the game.";
+        $this->apiSendMessage($text);
+    }
+
+    public function sendOberon(){
+        $text = "<b>Oberon</b>".$this->unichr(Constant::EMO_EVIL)
+            . " is an evil player but all other evil players do not know the oberon identity. Merlin can still see Oberon though.. "
+            . " In this telegram, Oberon also do not know his teammate until quest 2 finished.\n\n"
+            . " Oberon's job is to find the other evil players as sson as possible then cooperate with them to fail the quests. ";
+        $text .= "It is also crucial for Oberon to help assassin finding the Merlin throughout the game.";
+        $this->apiSendMessage($text);
     }
 
     public function sendMaintenance($params, $message) {
@@ -1358,18 +1442,23 @@ class AvalonBotChat extends TelegramBotChat {
             if ($i == $this->currentQuestNumberStart0) {
                 break;
             }
-            $text .= "Quest ke-".($i+1)." ". $this->getQuestStatusWithCountString($i) . " dipimpin oleh ".
-                    $this->getPlayerIDFirstNameString($this->questAssigneeIDsHistory[$i][Constant::KINGID]).
-                    $this->unichr(Constant::EMO_KING).", dieksekusi oleh ".
+            if (isset($this->questAssigneeIDsHistory[$i])) {
+                $text .= "Quest ke-" . ($i + 1) . " " . $this->getQuestStatusWithCountString($i) . " dipimpin oleh " .
+                    $this->getPlayerIDFirstNameString($this->questAssigneeIDsHistory[$i][Constant::KINGID]) .
+                    $this->unichr(Constant::EMO_KING) . ", dieksekusi oleh " .
                     $this->playersToFirstNameString(
                         $this->questAssigneeIDsHistory[$i][Constant::ASSIGNEEIDS]);
-            if (count($this->questAssigneeIDsHistory[$i][Constant::REJECTIDS])>0) {
-                $text .= ", di-reject oleh ".
-                $this->playersToFirstNameString(
-                    $this->questAssigneeIDsHistory[$i][Constant::REJECTIDS])."\n\n";
+                if (count($this->questAssigneeIDsHistory[$i][Constant::REJECTIDS]) > 0) {
+                    $text .= ", di-reject oleh " .
+                        $this->playersToFirstNameString(
+                            $this->questAssigneeIDsHistory[$i][Constant::REJECTIDS]) . "\n\n";
+                } else {
+                    $text .= "\n\n";
+                }
             }
-            else {
-                $text .= "\n\n";
+            else { // this is not rset because 5 times reject
+                $text .= "Quest ke-" . ($i + 1)
+                        ."[".$this->unichr(Constant::EMO_FAIL)." 5x REJECT]\n\n";
             }
         }
         $this->apiSendMessage($text);
@@ -1592,10 +1681,59 @@ class AvalonBotChat extends TelegramBotChat {
 
     protected function sendHelp() {
         if ($this->isGroup) {
-            $text = "Avalon for Telegram. Play avalon while chatting with your friends on Telegram! type /start if you are ready!";
+            $text = "Avalon bot for telegram.\n";
+            $text .= "Based on the <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a> (one of the Best Party Game)\n\n";
+            $text .= "To start playing, type /start to start a normal game or /startlotl to start a lady of the lake mode.\n\n";
         } else {
-            $text = "Avalon for Telegram. Invite to your group and type /start to play Avalon";
+            $text = "Avalon bot for telegram.\n";
+            $text .= "Based on the <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a>\n\n";
+            $text .= "To start playing, invite this bot to your group then type /start to start a normal game or /startlotl to start a lady of the lake mode.\n\n";
         }
+        $text .= "Type /howtoplay if you are new to avalon and want to know more\n";
+        $text .= "Type /contact if you want to contact the developer\n";
+        $this->apiSendMessage($text);
+    }
+
+    protected function sendContact() {
+        $text = "Telegram code by <b>Hendry Setiadi</b>.\n\n"
+                ."Contact to email: hendry.setiadi.89@gmail.com to give the support or feedback.\n\n"
+                ."Thank you.";
+        $this->apiSendMessage($text);
+    }
+
+    protected function sendHowToPlay() {
+        $text = " <b>The avalon game is a game about deduction and bluffing</b>\n\n";
+        $text .= "The story is like the players go together in a journey to control the civilization of Arthur. ";
+        $text .= "There are always <b>5 quests</b> in total. The players will play the first quest first, then sequentially go to the second quest and so on..";
+        $text .= " If at least 3 quests succeed, then good forces <i>might</i> win. If there are 3 quests fail, evil force win.\n\n";
+
+        $text .= "At the start of the game, each player will be randomly assigned a role.\n";
+        $text .= "Click to see the detail of the role:\n";
+        $text .= $this->unichr(Constant::EMO_SMILE)."/merlin\n"
+            .$this->unichr(Constant::EMO_SMILE)."/percival\n"
+            .$this->unichr(Constant::EMO_SMILE)."/servant\n"
+            .$this->unichr(Constant::EMO_EVIL)."/assassin\n"
+            .$this->unichr(Constant::EMO_EVIL)."/morgana\n"
+            .$this->unichr(Constant::EMO_EVIL)."/mordred\n"
+            .$this->unichr(Constant::EMO_EVIL)."/oberon\n\n";
+        $text .= "At the start of the game, King token".$this->unichr(Constant::EMO_KING). " will be randomly assigned to a player and he/she may choose who can complete the current quest.\n";
+        $text .= "After the assignment is done, any player may vote <b>approve</b> or <b>reject</b> to the assignment. Then, the approve and reject will be counted.\n\n";
+
+        $text .= "If the <b>reject</b> count is half or more the count of the players, the quest is rejected, and the king token"
+            .$this->unichr(Constant::EMO_KING)." will be given to the next player\n";
+        $text .= "If the <b>approve</b> count is more than half players' count, the quest is executed by the assignees.\n\n";
+
+        $text .= "When executing a quest, evil players may choose to fail the quest. ";
+        $text .= "In general, if at least 1 player give the FAIL to that quest, it means that quest will FAIL.\n\n";
+
+        $text .= "And to prevent each quest being rejected over and over, there is a maximum reject system,"
+              ." so that each quest has maximum reject of 5. If the quest is rejected 5 times, it will automatically FAIL\n\n";
+
+        $text .= "In a game more than 7 players, <b>lady of the lake</b>".$this->unichr(Constant::EMO_LADY)." can be used. This will give a large benefit for a good forces.. "
+            . "A player that hold the lady token will know the true identity (good or evil) of a player he/she chooses. "
+            . "And also, the lady of the lake holder might lie to the team.\n\n";
+
+        $text .= "That's all..  Why don't you try it right now. Practice is the faster way to learn.. Type /start to start the game ot /startlotl to start with lady of the lake mode\n\n";
         $this->apiSendMessage($text);
     }
 
