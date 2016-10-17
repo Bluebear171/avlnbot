@@ -294,7 +294,12 @@ class TelegramBot extends TelegramBotCore {
         }
         return $this->chatInstances[$chat_id];
     }
+
+    public function removeChatInstance($chat_id) {
+        unset($this->chatInstances[$chat_id]);
+    }
 }
+
 abstract class TelegramBotChat {
     protected $core;
     protected $chatId;

@@ -759,7 +759,7 @@ class AvalonBotChat extends TelegramBotChat {
                     $this->flagRemind2 = true;
                 }
             }
-                break;
+            break;
             // END case Constant::EXEC_LADY_OF_LAKE_PRIVATE
         }
     }
@@ -991,6 +991,7 @@ class AvalonBotChat extends TelegramBotChat {
 
         $this->revealAllRoles();
         $this->gameStatus = Constant::NOT_CREATED;
+        $this->removeThisInstance();
     }
 
     public function goodGuysWinTheGame(){
@@ -999,6 +1000,11 @@ class AvalonBotChat extends TelegramBotChat {
 
         $this->revealAllRoles();
         $this->gameStatus = Constant::NOT_CREATED;
+        $this->removeThisInstance();
+    }
+
+    public function removeThisInstance(){
+        $this->core->removeChatInstance($this->chatId);
     }
 
     public function revealAllRoles(){
