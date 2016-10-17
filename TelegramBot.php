@@ -37,6 +37,12 @@ abstract class TelegramBotCore {
             return true;
         }
 
+        echo getenv('BOTTOKEN');
+        echo getenv('MAINTENANCE');
+        echo getenv('PRODUCTION');
+
+        die('test exit');
+
         // this function can run once in application
         $connExist = file_exists ( "conn_count");
         if ($connExist) {
