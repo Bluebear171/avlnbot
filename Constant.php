@@ -2,7 +2,7 @@
 
 
 class Constant{
-    const DEVELOPMENT = false;
+    static $DEVELOPMENT;
 
     // $gameStatus
     const NOT_CREATED = 0;
@@ -28,7 +28,7 @@ class Constant{
     const OBERON = 6;
     const BAD_NORMAL = 7;
 
-    const THRES_REMIND = 5;
+    const THRES_REMIND = 6; // $updatesTimeout+1
 
     static $_180; // start game
     static $_120; // start game
@@ -115,11 +115,17 @@ class Constant{
     static function init(){
         // if have not inited
         if (!Constant::$inited) {
-            if (Constant::DEVELOPMENT) {
-                Constant::$_120 = 30;
-                Constant::$_30 = 15;
-                Constant::$_60 = 20;
-                Constant::$_90 = 25;
+            if (getenv('DEVELOPMENT') >= 1) {
+                Constant::$DEVELOPMENT = true;
+            }
+            else {
+                Constant::$DEVELOPMENT = false;
+            }
+            if (Constant::$DEVELOPMENT) {
+                Constant::$_120 = 20;
+                Constant::$_30 = 5;
+                Constant::$_60 = 10;
+                Constant::$_90 = 15;
 
                 Constant::$_startGame = 15;
                 Constant::$_startGame_r1 = 5;

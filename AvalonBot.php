@@ -20,7 +20,7 @@ class AvalonBotChat extends TelegramBotChat {
     protected $startTimeStamp = 0; // http://php.net/manual/en/function.time.php
     protected $flagRemind1; // xr1 sec has passed
     protected $flagRemind2; // xr2 sec has passed
-    protected $playercount;
+    protected $playerCount;
     protected $randomizedRole;
     protected $kingTokenIndex;
     protected $ladyLakeTokenIndex;
@@ -63,9 +63,10 @@ class AvalonBotChat extends TelegramBotChat {
     public function __construct($core, $chat_id) {
         parent::__construct($core, $chat_id);
     }
-    public function init() {
+
+    //public function init() {
         //$this->curPoll = $this->dbGetPoll();
-    }
+    //}
 
     public function command_start($params, $message) {
         $this->startGameWithMode(Constant::MODE_NORMAL, $params, $message);
@@ -74,6 +75,7 @@ class AvalonBotChat extends TelegramBotChat {
     public function command_startlotl($params, $message) {
         $this->startGameWithMode(Constant::MODE_LADY_OF_LAKE, $params, $message);
     }
+
     public function startGameWithMode($mode, $params, $message) {
         if (!$this->isGroup) {
             $this->sendWarningOnlyGroup();
@@ -93,7 +95,7 @@ class AvalonBotChat extends TelegramBotChat {
                 $this->playerIDs = array();
                 $this->players = array();
 
-                $this->startTimeStamp = time();
+                $this->startTimeStamp = $this->core->getCurrentTime();
                 $this->clearFlagRemind();
 
                 // check if player already exist,if not exist, add to array
@@ -101,7 +103,7 @@ class AvalonBotChat extends TelegramBotChat {
                 $this->addNewPlayer($message["from"]);
                 $this->sendCreateSuccessToGroup($sender_id);
 
-                if (Constant::DEVELOPMENT) {
+                if (Constant::$DEVELOPMENT) {
                     $message2["from"]["id"] = "215067238";
                     $message2["from"]["first_name"] = "testLiman";
 //                    $message2["from"]["last_name"] = "ululu";
@@ -211,7 +213,7 @@ class AvalonBotChat extends TelegramBotChat {
                 $sender_id = $message["from"]["id"];
 
                 // if the sender is king, then done the game status
-                if (Constant::DEVELOPMENT) {
+                if (Constant::$DEVELOPMENT) {
                     $isCorrectSender = (
                         $sender_id == $this->playerIDs[$this->kingTokenIndex]
                         ||
@@ -264,10 +266,10 @@ class AvalonBotChat extends TelegramBotChat {
                 }
 
                 // count reject and approve
-                if ($this->rejectAssignCount >= ($this->playercount/2)){
+                if ($this->rejectAssignCount >= ($this->playerCount/2)){
                     $this->rejectCurrentQuest();
                 }
-                elseif($this->approveAssigncount > ($this->playercount/2)){
+                elseif($this->approveAssigncount > ($this->playerCount/2)){
                     $this->approveCurrentQuest();
                 }
             }
@@ -310,10 +312,10 @@ class AvalonBotChat extends TelegramBotChat {
                 }
 
                 // count reject and approve
-                if ($this->rejectAssignCount >= ($this->playercount/2)){
+                if ($this->rejectAssignCount >= ($this->playerCount/2)){
                     $this->rejectCurrentQuest();
                 }
-                elseif($this->approveAssigncount > ($this->playercount/2)){
+                elseif($this->approveAssigncount > ($this->playerCount/2)){
                     $this->approveCurrentQuest();
                 }
             }
@@ -368,7 +370,7 @@ class AvalonBotChat extends TelegramBotChat {
 
     public function nextKing(){
         $this->kingTokenIndex++;
-        if ($this->kingTokenIndex == $this->playercount) {
+        if ($this->kingTokenIndex == $this->playerCount) {
             $this->kingTokenIndex = 0;
         }
     }
@@ -379,7 +381,7 @@ class AvalonBotChat extends TelegramBotChat {
         //send Message to Group
         $text = $this->getBoardGameText();
         $kingPlayerID = $this->playerIDs[$this->kingTokenIndex];
-        $personNeedToCurrentQuest = Constant::$quest[$this->playercount][$this->currentQuestNumberStart0];
+        $personNeedToCurrentQuest = Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0];
         $text .= "Sebelum menunjuk <b>".
             $personNeedToCurrentQuest . " orang</b>, ". $this->getPlayerIDString($kingPlayerID).
             " sebagai raja boleh berdiskusi dengan team.\n";
@@ -388,7 +390,7 @@ class AvalonBotChat extends TelegramBotChat {
             ." detik</b>. Raja boleh mengetik /done untuk mengakhiri diskusi. Klik /questhistory untuk melihat history.";
         $this->apiSendMessage($text);
 
-        $this->startTimeStamp = time();
+        $this->startTimeStamp = $this->core->getCurrentTime();
         $this->clearFlagRemind();
     }
 
@@ -411,7 +413,7 @@ class AvalonBotChat extends TelegramBotChat {
                 $this->badGuyAssigneeChoices[$questAssigneeID] = 0; // abstain
 
                 $text = "Quest ke-".($this->currentQuestNumberStart0+ 1).". Apa yang ingin kamu pilih?";
-                if (Constant::DEVELOPMENT) {
+                if (Constant::$DEVELOPMENT) {
                     $text .= " " . $this->getPlayerIDString($questAssigneeID);
                 }
                 $params = array(
@@ -442,7 +444,7 @@ class AvalonBotChat extends TelegramBotChat {
             // good guy quest assignee
             else {
                 $text = "Kamu orang baik. Kamu pun berusaha untuk menyelesaikan quest dengan sebaik-baiknya.";
-                if (Constant::DEVELOPMENT) {
+                if (Constant::$DEVELOPMENT) {
                     $text .= " " . $this->getPlayerIDString($questAssigneeID);
                 }
                 $this->sendDEVMessageToPrivate($text,$questAssigneeID);
@@ -453,7 +455,7 @@ class AvalonBotChat extends TelegramBotChat {
         $text .= "Waktu yang diberikan <b>".Constant::$_execQuestPrivate. "</b> detik";
         $this->apiSendMessage($text);
 
-        $this->startTimeStamp = time();
+        $this->startTimeStamp = $this->core->getCurrentTime();
         $this->clearFlagRemind();
     }
 
@@ -464,14 +466,14 @@ class AvalonBotChat extends TelegramBotChat {
                 // if player count already enough, the change status to START RANDOM ROLES
                 $playercount = count($this->playerIDs);
                 if ($playercount == Constant::getMaxPlayer()){
-                    $this->playercount = $playercount;
+                    $this->playerCount = $playercount;
                     $this->gameStatus = Constant::START_RANDOM_ROLES;
                     $this->sendGameStartedToGroup();
                     $this->assigningRandomRoles();
                 }
                 else { // less than 10.
                     //waiting for more players
-                    $currentTime = time();
+                    $currentTime = $this->core->getCurrentTime();
                     $difftime = $currentTime - $this->startTimeStamp;
                     // if time greater than 120 seconds,
                     //      check player count then cancel the game, change status to NOT CREATED
@@ -481,7 +483,7 @@ class AvalonBotChat extends TelegramBotChat {
                     if ($difftime >= Constant::$_startGame) {
                         $playercount = count($this->playerIDs);
                         if ($playercount >= Constant::getMinPlayer($this->mode)){
-                            $this->playercount = $playercount;
+                            $this->playerCount = $playercount;
                             $this->gameStatus = Constant::START_RANDOM_ROLES;
                             $this->sendGameStartedToGroup();
                             $this->assigningRandomRoles();
@@ -512,20 +514,20 @@ class AvalonBotChat extends TelegramBotChat {
             {
                 // jika jumlah assignee sudah cukup, change status to EXEC_APPROVE_REJECT_QUEST_GROUP
                 $currentAssignedCount = count($this->questAssigneeIDs);
-                $neededAssigneeCount = Constant::$quest[$this->playercount][$this->currentQuestNumberStart0];
+                $neededAssigneeCount = Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0];
                 if ($currentAssignedCount == $neededAssigneeCount) {
                     $this->execApproveRejectQuestGroup();
                 } else {
                     // jika belum cukup, check waktu
                     // jika waktu sudah lewat, random assignee yang tersisa
-                    $currentTime = time();
+                    $currentTime = $this->core->getCurrentTime();
                     $difftime = $currentTime - $this->startTimeStamp;
 
                     if ($difftime >= Constant::$_assignQuestPrivate) { //sudah lewat waktu
                         $needLeft = $neededAssigneeCount - $currentAssignedCount;
                         // store unassigned IDs
                         $unassignedIDs = array();
-                        for ($i = 0;$i<$this->playercount; $i++){
+                        for ($i = 0; $i<$this->playerCount; $i++){
                             $playerIDnoi = $this->playerIDs[$i];
                             if (!in_array($playerIDnoi,$this->questAssigneeIDs)) {
                                 array_push($unassignedIDs, $playerIDnoi);
@@ -541,7 +543,7 @@ class AvalonBotChat extends TelegramBotChat {
                         if (isset($this->players[$kingID][Constant::LAST_MESSAGE_ID])) {
                             $messageID = $this->players[$kingID][Constant::LAST_MESSAGE_ID];
                             $textPrivate = "Jawabanmu terlambat, sisa player dipilih secara random.";
-                            if (Constant::DEVELOPMENT) {
+                            if (Constant::$DEVELOPMENT) {
                                 $this->apiEditMessageText($textPrivate, $messageID, "286457946");
                             } else {
                                 $this->apiEditMessageText($textPrivate, $messageID, $kingID);
@@ -561,16 +563,16 @@ class AvalonBotChat extends TelegramBotChat {
 
             case Constant::EXEC_APPROVE_REJECT_QUEST_GROUP :
             {
-                if ($this->rejectAssignCount >= ($this->playercount / 2)) {
+                if ($this->rejectAssignCount >= ($this->playerCount / 2)) {
                     $this->rejectCurrentQuest();
                 }
-                else if ($this->approveAssigncount > ($this->playercount / 2)){
+                else if ($this->approveAssigncount > ($this->playerCount / 2)){
                     $this->approveCurrentQuest();
                 }
                 // jika jumlah belum cukup, check time
                 // jika waktu sudah lewat, default approve
                 else {
-                    $currentTime = time();
+                    $currentTime = $this->core->getCurrentTime();
                     $difftime = $currentTime - $this->startTimeStamp;
 
                     if ($difftime >= Constant::$_execApproveRejectGroup) { //sudah lewat waktu
@@ -585,7 +587,7 @@ class AvalonBotChat extends TelegramBotChat {
                         $text = "Pejuang di quest ini ". $this->playersToString($this->questAssigneeIDs) ."\n";
                         $text .= "\n\n<b>".(Constant::$_execApproveRejectGroup - Constant::$_execApproveRejectGroup_r1)
                             ." detik</b>  lagi untuk /approve atau /reject. Jika ada minimal <b>".
-                            Constant::$two_fails_required[$this->playercount][$this->currentQuestNumberStart0]
+                            Constant::$two_fails_required[$this->playerCount][$this->currentQuestNumberStart0]
                             . " pemain</b> menggagalkan quest, maka quest akan dianggap gagal!";
                         $this->apiSendMessage($text);
                         $this->flagRemind1 = true;
@@ -598,7 +600,7 @@ class AvalonBotChat extends TelegramBotChat {
 
             case Constant::EXEC_QUEST_PRIVATE :
             {
-                $currentTime = time();
+                $currentTime = $this->core->getCurrentTime();
                 $difftime = $currentTime - $this->startTimeStamp;
 
                 if ($difftime >= Constant::$_execQuestPrivate) { //sudah lewat waktu
@@ -609,24 +611,40 @@ class AvalonBotChat extends TelegramBotChat {
                     foreach ($this->badGuyAssigneeChoices as $key => $value) {
                         // if abstain, default to fail the quest
                         if ($this->badGuyAssigneeChoices[$key] == 0){
-                            $this->badGuyAssigneeChoices[$key] = -1;
-                            $this->fail_count_by_badguy++;
-
-                            if (isset($this->players[$key][Constant::LAST_MESSAGE_ID])) {
-                                $messageID = $this->players[$key][Constant::LAST_MESSAGE_ID];
-                                $textPrivate = "Jawabanmu terlambat. Kamu dipaksa menggagalkan quest dari boss.";
-                                if (Constant::DEVELOPMENT) {
-                                    $textPrivate .= $this->getPlayerIDFullNameString($key);
-                                    $this->apiEditMessageText($textPrivate, $messageID, "286457946");
-                                } else {
-                                    $this->apiEditMessageText($textPrivate, $messageID, $key);
+                            // 2 quest pertama paksa berhasil
+                            if ($this->currentQuestNumberStart0 < 2) {
+                                $this->badGuyAssigneeChoices[$key] = 1;
+                                $this->success_count_by_badguy++;
+                                if (isset($this->players[$key][Constant::LAST_MESSAGE_ID])) {
+                                    $messageID = $this->players[$key][Constant::LAST_MESSAGE_ID];
+                                    $textPrivate = "Jawabanmu terlambat. Boss memaksamu untuk memberikan pencitraan yang baik.";
+                                    if (Constant::$DEVELOPMENT) {
+                                        $textPrivate .= $this->getPlayerIDFullNameString($key);
+                                        $this->apiEditMessageText($textPrivate, $messageID, "286457946");
+                                    } else {
+                                        $this->apiEditMessageText($textPrivate, $messageID, $key);
+                                    }
+                                }
+                            }
+                            else { // quest index ke 2,3,4, always fail
+                                $this->badGuyAssigneeChoices[$key] = -1;
+                                $this->fail_count_by_badguy++;
+                                if (isset($this->players[$key][Constant::LAST_MESSAGE_ID])) {
+                                    $messageID = $this->players[$key][Constant::LAST_MESSAGE_ID];
+                                    $textPrivate = "Jawabanmu terlambat. Kamu dipaksa menggagalkan quest dari boss.";
+                                    if (Constant::$DEVELOPMENT) {
+                                        $textPrivate .= $this->getPlayerIDFullNameString($key);
+                                        $this->apiEditMessageText($textPrivate, $messageID, "286457946");
+                                    } else {
+                                        $this->apiEditMessageText($textPrivate, $messageID, $key);
+                                    }
                                 }
                             }
                         }
                     }
 
                     if ($this->fail_count_by_badguy >=
-                        Constant::$two_fails_required[$this->playercount]
+                        Constant::$two_fails_required[$this->playerCount]
                         [$this->currentQuestNumberStart0]) {
                         $this->failCurrentQuest();
                     }
@@ -649,7 +667,7 @@ class AvalonBotChat extends TelegramBotChat {
                         count($this->badGuyAssigneeChoices) ){
                         // check if already fail
                         if ($this->fail_count_by_badguy >=
-                            Constant::$two_fails_required[$this->playercount]
+                            Constant::$two_fails_required[$this->playerCount]
                             [$this->currentQuestNumberStart0] ) {
                             $this->failCurrentQuest();
                         }
@@ -662,7 +680,7 @@ class AvalonBotChat extends TelegramBotChat {
 
             case Constant::DISCUSS_BEFORE_ASSIGNING_QUEST :
             {
-                $currentTime = time();
+                $currentTime = $this->core->getCurrentTime();
                 $difftime = $currentTime - $this->startTimeStamp;
 
                 if ($difftime >= Constant::$_discussAssignQuestGroup) {
@@ -671,16 +689,20 @@ class AvalonBotChat extends TelegramBotChat {
                 else if (! $this->flagRemind1
                     && $difftime >= Constant::$_discussAssignQuestGroup_r1
                     && $difftime <= (Constant::$_discussAssignQuestGroup_r1 + Constant::THRES_REMIND)){
-                    $text = (Constant::$_discussAssignQuestGroup - Constant::$_discussAssignQuestGroup_r1)
-                        ." detik</b> lagi untuk berdiskusi... King boleh mengetik /done jika sudah mendapat pencerahan.";
+                    $text = "<b>". (Constant::$_discussAssignQuestGroup - Constant::$_discussAssignQuestGroup_r1)
+                        ." detik</b> lagi untuk berdiskusi... "
+                        .$this->getPlayerIDFullNameString($this->playerIDs[$this->kingTokenIndex])
+                        ." boleh mengetik /done jika sudah mendapat pencerahan.";
                     $this->apiSendMessage($text);
                     $this->flagRemind1 = true;
                 }
                 else if (!$this->flagRemind2
                     && $difftime >= Constant::$_discussAssignQuestGroup_r2
                     && $difftime <= (Constant::$_discussAssignQuestGroup_r2 + Constant::THRES_REMIND)){
-                    $text = (Constant::$_discussAssignQuestGroup - Constant::$_discussAssignQuestGroup_r2)
-                        ." detik</b> lagi untuk berdiskusi... King boleh mengetik /done jika sudah mendapat pencerahan.";
+                    $text = "<b>".(Constant::$_discussAssignQuestGroup - Constant::$_discussAssignQuestGroup_r2)
+                        ." detik</b> lagi untuk berdiskusi... "
+                        .$this->getPlayerIDFullNameString($this->playerIDs[$this->kingTokenIndex])
+                        ." boleh mengetik /done jika sudah mendapat pencerahan.";
                     $this->apiSendMessage($text);
                     $this->flagRemind2 = true;
                 }
@@ -692,7 +714,7 @@ class AvalonBotChat extends TelegramBotChat {
             case Constant::EXEC_LADY_OF_LAKE_PRIVATE :
             {
                 // jika waktu sudah lewat, default skip lady of the lake
-                $currentTime = time();
+                $currentTime = $this->core->getCurrentTime();
                 $difftime = $currentTime - $this->startTimeStamp;
 
                 if ($difftime >= Constant::$_execLadyOfTheLakePrivate) { //sudah lewat waktu
@@ -702,7 +724,7 @@ class AvalonBotChat extends TelegramBotChat {
                     if (isset($this->players[$ladyID][Constant::LAST_MESSAGE_ID])) {
                         $messageID = $this->players[$ladyID][Constant::LAST_MESSAGE_ID];
                         $text = "Kamu terlambat memilih untuk menerawang..";
-                        if (Constant::DEVELOPMENT) {
+                        if (Constant::$DEVELOPMENT) {
                             $this->apiEditMessageText($text, $messageID, "286457946");
                         } else {
                             $this->apiEditMessageText($text, $messageID, $ladyID);
@@ -722,14 +744,14 @@ class AvalonBotChat extends TelegramBotChat {
             case Constant::EXEC_KILL_MERLIN_PRIVATE :
             {
                 // jika waktu sudah lewat, tim baik menang
-                $currentTime = time();
+                $currentTime = $this->core->getCurrentTime();
                 $difftime = $currentTime - $this->startTimeStamp;
 
                 if ($difftime >= Constant::$_execKillMerlin) { //sudah lewat waktu
                     if (isset($this->players[$this->assassinID][Constant::LAST_MESSAGE_ID])) {
                         $messageID = $this->players[$this->assassinID][Constant::LAST_MESSAGE_ID];
                         $text = "Kamu terlambat memilih untuk membunuh Merlin..";
-                        if (Constant::DEVELOPMENT) {
+                        if (Constant::$DEVELOPMENT) {
                             $this->apiEditMessageText($text, $messageID, "286457946");
                         } else {
                             $this->apiEditMessageText($text, $messageID, $this->assassinID);
@@ -745,7 +767,7 @@ class AvalonBotChat extends TelegramBotChat {
                 else if (! $this->flagRemind1
                     && $difftime >= Constant::$_execKillMerlin_r1
                     && $difftime <= (Constant::$_execKillMerlin_r1 + Constant::THRES_REMIND)){
-                    $text = (Constant::$_execKillMerlin - Constant::$_execKillMerlin_r1)
+                    $text = "<b>".(Constant::$_execKillMerlin - Constant::$_execKillMerlin_r1)
                         ." detik</b> lagi waktu yang dibutuhkan assassin untuk membunuh Merlin...";
                     $this->apiSendMessage($text);
                     $this->flagRemind1 = true;
@@ -753,7 +775,7 @@ class AvalonBotChat extends TelegramBotChat {
                 else if (!$this->flagRemind2
                     && $difftime >= Constant::$_execKillMerlin_r2
                     && $difftime <= (Constant::$_execKillMerlin_r2 + Constant::THRES_REMIND)){
-                    $text = (Constant::$_execKillMerlin - Constant::$_execKillMerlin_r2)
+                    $text = "<b>".(Constant::$_execKillMerlin - Constant::$_execKillMerlin_r2)
                         ." detik</b> lagi waktu yang dibutuhkan assassin untuk membunuh Merlin...";
                     $this->apiSendMessage($text);
                     $this->flagRemind2 = true;
@@ -784,12 +806,12 @@ class AvalonBotChat extends TelegramBotChat {
     }
 
     public function assigningRandomRoles(){
-        $this->randomizedRole = Constant::generateRandomRoleArray($this->playercount);
+        $this->randomizedRole = Constant::generateRandomRoleArray($this->playerCount);
 
         // all bad guys see your eyes! (this is just to collect all bad guys)
         $this->all_bad_guys_id = array();
         $morgana_and_merlin_ids= array();
-        for ($i=0 ;$i < $this->playercount; $i++) {
+        for ($i=0 ; $i < $this->playerCount; $i++) {
             $playerID = $this->playerIDs[$i];
             $role = $this->randomizedRole[$i];
             // this is to link id with its role
@@ -810,7 +832,7 @@ class AvalonBotChat extends TelegramBotChat {
         unset( $this->assassinID );
         unset( $this->oberonID );
         // send message to all player about its role
-        for ($i=0 ;$i < $this->playercount; $i++) {
+        for ($i=0 ; $i < $this->playerCount; $i++) {
             $playerID = $this->playerIDs[$i];
             $role = $this->randomizedRole[$i];
             $text = "";
@@ -854,12 +876,12 @@ class AvalonBotChat extends TelegramBotChat {
                     $text .= ".";
                     break;
             }
-            if (Constant::DEVELOPMENT) {
+            if (Constant::$DEVELOPMENT) {
                 $text .= " ".$this->players[$playerID]["full_name"];
             }
             $this->sendDEVMessageToPrivate($text, $playerID);
 
-            if (Constant::DEVELOPMENT) {
+            if (Constant::$DEVELOPMENT) {
                 echo "<br />" . $this->players[$playerID]["full_name"] . " " . $playerID . " adalah " .
                     Constant::getNameByRole($this->players[$playerID][Constant::ROLE]);
             }
@@ -870,11 +892,11 @@ class AvalonBotChat extends TelegramBotChat {
 
         $this->currentQuestNumberStart0 = 0;
         $this->questStatus = array(0,0,0,0,0);
-        $this->kingTokenIndex = rand(0, $this->playercount - 1);
+        $this->kingTokenIndex = rand(0, $this->playerCount - 1);
         if ($this->mode == Constant::MODE_LADY_OF_LAKE) {
             $this->ladyLakeTokenIndex = $this->kingTokenIndex - 1;
             if ($this->ladyLakeTokenIndex < 0) {
-                $this->ladyLakeTokenIndex = $this->playercount - 1;
+                $this->ladyLakeTokenIndex = $this->playerCount - 1;
             }
             // first time holder
             $this->lady_of_the_lake_holderIDs = array($this->playerIDs[$this->ladyLakeTokenIndex]);
@@ -899,7 +921,7 @@ class AvalonBotChat extends TelegramBotChat {
         //send Message to Group
         $text = $this->getBoardGameText();
         $kingPlayerID = $this->playerIDs[$this->kingTokenIndex];
-        $personNeedToCurrentQuest = Constant::$quest[$this->playercount][$this->currentQuestNumberStart0];
+        $personNeedToCurrentQuest = Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0];
         $text .= $this->getPlayerIDString($kingPlayerID).
             " sebagai raja akan menunjuk <b>".
             $personNeedToCurrentQuest . " orang</b> untuk menyelesaikan quest.\n";
@@ -907,7 +929,7 @@ class AvalonBotChat extends TelegramBotChat {
             .Constant::$_assignQuestPrivate ." detik</b>.\n";
         $this->apiSendMessage($text);
 
-        $this->startTimeStamp = time();
+        $this->startTimeStamp = $this->core->getCurrentTime();
         $this->clearFlagRemind();
         // send to private
         $this->sendAssignOnePlayerToPrivate($kingPlayerID);
@@ -931,7 +953,7 @@ class AvalonBotChat extends TelegramBotChat {
             .Constant::$_execApproveRejectGroup ." detik</b>.\n";
         $this->apiSendMessage($text);
 
-        $this->startTimeStamp = time();
+        $this->startTimeStamp = $this->core->getCurrentTime();
         $this->clearFlagRemind();
     }
 
@@ -947,7 +969,8 @@ class AvalonBotChat extends TelegramBotChat {
         }
         else { // fail because fail_count is bigger than requirement
             $failCount = $this->fail_count_by_badguy;
-            $text = "Dalam menyelesaikan quest ditemukan <b>".$failCount." FAIL</b>! Quest dianggap gagal.";
+            $text = "Dalam menyelesaikan quest ditemukan <b>"
+                .$failCount." FAIL</b>! Quest dianggap gagal.";
 
             $rejectIDs= array();
             foreach ($this->currentApproveReject as $key=>$value){
@@ -991,7 +1014,6 @@ class AvalonBotChat extends TelegramBotChat {
 
         $this->revealAllRoles();
         $this->gameStatus = Constant::NOT_CREATED;
-        $this->removeThisInstance();
     }
 
     public function goodGuysWinTheGame(){
@@ -1000,11 +1022,6 @@ class AvalonBotChat extends TelegramBotChat {
 
         $this->revealAllRoles();
         $this->gameStatus = Constant::NOT_CREATED;
-        $this->removeThisInstance();
-    }
-
-    public function removeThisInstance(){
-        $this->core->removeChatInstance($this->chatId);
     }
 
     public function revealAllRoles(){
@@ -1041,7 +1058,7 @@ class AvalonBotChat extends TelegramBotChat {
             // send to private
             $this->sendLadyToAssignPrivate();
 
-            $this->startTimeStamp = time();
+            $this->startTimeStamp = $this->core->getCurrentTime();
             $this->clearFlagRemind();
         }
         else {
@@ -1062,7 +1079,7 @@ class AvalonBotChat extends TelegramBotChat {
         // send to assassin
         $this->sendPrivateToAssasin($this->assassinID);
 
-        $this->startTimeStamp = time();
+        $this->startTimeStamp = $this->core->getCurrentTime();
         $this->clearFlagRemind();
     }
 
@@ -1117,14 +1134,14 @@ class AvalonBotChat extends TelegramBotChat {
     }
 
     public function getTwoFailString ($questNo){
-        if ( Constant::$two_fails_required[$this->playercount][$questNo] > 1 ){
+        if ( Constant::$two_fails_required[$this->playerCount][$questNo] > 1 ){
             return "*";
         }
         return "";
     }
 
     public function getBoardGameText(){
-        $questByPlayer = Constant::$quest[$this->playercount];
+        $questByPlayer = Constant::$quest[$this->playerCount];
         $text = "";
         for ($i = 0; $i<5;$i++) {
             $isCurrentQuest = ($this->currentQuestNumberStart0 == $i);
@@ -1140,7 +1157,7 @@ class AvalonBotChat extends TelegramBotChat {
             $text .= "Token Reject = " . $this->getRejectCounterString() . "\n";
         }
         $text .= "\n";
-        for ($i =0; $i<$this->playercount; $i++) {
+        for ($i =0; $i<$this->playerCount; $i++) {
             if ($i > 0) {
                 $text .= "\n";
             }
@@ -1158,7 +1175,7 @@ class AvalonBotChat extends TelegramBotChat {
 
 
     public function getBoardGameRevealedText(){
-        $questByPlayer = Constant::$quest[$this->playercount];
+        $questByPlayer = Constant::$quest[$this->playerCount];
         $text = "";
         for ($i = 0; $i<5;$i++) {
             $text .= "Quest-" . ($i + 1) . "(" . $questByPlayer[$i] . ") " . $this->getQuestStatusString($i) . "\n";
@@ -1166,7 +1183,7 @@ class AvalonBotChat extends TelegramBotChat {
         if ($this->rejectCountInQuest > 0) {
             $text .= "Token Reject = " . $this->getRejectCounterString() . "\n";
         }
-        for ($i =0; $i<$this->playercount; $i++) {
+        for ($i =0; $i<$this->playerCount; $i++) {
             if ($i > 0) {
                 $text .= "\n";
             }
@@ -1323,6 +1340,12 @@ class AvalonBotChat extends TelegramBotChat {
         $this->sendHelp();
     }
 
+    public function sendMaintenance($params, $message) {
+        $text = "Currently there is a maintenance for avalon bot.
+                 \nPlease try to connect 5 minutes later.";
+        $this->apiSendMessage($text);
+    }
+
     public function sendBlankHistory (){
         $text = "Tidak ditemukan history untuk game yang sedang berlangsung.";
         $this->apiSendMessage($text);
@@ -1359,7 +1382,7 @@ class AvalonBotChat extends TelegramBotChat {
         switch ($this->gameStatus) {
             case Constant::ASSIGN_QUEST_PRIVATE: {
                 $assignedPlayerID = $dataString;
-                if (Constant::DEVELOPMENT) {
+                if (Constant::$DEVELOPMENT) {
                     $isCorrectSender = (
                         $from["id"] == $this->playerIDs[$this->kingTokenIndex]
                         ||
@@ -1386,7 +1409,7 @@ class AvalonBotChat extends TelegramBotChat {
 
                     // check if it is enough already
                     if (count($this->questAssigneeIDs)
-                        == Constant::$quest[$this->playercount][$this->currentQuestNumberStart0]
+                        == Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0]
                     ) {
                         $this->execApproveRejectQuestGroup();
                     } else {
@@ -1408,7 +1431,7 @@ class AvalonBotChat extends TelegramBotChat {
                 else {
                     return;
                 }
-                if (Constant::DEVELOPMENT) {
+                if (Constant::$DEVELOPMENT) {
                     $isCorrectSender = (
                         isset($this->badGuyAssigneeChoices[$from["id"]])
                         ||
@@ -1447,7 +1470,7 @@ class AvalonBotChat extends TelegramBotChat {
                 else {
                     $isSkip = false;
                 }
-                if (Constant::DEVELOPMENT) {
+                if (Constant::$DEVELOPMENT) {
                     $isCorrectSender = (
                         $from["id"] == $this->playerIDs[$this->ladyLakeTokenIndex]
                         ||
@@ -1508,7 +1531,7 @@ class AvalonBotChat extends TelegramBotChat {
             case Constant::EXEC_KILL_MERLIN_PRIVATE: {
                 $merlinIDToKill = $dataString;
 
-                if (Constant::DEVELOPMENT) {
+                if (Constant::$DEVELOPMENT) {
                     $isCorrectSender = (
                         $from["id"] == $this->assassinID
                         ||
@@ -1557,12 +1580,9 @@ class AvalonBotChat extends TelegramBotChat {
     }
 
 
-    public function some_command($command, $params, $message) {
-
-    }
-
-
-
+//    public function some_command($command, $params, $message) {
+//
+//    }
 
 
 
@@ -1591,7 +1611,7 @@ class AvalonBotChat extends TelegramBotChat {
     protected function sendAssignOnePlayerToPrivate($targetID) {
         // siapkan array untuk diisi
         $playerIDsToAssign = array();
-        for ($i=0; $i<$this->playercount; $i++) {
+        for ($i=0; $i<$this->playerCount; $i++) {
             // jika quest assignee [playerID] belum diassign, maka playerID itu dipush.
             if (!in_array($this->playerIDs[$i],$this->questAssigneeIDs)) {
                 array_push($playerIDsToAssign, $this->playerIDs[$i]);
@@ -1612,9 +1632,9 @@ class AvalonBotChat extends TelegramBotChat {
 
         $countcurrassignee = count($this->questAssigneeIDs);
         $text = "Pilih orang ke-". ($countcurrassignee+1).
-            " (dari ".Constant::$quest[$this->playercount][$this->currentQuestNumberStart0] .
+            " (dari ".Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0] .
             " orang) untuk menyelesaikan quest";
-        if (Constant::DEVELOPMENT) {
+        if (Constant::$DEVELOPMENT) {
             $text .= " " . $this->getPlayerIDString($targetID);
         }
         $params = array(
@@ -1649,7 +1669,7 @@ class AvalonBotChat extends TelegramBotChat {
         }
 
         $text = "Bunuh Merlin.";
-        if (Constant::DEVELOPMENT) {
+        if (Constant::$DEVELOPMENT) {
             $text .= " " . $this->getPlayerIDString($assassinID);
         }
         $params = array(
@@ -1670,7 +1690,7 @@ class AvalonBotChat extends TelegramBotChat {
 
         // siapkan array untuk diisi
         $playerIDsToLadyLakeOption = array();
-        for ($i=0; $i<$this->playercount; $i++) {
+        for ($i=0; $i<$this->playerCount; $i++) {
             // jika quest assignee [playerID] belum diassign, maka playerID itu dipush.
             if (!in_array($this->playerIDs[$i],$this->lady_of_the_lake_holderIDs)) {
                 array_push($playerIDsToLadyLakeOption, $this->playerIDs[$i]);
@@ -1699,7 +1719,7 @@ class AvalonBotChat extends TelegramBotChat {
         );
 
         $text = "Pilih orang untuk diterawang.";
-        if (Constant::DEVELOPMENT) {
+        if (Constant::$DEVELOPMENT) {
             $text .= " " . $this->getPlayerIDString($ladyPlayerID);
         }
         $params = array(
@@ -1716,7 +1736,7 @@ class AvalonBotChat extends TelegramBotChat {
     }
 
     protected function sendDEVMessageToPrivate($text, $targetID, $params=array()) {
-        if (Constant::DEVELOPMENT) {
+        if (Constant::$DEVELOPMENT) {
             return $this->apiSendMessageToTarget($text,"286457946", $params);
         }
         else {
@@ -1804,7 +1824,10 @@ class AvalonBotChat extends TelegramBotChat {
     }
 
 
-
+    public function getGameStatus()
+    {
+        return $this->gameStatus;
+    }
 
     public function getRandomSubsetFromArray($arrayToPick, $howManyToPick){
         $arrayToPickCopy = $arrayToPick;

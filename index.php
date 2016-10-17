@@ -8,8 +8,9 @@
 
 set_time_limit(0);
 require_once 'AvalonBot.php';
-define('BOT_TOKEN', '272750070:AAH86cH2Xx2n8r4zM4Z5B_LLCWawi2IzBqE');
-$bot = new AvalonBot(BOT_TOKEN, 'AvalonBotChat');
+//define('BOT_TOKEN', <set this in httpd-xampp.conf>);
+$bot = new AvalonBot(getenv('BOTTOKEN'), 'AvalonBotChat');
+
 $bot->runLongpoll();
 
 //

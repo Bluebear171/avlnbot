@@ -19,6 +19,11 @@ abstract class TelegramBotCore {
     protected $updatesTimeout = 5;
     protected $netTimeout = 10;
     protected $netConnectTimeout = 5;
+
+    protected $checkPointTimeStamp;
+    protected $currentTime;
+    protected $isMaintenance;
+
     public function __construct($token, $options = array()) {
         $options += array(
             'host' => 'api.telegram.org',
@@ -37,22 +42,16 @@ abstract class TelegramBotCore {
             return true;
         }
 
-        echo getenv('BOTTOKEN');
-        echo getenv('MAINTENANCE');
-        echo getenv('PRODUCTION');
-
-        die('test exit');
-
-        // this function can run once in application
-        $connExist = file_exists ( "conn_count");
-        if ($connExist) {
-            die ("already running");
-        }
-        // create one token to flag this request is running
-        $fh = fopen('conn_count', 'w');
-        fclose($fh);
-
         $this->inited = true;
+
+        // if want to change the status, request
+        $envMaintenance = getenv('MAINTENANCE');
+        if ($envMaintenance == 0) {
+            $this->isMaintenance = false;
+        }
+        else {
+            $this->isMaintenance = true;
+        }
 
 //        echo $this->apiUrl;
 
@@ -96,7 +95,19 @@ abstract class TelegramBotCore {
 
     public function runLongpoll() {
         $this->init();
-        $this->longpoll();
+
+        // this function can run once in application
+        $connExist = file_exists ( "conn_count");
+        if ($connExist) {
+            echo "already running";
+        }
+        else {
+            // create one token to flag this request is running
+            $fh = fopen('conn_count', 'w');
+            fclose($fh);
+
+            $this->longpoll();
+        }
     }
     public function setWebhook($url) {
         $this->init();
@@ -124,7 +135,7 @@ abstract class TelegramBotCore {
         }
         $query_string = implode('&', $params_arr);
         $url = $this->apiUrl.'/'.$method;
-        if (Constant::DEVELOPMENT) {
+        if (Constant::$DEVELOPMENT) {
             echo "<br /> <br />" . $url . ($query_string ? '?' . $query_string : '');
         }
         if ($options['http_method'] === 'POST') {
@@ -155,13 +166,17 @@ abstract class TelegramBotCore {
                 $this->netDelay *= 2;
             }
         };
-        if (Constant::DEVELOPMENT) {
+        if (Constant::$DEVELOPMENT) {
             echo "<br/> " . $response_str . "<br/> ";
         }
         $response = json_decode($response_str, true);
         return $response;
     }
     protected function longpoll() {
+        $this->currentTime = time();
+        // to clean up
+        $this->onCheckInterval();
+
         $params = array(
             'limit' => $this->updatesLimit,
             'timeout' => $this->updatesTimeout,
@@ -187,19 +202,44 @@ abstract class TelegramBotCore {
 
         // condition to stop the service
         $myfile = fopen("f.txt", "r") or die("Unable to open file!");
-        $stopFlag = fread($myfile,1);
+        $stopFlag = fread($myfile,1); // read 1 byte
         fclose($myfile);
         if ($stopFlag > 0) {
             // delete conn_count file
             unlink("conn_count");
-            die ("service terminated by file f changed");
+            die ("<br /><br />  service terminated by file f changed");
         }
         $this->longpoll();
     }
+
+    public function onCheckInterval(){
+        if ($this->checkPointTimeStamp == 0) {
+            $this->checkPointTimeStamp = $this->currentTime;
+        }
+        else {
+            // if already has value,
+            $timeDiff = $this->currentTime - $this->checkPointTimeStamp;
+            if ($timeDiff >= 20) { // 5 minute
+                $this->checkPointTimeStamp = $this->currentTime;
+                $this->cleanUpChatInstances();
+                // garbage unneeded chat instances
+            }
+            // else do nothing
+        }
+    }
+
+    public function getCurrentTime()
+    {
+        return $this->currentTime;
+    }
+
     abstract public function onUpdateReceived($update);
     abstract public function onCheckTimer();
     abstract public function sendBulkMessage();
+    abstract public function cleanUpChatInstances();
 }
+
+
 class TelegramBot extends TelegramBotCore {
     protected $chatClass;
     protected $chatInstances = array();
@@ -212,7 +252,7 @@ class TelegramBot extends TelegramBotCore {
         $this->chatClass = $chat_class;
     }
     public function onUpdateReceived($update) {
-        if (Constant::DEVELOPMENT) {
+        if (Constant::$DEVELOPMENT) {
             echo "<br/> Update received <br/> ";
             print_r($update);
         }
@@ -250,12 +290,21 @@ class TelegramBot extends TelegramBotCore {
                         }
 
                         if (!$command_owner || $command_owner == $this->username) {
-                            $method = 'command_'.$command;
-                            if (method_exists($chat, $method)) {
-                                $chat->$method($command_params, $message);
-                            } else {
-                                $chat->some_command($command, $command_params, $message);
+                            echo "Is maintenance: " . $this->isMaintenance;
+                            if ($this->isMaintenance ) {
+                                $chat->sendMaintenance($command_params, $message);
                             }
+                            else {
+                                $method = 'command_'.$command;
+                                if (method_exists($chat, $method)) {
+                                    $chat->$method($command_params, $message);
+                                }
+                            }
+
+                            // other command is unsupported
+                            //else {
+                            //    $chat->some_command($command, $command_params, $message);
+                            //}
                         }
                         else{
                             echo "have command owner but owner is different";
@@ -280,6 +329,15 @@ class TelegramBot extends TelegramBotCore {
         }
     }
 
+    public function cleanUpChatInstances(){
+        foreach ($this->chatInstances as $key=>$value) {
+            if ($this->chatInstances[$key] instanceof AvalonBotChat) {
+                if ($this->chatInstances[$key]->getGameStatus() == Constant::NOT_CREATED) {
+                    unset($this->chatInstances[$key]);
+                }
+            }
+        }
+    }
     public function onCheckTimer() {
         foreach ($this->chatInstances as $chatInstance) {
             $chatInstance->checkTimer();
@@ -301,9 +359,6 @@ class TelegramBot extends TelegramBotCore {
         return $this->chatInstances[$chat_id];
     }
 
-    public function removeChatInstance($chat_id) {
-        unset($this->chatInstances[$chat_id]);
-    }
 }
 
 abstract class TelegramBotChat {
@@ -339,6 +394,9 @@ abstract class TelegramBotChat {
     public function message($text, $message) {}
 
     public function sendBulkMessage(){
+        if (count($this ->texts) == 0) {
+            return null;
+        }
         $bulkText = "";
         foreach ($this->texts as $text) {
             $bulkText .= $text . "\n\n";
