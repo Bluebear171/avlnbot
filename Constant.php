@@ -28,7 +28,7 @@ class Constant{
     const OBERON = 6;
     const BAD_NORMAL = 7;
 
-    const THRES_REMIND = 6; // $updatesTimeout+1
+    const THRES_REMIND = 10; // $updatesTimeout+1
 
     static $_180; // start game
     static $_120; // start game

@@ -132,19 +132,20 @@ class AvalonBotChat extends TelegramBotChat {
                     $this->addNewPlayer($message5["from"]);
                     $this->sendJoinSuccessToGroup($message5["from"]["id"]);
 
-                    $message6["from"]["id"] = "295076115";
-                    $message6["from"]["first_name"] = "testPaulana";
-//                    $message6["from"]["last_name"] = "ululu";
-//                    $message6["from"]["username"] = "Paulanakho";
-                    $this->addNewPlayer($message6["from"]);
-                    $this->sendJoinSuccessToGroup($message6["from"]["id"]);
+//                    $message6["from"]["id"] = "295076115";
+//                    $message6["from"]["first_name"] = "testPaulana";
+////                    $message6["from"]["last_name"] = "ululu";
+////                    $message6["from"]["username"] = "Paulanakho";
+//                    $this->addNewPlayer($message6["from"]);
+//                    $this->sendJoinSuccessToGroup($message6["from"]["id"]);
+//
+//                    $message7["from"]["id"] = "291655534";
+//                    $message7["from"]["first_name"] = "testHerman";
+//////                    $message7["from"]["last_name"] = "ululu";
+//////                    $message7["from"]["username"] = "chrono06";
+//                    $this->addNewPlayer($message7["from"]);
+//                    $this->sendJoinSuccessToGroup($message7["from"]["id"]);
 
-                    $message7["from"]["id"] = "291655534";
-                    $message7["from"]["first_name"] = "testHerman";
-////                    $message7["from"]["last_name"] = "ululu";
-////                    $message7["from"]["username"] = "chrono06";
-                    $this->addNewPlayer($message7["from"]);
-                    $this->sendJoinSuccessToGroup($message7["from"]["id"]);
 //
 //                    $message8["from"]["id"] = "248185104";
 //                    $message8["from"]["first_name"] = "testLucy";
@@ -912,9 +913,6 @@ class AvalonBotChat extends TelegramBotChat {
             }
         }
 
-//        echo "<br /> Bad Guys: <br />";
-//        print_r($all_bad_guys_id);
-
         $this->currentQuestNumberStart0 = 0;
         $this->questStatus = array(0,0,0,0,0);
         $this->kingTokenIndex = rand(0, $this->playerCount - 1);
@@ -1417,9 +1415,9 @@ class AvalonBotChat extends TelegramBotChat {
 
     public function sendOberon(){
         $text = "<b>Oberon</b>".$this->unichr(Constant::EMO_EVIL)
-            . " is an evil player but all other evil players do not know the oberon identity. Merlin can still see Oberon though."
-            . " In this telegram, Oberon also do not know his teammate until quest 2 is finished.\n\n"
-            . " Oberon's job is to find the other evil players as sson as possible then cooperate with them to fail the quests. ";
+            . " is an evil player but all other evil players do not know the oberon's identity. Merlin can still see Oberon though."
+            . " In this telegram, Oberon also doesn't know his/her teammate until 2nd quest is finished.\n\n"
+            . "Oberon's job is to find the other evil players as soon as possible then cooperate with them to fail the quests. ";
         $text .= "It is also crucial for Oberon to help assassin finding the Merlin throughout the game.";
         $this->apiSendMessage($text);
     }

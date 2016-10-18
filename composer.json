@@ -1,0 +1,14 @@
+{
+    "name": "hendrysetiadi/avalon",
+    "description": "avalon",
+    "require": {
+        "predis/predis": "1.0.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hendrysetiadi89",
+            "email": "hendrysetiadi@bahaso.com"
+        }
+    ]
+}

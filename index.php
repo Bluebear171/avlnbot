@@ -6,6 +6,7 @@
  * Time: 16:57
  */
 
+ignore_user_abort(true);
 set_time_limit(0);
 require_once 'AvalonBot.php';
 //define('BOT_TOKEN', <set this in httpd-xampp.conf>);

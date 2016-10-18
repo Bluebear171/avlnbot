@@ -16,7 +16,7 @@ abstract class TelegramBotCore {
     protected $netDelay = 1;
     protected $updatesOffset = false;
     protected $updatesLimit = 100;
-    protected $updatesTimeout = 5;
+    protected $updatesTimeout = 9;
     protected $netTimeout = 10;
     protected $netConnectTimeout = 5;
 
@@ -197,8 +197,9 @@ abstract class TelegramBotCore {
                 }
             }
         }
-        $this->sendBulkMessage();
+
         $this->onCheckTimer();
+        $this->sendBulkMessage();
 
         // condition to stop the service
         $myfile = fopen("f.txt", "r") or die("Unable to open file!");
@@ -290,7 +291,6 @@ class TelegramBot extends TelegramBotCore {
                         }
 
                         if (!$command_owner || $command_owner == $this->username) {
-                            echo "Is maintenance: " . $this->isMaintenance;
                             if ($this->isMaintenance ) {
                                 $chat->sendMaintenance($command_params, $message);
                             }
@@ -307,11 +307,15 @@ class TelegramBot extends TelegramBotCore {
                             //}
                         }
                         else{
-                            echo "have command owner but owner is different";
+                            if (Constant::$DEVELOPMENT) {
+                                echo "have command owner but owner is different";
+                            }
                         }
                     } else {
 //                        $chat->message($text, $message);
-                        echo "not command";
+                        if (Constant::$DEVELOPMENT) {
+                            echo "not command";
+                        }
                     }
                 }
             }
