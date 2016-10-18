@@ -220,7 +220,7 @@ abstract class TelegramBotCore {
         else {
             // if already has value,
             $timeDiff = $this->currentTime - $this->checkPointTimeStamp;
-            if ($timeDiff >= 20) { // 5 minute
+            if ($timeDiff >= 900) { // 5 minute
                 $this->checkPointTimeStamp = $this->currentTime;
                 $this->cleanUpChatInstances();
                 // garbage unneeded chat instances
