@@ -1135,31 +1135,41 @@ class AvalonBotChat extends TelegramBotChat {
                         $this->apiEditMessageText($text, $messageID, $from["id"]);
                     }
                     else {
+                        try {
+                            $this->redis->set($langKey, $dataString);
+                            $this->lang = $dataString;
+                            $this->langScript = Script::$script[$dataString];
+
+                            // "Bahasa di %s berhasil diganti menjadi %s.";
+                            $text = sprintf($this->langScript[Script::PR_LANGGROUPCHANGED],
+                                $chatTitle,
+                                Constant::getLanguageString($dataString));
+                            $this->apiEditMessageText($text, $messageID, $from["id"]);
+
+                            // "Bahasa berhasil diganti menjadi %s.";
+                            $textGroup = sprintf($this->langScript[Script::PU_LANGCHANGED],
+                                Constant::getLanguageString($dataString));
+                            $this->apiSendMessageDirect($textGroup);
+                        }
+                        catch (Exception $e) {
+
+                        }
+                    }
+                }
+                else { // private group
+                    try {
                         $this->redis->set($langKey, $dataString);
                         $this->lang = $dataString;
                         $this->langScript = Script::$script[$dataString];
 
-                        // "Bahasa di %s berhasil diganti menjadi %s.";
-                        $text = sprintf($this->langScript[Script::PR_LANGGROUPCHANGED],
-                            $chatTitle,
+                        // "Bahasa berhasil diganti menjadi %s.";
+                        $text = sprintf($this->langScript[Script::PU_LANGCHANGED],
                             Constant::getLanguageString($dataString));
                         $this->apiEditMessageText($text, $messageID, $from["id"]);
-
-                        // "Bahasa berhasil diganti menjadi %s.";
-                        $textGroup = sprintf($this->langScript[Script::PU_LANGCHANGED],
-                            Constant::getLanguageString($dataString));
-                        $this->apiSendMessage($textGroup);
                     }
-                }
-                else { // private group
-                    $this->redis->set($langKey, $dataString);
-                    $this->lang = $dataString;
-                    $this->langScript = Script::$script[$dataString];
+                    catch (Exception $e){
 
-                    // "Bahasa berhasil diganti menjadi %s.";
-                    $text = sprintf($this->langScript[Script::PU_LANGCHANGED],
-                        Constant::getLanguageString($dataString));
-                    $this->apiEditMessageText($text, $messageID, $from["id"]);
+                    }
                 }
             }
             return;
