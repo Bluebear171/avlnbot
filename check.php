@@ -12,6 +12,11 @@ echo "Connection to server sucessfully<br/>";
 //check whether server is running or not
 echo "Server is running: ".$redis->ping() ."<br />";
 
+$connfile = fopen("connc.txt", "r") or die("Unable to open file!");
+$connFlag = fread($connfile,1); // read 1 byte
+fclose($connfile);
+echo "Connc.txt : ". $connFlag ."<br />";
+
 //****************************************************************
 // SET ARRAY KEY
 //$myarr = array();
