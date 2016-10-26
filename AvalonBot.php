@@ -526,8 +526,7 @@ class AvalonBotChat extends TelegramBotChat {
         // Klik /questhistory untuk melihat history.";
         $text .= sprintf($this->langScript[Script::PU_KINGNEEDDISCUSS],
             $personNeedToCurrentQuest,
-            $this->getPlayerIDString($kingPlayerID));
-        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+            $this->getPlayerIDString($kingPlayerID),
             Constant::$_discussAssignQuestGroup);
         $this->apiSendMessage($text);
 
@@ -754,8 +753,7 @@ class AvalonBotChat extends TelegramBotChat {
         // "%s sebagai raja akan menunjuk <b>%d orang</b> untuk menyelesaikan quest.\nWaktu untuk memberikan penugasan adalah <b>%d detik</b>.\n";
         $text .= sprintf($this->langScript[Script::PU_KINGNEEDASSIGN],
             $this->getPlayerIDString($kingPlayerID),
-            $personNeedToCurrentQuest);
-        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+            $personNeedToCurrentQuest,
             Constant::$_assignQuestPrivate);
         $this->apiSendMessage($text);
 
@@ -912,8 +910,7 @@ class AvalonBotChat extends TelegramBotChat {
         // "%s telah menunjuk %s untuk menyelesaikan mission.\nSaatnya berdiskusi.. Jika setuju, ketik /approve. Jika menolak, ketik /reject.";
         $text .= sprintf($this->langScript[Script::PU_APPRREJINST],
             $this->getPlayerIDString($kingPlayerID),
-            $this->playersToString($this->questAssigneeIDs));
-        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+            $this->playersToString($this->questAssigneeIDs),
             Constant::$_execApproveRejectGroup);
         $this->apiSendMessage($text);
 
@@ -1041,8 +1038,7 @@ class AvalonBotChat extends TelegramBotChat {
         // SCRIPT
         // "3 Quest berhasil disukseskan oleh tim. Namun, tim jahat masih mempunyai senjata terakhir. Tim jahat membuka kedok mereka %s.. Jika assassin berhasil menebak merlin, maka tim jahatlah yang menang!";
         $text = sprintf($this->langScript[Script::PU_KILLMERLIN],
-            $this->playersToString($this->all_bad_guys_id));
-        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+            $this->playersToString($this->all_bad_guys_id),
             Constant::$_execKillMerlin);
 
         $this->apiSendMessage($text);
@@ -1540,8 +1536,7 @@ class AvalonBotChat extends TelegramBotChat {
                         // "Pejuang di quest ini %s\n\n\nPilih /approve atau /reject. Jika ada minimal <b>%d anggota</b> menggagalkan quest, maka quest akan dianggap gagal!";
                         $text = sprintf($this->langScript[Script::PU_APPRREJREMIND],
                             $this->playersToString($this->questAssigneeIDs),
-                            Constant::$two_fails_required[$this->playerCount][$this->currentQuestNumberStart0]);
-                        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+                            Constant::$two_fails_required[$this->playerCount][$this->currentQuestNumberStart0],
                             (Constant::$_execApproveRejectGroup - Constant::$_execApproveRejectGroup_r1));
                         $this->apiSendMessage($text);
                         $this->flagRemind1 = true;

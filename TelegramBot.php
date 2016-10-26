@@ -109,16 +109,24 @@ abstract class TelegramBotCore {
         $this->init();
 
         // this function can run once in application
-        $connExist = file_exists ( "conn_count");
+        $connExist = file_exists("connc.txt");
         if ($connExist) {
-            echo "already running";
+            // change to 0
+            $connfile = fopen("connc.txt", "r") or die("Unable to open file!");
+            $connFlag = fread($connfile,1); // read 1 byte
+            fclose($connfile);
+            if ($connFlag == 1) {
+                echo "already running";
+            }
+            else {
+                $connfile = fopen("connc.txt", "w") or die("Unable to open file!");
+                fwrite($connfile,"1");
+                fclose($connfile);
+                $this->longpoll();
+            }
         }
         else {
-            // create one token to flag this request is running
-            $fh = fopen('conn_count', 'w');
-            fclose($fh);
-
-            $this->longpoll();
+            echo "connc.txt does not exist.";
         }
     }
     public function setWebhook($url) {
@@ -218,8 +226,10 @@ abstract class TelegramBotCore {
         $stopFlag = fread($myfile,1); // read 1 byte
         fclose($myfile);
         if ($stopFlag > 0) {
-            // delete conn_count file
-            unlink("conn_count");
+            // change to 0
+            $connfile = fopen("connc.txt", "w") or die("Unable to open file!");
+            fwrite($connfile, "0");
+            fclose($connfile);
             die ("<br /><br />  service terminated by file f changed");
         }
         $this->longpoll();

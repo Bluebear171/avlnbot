@@ -181,9 +181,9 @@ class Script{
                 = "Quest yang dipimpin oleh %s telah ditolak. quest dibatalkan dan king berpindah ke %s.";
 
             Script::$script["en"][Script::PU_KINGNEEDDISCUSS]
-                = "Before assign <b>%d persons</b>, %s as the king may discuss with the team. King may type /done to finish the discussion. Click /questhistory to see the history.";
+                = "Before assign <b>%d persons</b>, %s as the king has <b>%d seconds</b> to discuss with the team. King may type /done to finish the discussion. Click /questhistory to see the history.";
             Script::$script["id"][Script::PU_KINGNEEDDISCUSS]
-                = "Sebelum menunjuk <b>%d orang</b>, %s sebagai raja boleh berdiskusi dengan team. Raja boleh mengetik /done untuk mengakhiri diskusi. Klik /questhistory untuk melihat history.";
+                = "Sebelum menunjuk <b>%d orang</b>, %s sebagai raja mempunyai <b>%d detik</b> untuk berdiskusi dengan tim. Raja boleh mengetik /done untuk mengakhiri diskusi. Klik /questhistory untuk melihat history.";
 
             Script::$script["en"][Script::PU_AFTERAPPROVE]
                 = "Most of the team members approved. The quest will be executed!";
@@ -257,9 +257,9 @@ class Script{
 
 
             Script::$script["en"][Script::PU_KINGNEEDASSIGN]
-                = "%s as king will assign <b>%d persons</b> to execute the quest.";
+                = "%s as king will assign <b>%d persons</b> to execute the quest. The king is given time <b>%d seconds</b>";
             Script::$script["id"][Script::PU_KINGNEEDASSIGN]
-                = "%s sebagai raja akan menunjuk <b>%d orang</b> untuk menyelesaikan quest.";
+                = "%s sebagai raja akan menunjuk <b>%d orang</b> untuk menyelesaikan quest. Raja diberikan waktu sebanyak <b>%d detik</b>";
 
 
             Script::$script["en"][Script::PR_SENDONEPLAYER]
@@ -278,9 +278,9 @@ class Script{
                 = "Pilih orang untuk diterawang.";
 
             Script::$script["en"][Script::PU_APPRREJINST]
-                = "%s has assigned %s to do the quest.\n\nIt is time to discuss. If you approve it, type /approve. Otherwise, type /reject.";
+                = "%s has assigned %s to do the quest.\n\nYou have <b>%d seconds</b> to have a discussion. If you approve it, type /approve. Otherwise, type /reject.";
             Script::$script["id"][Script::PU_APPRREJINST]
-                = "%s telah menunjuk %s untuk menyelesaikan quest.\n\nSaatnya berdiskusi.. Jika setuju, ketik /approve. Jika menolak, ketik /reject.";
+                = "%s telah menunjuk %s untuk menyelesaikan quest.\n\nDiberikan waktu <b>%d detik</b> untuk berdiskusi. Jika setuju, ketik /approve. Jika menolak, ketik /reject.";
 
             Script::$script["en"][Script::PU_REJECT5TIMES]
                 = "Quest was rejected 5 times, so it's failed.";
@@ -298,9 +298,9 @@ class Script{
                 = "Para penjahat menang! Mereka memang sudah berpengalaman lebih dari 10 dekade..";
 
             Script::$script["en"][Script::PU_GOODGUYSWON]
-                = "Congratulations! The good team are really solid and very clever to deceive the evil.";
+                = "Congratulations! The good team won! The good team are really solid and very clever deceiving evil team.";
             Script::$script["id"][Script::PU_GOODGUYSWON]
-                = "Selamat! Kalian tim baik memang kompak dan pintar menipu orang jahat..";
+                = "Selamat! Tim baik menang! Tim baik memang kompak dan pintar menipu orang jahat..";
 
             Script::$script["en"][Script::PU_OBERONFINALLY]
                 = "Finally you know your teammates. They are %s.";
@@ -313,9 +313,9 @@ class Script{
                 = "%s sebagai Lady of the Lake dapat menggunakan kekuatannya untuk menerawang salah seorang anggota tim. Anggota tim lain boleh memberikan petunjuk... Diberikan waktu <b>%d detik</b>.";
 
             Script::$script["en"][Script::PU_KILLMERLIN]
-                = "3 Quest has been successfully done by the team. However, evil team still has the last weapon. THe evil team are %s. If the assassin can guess the Merlin, the evil team will win!";
+                = "3 Quest has been successfully done by the team. However, evil team still has the last weapon. The evil team are %s. If the assassin can guess the Merlin, the evil team will win! Evil team has <b>%d seconds</b> to decide.";
             Script::$script["id"][Script::PU_KILLMERLIN]
-                = "3 Quest berhasil disukseskan oleh tim. Namun, tim jahat masih mempunyai senjata terakhir. Tim jahat membuka kedok mereka %s.. Jika assassin berhasil menebak merlin, maka tim jahatlah yang menang!";
+                = "3 Quest berhasil disukseskan oleh tim. Namun, tim jahat masih mempunyai senjata terakhir. Tim jahat membuka kedok mereka %s.. Jika assassin berhasil menebak merlin, maka tim jahatlah yang menang! Diberikan waktu <b>%d detik</b>.";
 
             Script::$script["en"][Script::PU_QSUCCESSNOFAIL]
                 = "Quest has been successfully done! ";
@@ -393,9 +393,9 @@ class Script{
                 = "<b>bukan MERLIN</b>!";
 
             Script::$script["en"][Script::PR_ASSIGNLATE]
-                = "The time's up. The rest of players is assigned randomly.";
+                = "The time's up. The rest of players is assigned randomly. ";
             Script::$script["id"][Script::PR_ASSIGNLATE]
-                = "Jawabanmu terlambat, sisa player dipilih secara random.";
+                = "Jawabanmu terlambat, sisa player dipilih secara random. ";
 
             Script::$script["en"][Script::PU_ASSIGNLATE]
                 = "Because the time's up, The rest of players is assigned randomly: %s.";
@@ -408,9 +408,9 @@ class Script{
                 = "Karena waktu habis, pemain lain dianggap memilih approve..";
 
             Script::$script["en"][Script::PU_APPRREJREMIND]
-                = "The assignees in this quest are %s\n\n\nChoose /approve or /reject. If there is minimum <b>%d members</b> fail the quest, the quest will be failed.";
+                = "The assignees in this quest are %s\n\n<b>%d seconds</b> left to choose /approve or /reject. If there is minimum <b>%d members</b> fail the quest, the quest will be failed.";
             Script::$script["id"][Script::PU_APPRREJREMIND]
-                = "Pejuang di quest ini %s\n\n\nPilih /approve atau /reject. Jika ada minimal <b>%d anggota</b> menggagalkan quest, maka quest akan dianggap gagal!";
+                = "Pejuang di quest ini %s\n\n<b>%d detik</b>lagi pilih /approve atau /reject. Jika ada minimal <b>%d anggota</b> menggagalkan quest, maka quest akan dianggap gagal!";
 
             Script::$script["en"][Script::PR_BADGUYLATESUCCESS]
                 = "You answered late. Boss forced you to give the good impression this time.";
