@@ -584,7 +584,7 @@ class Script{
             Script::$script["id"][Script::PU_CONTACT]
                 = "Kode Telegram oleh <b>Hendry Setiadi</b>.\n\n"
                 ."Hubungi email: hendry.setiadi.89@gmail.com untuk memberikan support atau feedback.\n\n"
-                ."Rate me by clicking the link: <a href=\"http://telegram.me/storebot?start=%s\">Rate me</a>.\n\n"
+                ."Berikan rating dengan meng-klik link berikut: <a href=\"http://telegram.me/storebot?start=%s\">Rate me</a>.\n\n"
                 ."Terima kasih.";
 
             Script::$script["en"][Script::PU_HELP]

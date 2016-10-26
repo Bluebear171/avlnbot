@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a73f481-ab87-4211-bcdc-4a86725a2d7e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connc.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AvalonBot.php" afterPath="$PROJECT_DIR$/AvalonBot.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Script.php" afterPath="$PROJECT_DIR$/Script.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TelegramBot.php" afterPath="$PROJECT_DIR$/TelegramBot.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/f.txt" afterPath="$PROJECT_DIR$/f.txt" />
     </list>
     <ignored path="avalon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -70,8 +67,8 @@
       <file leaf-file-name="Script.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Script.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="409" column="58" selection-start-line="409" selection-start-column="42" selection-end-line="409" selection-end-column="58" />
+            <state relative-caret-position="303">
+              <caret line="650" column="63" selection-start-line="650" selection-start-column="63" selection-end-line="650" selection-end-column="63" />
               <folding />
             </state>
           </provider>
@@ -146,9 +143,9 @@
         <option value="$PROJECT_DIR$/index.php" />
         <option value="$PROJECT_DIR$/redis.php" />
         <option value="$PROJECT_DIR$/Constant.php" />
-        <option value="$PROJECT_DIR$/Script.php" />
         <option value="$PROJECT_DIR$/AvalonBot.php" />
         <option value="$PROJECT_DIR$/TelegramBot.php" />
+        <option value="$PROJECT_DIR$/Script.php" />
         <option value="$PROJECT_DIR$/f.txt" />
       </list>
     </option>
@@ -346,7 +343,7 @@
       <workItem from="1477365560795" duration="22828000" />
       <workItem from="1477451743927" duration="21221000" />
       <workItem from="1477474196732" duration="2839000" />
-      <workItem from="1477479070155" duration="2480000" />
+      <workItem from="1477479070155" duration="2706000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -366,7 +363,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="262023000" />
+    <option name="totallyTimeSpent" value="262249000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -687,14 +684,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Script.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="409" column="58" selection-start-line="409" selection-start-column="42" selection-end-line="409" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/redis.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -715,6 +704,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="127">
           <caret line="111" column="46" selection-start-line="111" selection-start-column="46" selection-end-line="111" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Script.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="303">
+          <caret line="650" column="63" selection-start-line="650" selection-start-column="63" selection-end-line="650" selection-end-column="63" />
           <folding />
         </state>
       </provider>
