@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a73f481-ab87-4211-bcdc-4a86725a2d7e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Script.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AvalonBot.php" afterPath="$PROJECT_DIR$/AvalonBot.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Constant.php" afterPath="$PROJECT_DIR$/Constant.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TelegramBot.php" afterPath="$PROJECT_DIR$/TelegramBot.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/f.txt" afterPath="$PROJECT_DIR$/f.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/redis.php" afterPath="$PROJECT_DIR$/redis.php" />
     </list>
     <ignored path="avalon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -336,7 +330,7 @@
       <workItem from="1477061604890" duration="155000" />
       <workItem from="1477307187912" duration="3269000" />
       <workItem from="1477365560795" duration="22828000" />
-      <workItem from="1477451743927" duration="20700000" />
+      <workItem from="1477451743927" duration="20778000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -356,7 +350,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="256183000" />
+    <option name="totallyTimeSpent" value="256261000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
