@@ -65,7 +65,7 @@ class Constant{
 
     // value for mode
     const MODE_NORMAL = 0;
-    const MODE_LADY_OF_LAKE = 1;
+    const MODE_CHAOS = 1;
 
     const EMO_KING = 0x1F451;
     const EMO_LADY = 0x1F469;
@@ -74,6 +74,9 @@ class Constant{
     const EMO_RED_CIRCLE = 0x1F534;
     const EMO_EVIL = 0x1F608;
     const EMO_SMILE = 0x1F642;
+
+    const idString = "Bahasa Indonesia";
+    const enString = "English";
 
     private static $inited = false;
     public static $quest;
@@ -93,6 +96,13 @@ class Constant{
         }
     }
 
+    static function getLanguageString($langID){
+        switch ($langID) {
+            case "id": return Constant::idString;
+            case "en": return Constant::enString;
+        }
+    }
+
     static function getNameByRole($role){
         switch ($role) {
             case Constant::MERLIN:
@@ -107,6 +117,8 @@ class Constant{
                 return "Assassin";
             case Constant::MORGANA:
                 return "Morgana";
+            case Constant::OBERON:
+                return "Oberon";
             case Constant::BAD_NORMAL:
                 return "Thief";
         }
@@ -242,8 +254,8 @@ class Constant{
 
     static function getMode($mode){
         switch ($mode) {
-            case Constant::MODE_LADY_OF_LAKE:
-                return "Lady of the Lake";
+            case Constant::MODE_CHAOS:
+                return "Chaos";
             default:
                 return "Normal";
         }

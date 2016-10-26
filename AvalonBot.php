@@ -1,11 +1,16 @@
 <?php
 require_once 'TelegramBot.php';
 require_once 'Constant.php';
+require_once 'Script.php';
+
+require 'vendor/predis/predis/autoload.php';
 
 class AvalonBot extends TelegramBot {
+
     public function init() {
         parent::init();
         Constant::init();
+        Script::init();
     }
 }
 
@@ -60,20 +65,43 @@ class AvalonBotChat extends TelegramBotChat {
     protected $rejectAssignCount;
     protected $approveAssigncount;
 
+    protected $lang;
+
+    protected $redis;
+    protected $langScript;
+
     public function __construct($core, $chat_id) {
         parent::__construct($core, $chat_id);
+        $this->redis = $this->core->redis;
     }
 
-    //public function init() {
-        //$this->curPoll = $this->dbGetPoll();
-    //}
+    public function init() {
+        if ($this->redis instanceof Predis\Client) {
+            $langKey = $this->chatId."_lang";
+            $isLangExist = $this->redis->exists($this->chatId."_lang");
+            if ($isLangExist) {
+                $this->lang = $this->redis->get($langKey);
+                $this->langScript = Script::$script[$this->lang];
+            }
+            else {
+                $this->lang = "en"; // default is english
+                $this->langScript = Script::$script["en"];
+            }
+        }
+    }
+
+    /**************************************************************************************
+     * START
+     * GAME COMMAND
+     * *************************************************************************************
+     */
 
     public function command_start($params, $message) {
         $this->startGameWithMode(Constant::MODE_NORMAL, $params, $message);
     }
 
-    public function command_startlotl($params, $message) {
-        $this->startGameWithMode(Constant::MODE_LADY_OF_LAKE, $params, $message);
+    public function command_startchaos($params, $message) {
+        $this->startGameWithMode(Constant::MODE_CHAOS, $params, $message);
     }
 
     public function startGameWithMode($mode, $params, $message) {
@@ -81,9 +109,13 @@ class AvalonBotChat extends TelegramBotChat {
             $this->sendWarningOnlyGroup();
         } else {
             if ($this->gameStatus == Constant::NOT_CREATED){
-                $response = $this->apiSendMessageToTarget(
-                    "Kamu telah membuat permainan baru - ".
-                        Constant::getMode($mode)." di group ".$message["chat"]["title"] ,
+                // SCRIPT
+                // "Kamu telah membuat permainan baru - %s di grup %s.";
+                $text = sprintf($this->langScript[Script::PR_NEWGAME],
+                    Constant::getMode($mode),
+                    $message["chat"]["title"]);
+
+                $response = $this->apiSendMessageToTarget( $text ,
                     $message["from"]["id"]);
                 if (!$response['ok']) {
                     // not ok --> cannot start the game
@@ -189,8 +221,13 @@ class AvalonBotChat extends TelegramBotChat {
                     if ($player_count < Constant::getMaxPlayer()) {
                         // check if player already exist,if not exist, add to array
 
+                        // SCRIPT
+                        // "Kamu telah bergabung Avalon di group %s.";
+                        $text = sprintf($this->langScript[Script::PR_JOINGAME],
+                            $message["chat"]["title"]);
+
                         $response = $this->apiSendMessageToTarget(
-                            "Kamu telah bergabung Avalon di group ".$message["chat"]["title"] ,
+                            $text,
                             $message["from"]["id"]);
                         if (!$response['ok']) {
                             // not ok --> cannot start the game
@@ -224,7 +261,7 @@ class AvalonBotChat extends TelegramBotChat {
                         $sender_id == $this->playerIDs[$this->kingTokenIndex];
                 }
                 if ($isCorrectSender) {
-                    $text = "Raja sudah mendapatkan pencerahan dan akhirnya memutuskan untuk mengakhiri diskusi tiada akhir ini";
+                    $text = $this->langScript[Script::PU_KINGDONE];
                     $this->apiSendMessage($text);
 
                     $this->assignQuestPrivate();
@@ -248,8 +285,12 @@ class AvalonBotChat extends TelegramBotChat {
                 if (!isset($this->currentApproveReject[$sender_id])){
                     $this->currentApproveReject[$sender_id] = 1;
                     $this->approveAssigncount++;
-                    $text = $this->getPlayerIDFullNameString($sender_id) . " meng-approve quest.";
-                    $text .= " Approve <b>". $this->approveAssigncount. "</b>. Reject <b>". $this->rejectAssignCount. "</b>.";
+                    // SCRIPT
+                    // "%s setuju. Setuju <b>%d</b>. Menolak <b>%d</b>."
+                    $text = sprintf($this->langScript[Script::PU_APPROVENEW],
+                        $this->getPlayerIDFullNameString($sender_id),
+                        $this->approveAssigncount,
+                        $this->rejectAssignCount);
                     $this->apiSendMessage($text);
                 }
                 // else if previously reject
@@ -261,8 +302,11 @@ class AvalonBotChat extends TelegramBotChat {
                     $this->currentApproveReject[$sender_id] = 1;
                     $this->approveAssigncount++;
                     $this->rejectAssignCount--;
-                    $text = $this->getPlayerIDFullNameString($sender_id) . " mengganti jawaban menjadi approve.";
-                    $text .= " Approve <b>". $this->approveAssigncount. "</b>. Reject <b>". $this->rejectAssignCount. "</b>.";
+                    // "%s mengganti jawaban menjadi setuju. Setuju <b>%d</b>. Menolak <b>%d</b>."
+                    $text = sprintf($this->langScript[Script::PU_APPROVECHANGE],
+                        $this->getPlayerIDFullNameString($sender_id),
+                        $this->approveAssigncount,
+                        $this->rejectAssignCount);
                     $this->apiSendMessage($text);
                 }
 
@@ -292,9 +336,11 @@ class AvalonBotChat extends TelegramBotChat {
                 if (!isset($this->currentApproveReject[$sender_id])){
                     $this->currentApproveReject[$sender_id] = -1;
                     $this->rejectAssignCount++;
-                    $text = $this->getPlayerIDFullNameString($sender_id) . " me-reject quest.";
-                    $text .= " Approve <b>". $this->approveAssigncount. "</b>. Reject <b>"
-                        . $this->rejectAssignCount. "</b>.";
+                    // "%s menolak. Setuju <b>%d</b>. Menolak <b>%d</b>."
+                    $text = sprintf($this->langScript[Script::PU_REJECTNEW],
+                        $this->getPlayerIDFullNameString($sender_id),
+                        $this->approveAssigncount,
+                        $this->rejectAssignCount);
                     $this->apiSendMessage($text);
                 }
                 // else if previously approve
@@ -306,9 +352,11 @@ class AvalonBotChat extends TelegramBotChat {
                     $this->currentApproveReject[$sender_id] = -1;
                     $this->approveAssigncount--;
                     $this->rejectAssignCount++;
-                    $text = $this->getPlayerIDFullNameString($sender_id) . " mengganti jawaban menjadi reject.";
-                    $text .= " Approve <b>". $this->approveAssigncount. "</b>. Reject <b>"
-                        . $this->rejectAssignCount. "</b>.";
+                    // "%s mengganti jawaban menjadi menolak. Setuju <b>%d</b>. Menolak <b>%d</b>."
+                    $text = sprintf($this->langScript[Script::PU_REJECTCHANGE],
+                        $this->getPlayerIDFullNameString($sender_id),
+                        $this->approveAssigncount,
+                        $this->rejectAssignCount);
                     $this->apiSendMessage($text);
                 }
 
@@ -351,6 +399,35 @@ class AvalonBotChat extends TelegramBotChat {
         }
     }
 
+    public function command_setlang($params, $message) {
+        if (!$this->isGroup) {
+            $this->sendSetLangToPrivate($message["from"]["id"]);
+        } else {
+            // check if all is admin
+            if (isset ($message["chat"]["all_members_are_administrators"])
+                && $message["chat"]["all_members_are_administrators"]){
+                $isAdmin = true;
+            }
+            else {
+                $status = $this->getStatusMember($message["from"]["id"]);
+                if ($status == "creator" || $status == "administrator") {
+                    $isAdmin = true;
+                }
+                else {
+                    $isAdmin = false;
+                }
+            }
+            if ($isAdmin) {
+                $text = $this->langScript[Script::PU_CHCKPMTOCHGLANG];
+                $this->apiSendMessage($text);
+                $this->sendSetLangToPrivate($message["from"]["id"]);
+            }
+            else {
+                $this->sendOnlyAdmin();
+            }
+        }
+    }
+
     public function command_howtoplay($params, $message) {
         $this->sendHowToPlay();
     }
@@ -376,6 +453,37 @@ class AvalonBotChat extends TelegramBotChat {
         $this->sendOberon();
     }
 
+    public function command_contact($params, $message) {
+        $this->sendContact();
+    }
+    public function command_help($params, $message) {
+        $this->sendHelp();
+    }
+
+    public function command_rateme($params, $message) {
+        $this->rateMe();
+    }
+
+    public function bot_added_to_chat($message) {
+        $this->sendHelp();
+    }
+
+
+    /***************************************************************************************
+     * END
+     * GAME COMMAND
+     * *************************************************************************************
+     */
+
+
+
+
+
+    /***************************************************************************************
+     * START INGAME FUNCTIONS
+     * *************************************************************************************
+     */
+
     // already count reject, reject is more or half the playercount
     public function rejectCurrentQuest(){
         $this->rejectCountInQuest++;
@@ -383,11 +491,14 @@ class AvalonBotChat extends TelegramBotChat {
             $this->failCurrentQuest();
         }
         else { // reject still less than 5, can continue this quest
+            $prevKingID = $this->playerIDs[$this->kingTokenIndex];
             //change king to next
             $this->nextKing();
 
-            $text = "Karena Quest di-reject oleh sebagian besar tim, quest dibatalkan dan king berpindah ke ".
-                $this->getPlayerIDString($this->playerIDs[$this->kingTokenIndex]) . ".";
+            // "Quest yang dipimpin oleh %s telah ditolak. quest dibatalkan dan king berpindah ke %s."
+            $text = sprintf($this->langScript[Script::PU_REJECTCHANGEKING],
+                $this->getPlayerIDString($prevKingID),
+                $this->getPlayerIDString($this->playerIDs[$this->kingTokenIndex]));
             $this->apiSendMessage($text);
             // still in the same current quest
             $this->discussBeforeAssigningQuest();
@@ -408,12 +519,16 @@ class AvalonBotChat extends TelegramBotChat {
         $text = $this->getBoardGameText();
         $kingPlayerID = $this->playerIDs[$this->kingTokenIndex];
         $personNeedToCurrentQuest = Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0];
-        $text .= "Sebelum menunjuk <b>".
-            $personNeedToCurrentQuest . " orang</b>, ". $this->getPlayerIDString($kingPlayerID).
-            " sebagai raja boleh berdiskusi dengan team.\n";
-        $text .= "Waktu untuk berdiskusi adalah <b>"
-            .Constant::$_discussAssignQuestGroup
-            ." detik</b>. Raja boleh mengetik /done untuk mengakhiri diskusi. Klik /questhistory untuk melihat history.";
+        // SCRIPT
+        // "Sebelum menunjuk <b>%d orang</b>, %s sebagai raja boleh berdiskusi
+        // dengan team.\nWaktu untuk berdiskusi adalah <b>%d detik</b>.
+        // Raja boleh mengetik /done untuk mengakhiri diskusi.
+        // Klik /questhistory untuk melihat history.";
+        $text .= sprintf($this->langScript[Script::PU_KINGNEEDDISCUSS],
+            $personNeedToCurrentQuest,
+            $this->getPlayerIDString($kingPlayerID));
+        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+            Constant::$_discussAssignQuestGroup);
         $this->apiSendMessage($text);
 
         $this->startTimeStamp = $this->core->getCurrentTime();
@@ -422,7 +537,9 @@ class AvalonBotChat extends TelegramBotChat {
 
     // approve is more
     public function approveCurrentQuest(){
-        $text = "Sebagian besar tim meng-approve, quest pun akan dijalankan!";
+        // SCRIPT
+        // "Sebagian besar tim meng-approve, quest pun akan dijalankan!"
+        $text = $this->langScript[Script::PU_AFTERAPPROVE];
         $this->apiSendMessage($text);
         $this->execQuestPrivate();
     }
@@ -438,7 +555,10 @@ class AvalonBotChat extends TelegramBotChat {
             if ( in_array( $questAssigneeID , $this->all_bad_guys_id)){
                 $this->badGuyAssigneeChoices[$questAssigneeID] = 0; // abstain
 
-                $text = "Quest ke-".($this->currentQuestNumberStart0+ 1).". Apa yang ingin kamu pilih?";
+                // SCRIPT
+                // "Quest ke-%d. Apa yang ingin kamu pilih?";
+                $text = sprintf($this->langScript[Script::PR_EXECQUEST],
+                    ($this->currentQuestNumberStart0+ 1) );
                 if (Constant::$DEVELOPMENT) {
                     $text .= " " . $this->getPlayerIDString($questAssigneeID);
                 }
@@ -447,13 +567,13 @@ class AvalonBotChat extends TelegramBotChat {
                         'inline_keyboard' => array(
                             array(
                                 array(
-                                    "text"=>"SUKSES",
+                                    "text"=>$this->langScript[Script::PR_SUCCESS],
                                     "callback_data"=> $this->chatId.":1",
                                 )
                             ),
                             array(
                                 array(
-                                    "text"=>"GAGAL",
+                                    "text"=>$this->langScript[Script::PR_FAIL],
                                     "callback_data"=> $this->chatId.":-1",
                                 )
                             )
@@ -469,7 +589,7 @@ class AvalonBotChat extends TelegramBotChat {
             }
             // good guy quest assignee
             else {
-                $text = "Kamu orang baik. Kamu pun berusaha untuk menyelesaikan quest dengan sebaik-baiknya.";
+                $text = $this->langScript[Script::PR_EXECQUESTGOOD];
                 if (Constant::$DEVELOPMENT) {
                     $text .= " " . $this->getPlayerIDString($questAssigneeID);
                 }
@@ -477,13 +597,807 @@ class AvalonBotChat extends TelegramBotChat {
             }
         }
 
-        $text = $this->playersToString($this->questAssigneeIDs) . " pergi untuk menyelesaikan quest. ";
-        $text .= "Waktu yang diberikan <b>".Constant::$_execQuestPrivate. "</b> detik";
+        $text = sprintf($this->langScript[Script::PR_GOFORQUEST],
+            $this->playersToString($this->questAssigneeIDs),
+            Constant::$_execQuestPrivate);
         $this->apiSendMessage($text);
 
         $this->startTimeStamp = $this->core->getCurrentTime();
         $this->clearFlagRemind();
     }
+
+
+    public function addNewPlayer($message_from){
+        $sender_id = $message_from["id"];
+        if (! in_array($sender_id, $this->playerIDs)) {
+            array_push($this->playerIDs, $sender_id );
+            $this->players[$sender_id]["first_name"] = $message_from["first_name"];
+            if (isset($message_from["last_name"])) {
+                $this->players[$sender_id]["last_name"] = $message_from["last_name"];
+                $this->players[$sender_id]["full_name"] = $message_from["first_name"] . " " . $message_from["last_name"];
+            }
+            else {
+                $this->players[$sender_id]["last_name"] = "";
+                $this->players[$sender_id]["full_name"] = $message_from["first_name"];
+            }
+            if (isset($message_from["username"])) {
+                $this->players[$sender_id]["username"] = $message_from["username"];
+            }
+        }
+    }
+
+    public function startGame(){
+        $this->gameStatus = Constant::START_RANDOM_ROLES;
+        // TODO will be random
+//        $this->theme = 0;
+//        $this->langScriptTheme = $this->langScript[$this->theme];
+        $this->sendGameStartedToGroup();
+        $this->assigningRandomRoles();
+    }
+
+    public function assigningRandomRoles(){
+        $this->randomizedRole = Constant::generateRandomRoleArray($this->playerCount);
+
+        // all bad guys see your eyes! (this is just to collect all bad guys)
+        $this->all_bad_guys_id = array();
+        $morgana_and_merlin_ids= array();
+        for ($i=0 ; $i < $this->playerCount; $i++) {
+            $playerID = $this->playerIDs[$i];
+            $role = $this->randomizedRole[$i];
+            // this is to link id with its role
+            $this->players[$playerID][Constant::ROLE] = $role;
+            $this->players[$playerID][Constant::INDEX] = $i;
+            if (! Constant::isGoodPlayer($role)) {
+                array_push($this->all_bad_guys_id, $playerID);
+            }
+            if ($role == Constant::MERLIN || $role == Constant::MORGANA) {
+                array_push($morgana_and_merlin_ids, $playerID);
+            }
+        }
+
+        $all_bad_guys_no_oberon_id =
+            $this->getAllBadGuysNoOberon ($this->all_bad_guys_id);
+
+        unset( $this->merlinID );
+        unset( $this->assassinID );
+        unset( $this->oberonID );
+        // send message to all player about its role
+        for ($i=0 ; $i < $this->playerCount; $i++) {
+            $playerID = $this->playerIDs[$i];
+            $role = $this->randomizedRole[$i];
+            $text = "";
+            switch ($role) {
+                case Constant::MERLIN:
+                    $all_bad_guys_no_mordred_id =
+                        $this->getAllBadGuysNoMordred ($this->all_bad_guys_id);
+                    // SCRIPT
+                    // "Kamu adalah Merlin. Aura jahat terpancar kuat dari %s. Pandu timmu dalam quest tanpa ketahuan tim jahat!";
+                    $text = sprintf( $this->langScript[Script::PR_YOUAREMERLIN],
+                        $this->playersToString($all_bad_guys_no_mordred_id));
+                    $this->merlinID = $playerID;
+                    break;
+                case Constant::PERCIVAL:
+                    // "Kamu adalah Percival. Kamu melihat %s sebagai Merlin, namun hanya satu dari mereka Merlin yang asli.";;
+                    $text = sprintf($this->langScript[Script::PR_YOUAREPERCIVAL],
+                        $this->playersToString($morgana_and_merlin_ids));
+                    break;
+                case Constant::GOOD_NORMAL:
+                    // "Kamu adalah Rakyat jelata yang baik. Kamu tidak tahu menahu, yang penting ikut menyukseskan quest dan mengikuti perintah raja.";
+                    $text = $this->langScript[Script::PR_YOUAREGOODNORMAL];
+                    break;
+                case Constant::MORDRED:
+                    $text = sprintf($this->langScript[Script::PR_YOUAREMORDRED],
+                        $this->playersToString($all_bad_guys_no_oberon_id));
+                    break;
+                case Constant::ASSASSIN:
+                    $text = sprintf($this->langScript[Script::PR_YOUAREASSASSIN],
+                        $this->playersToString($all_bad_guys_no_oberon_id));
+                    $this->assassinID = $playerID;
+                    break;
+                case Constant::MORGANA:
+                    $text = sprintf($this->langScript[Script::PR_YOUAREMORGANA],
+                        $this->playersToString($all_bad_guys_no_oberon_id));
+                    break;
+                case Constant::OBERON:
+                    $text = $this->langScript[Script::PR_YOUAREOBERON];
+                    $this->oberonID = $playerID;
+                    break;
+                case Constant::BAD_NORMAL:
+                    $text = sprintf($this->langScript[Script::PR_YOUAREBADNORMAL],
+                        $this->playersToString($all_bad_guys_no_oberon_id));
+                    break;
+            }
+            if (Constant::$DEVELOPMENT) {
+                $text .= " ".$this->players[$playerID]["full_name"];
+            }
+            $this->sendDEVMessageToPrivate($text, $playerID);
+
+            if (Constant::$DEVELOPMENT) {
+                echo "<br />" . $this->players[$playerID]["full_name"] . " " . $playerID . " adalah " .
+                    Constant::getNameByRole($this->players[$playerID][Constant::ROLE]);
+            }
+        }
+
+        $this->currentQuestNumberStart0 = 0;
+        $this->questStatus = array(0,0,0,0,0);
+        $this->kingTokenIndex = rand(0, $this->playerCount - 1);
+        if ($this->playerCount >= 8) { // use 8 players or more
+            $this->ladyLakeTokenIndex = $this->kingTokenIndex - 1;
+            if ($this->ladyLakeTokenIndex < 0) {
+                $this->ladyLakeTokenIndex = $this->playerCount - 1;
+            }
+            // first time holder
+            $this->lady_of_the_lake_holderIDs = array($this->playerIDs[$this->ladyLakeTokenIndex]);
+        }
+        else {
+            // not use lady of lake token
+            $this->ladyLakeTokenIndex = -1;
+        }
+        $this->rejectCountInQuest = 0;
+        $this->questAssigneeIDsHistory = array();
+        $this->assignQuestPrivate();
+
+    }
+
+    // print the message to group and start for the king to assign players
+    public function assignQuestPrivate(){
+        // reset the assignee
+        $this->questAssigneeIDs = array();
+
+        $this->gameStatus = Constant::ASSIGN_QUEST_PRIVATE;
+
+        //send Message to Group
+        $text = $this->getBoardGameText();
+        $kingPlayerID = $this->playerIDs[$this->kingTokenIndex];
+        $personNeedToCurrentQuest = Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0];
+        // SCRIPT
+        // "%s sebagai raja akan menunjuk <b>%d orang</b> untuk menyelesaikan quest.\nWaktu untuk memberikan penugasan adalah <b>%d detik</b>.\n";
+        $text .= sprintf($this->langScript[Script::PU_KINGNEEDASSIGN],
+            $this->getPlayerIDString($kingPlayerID),
+            $personNeedToCurrentQuest);
+        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+            Constant::$_assignQuestPrivate);
+        $this->apiSendMessage($text);
+
+        $this->startTimeStamp = $this->core->getCurrentTime();
+        $this->clearFlagRemind();
+        // send to private
+        $this->sendAssignOnePlayerToPrivate($kingPlayerID);
+    }
+
+    // already check that number assignee is less
+    // if it is not checked, this function must assign the first assignee
+    protected function sendAssignOnePlayerToPrivate($targetID) {
+        // siapkan array untuk diisi
+        $playerIDsToAssign = array();
+        for ($i=0; $i<$this->playerCount; $i++) {
+            // jika quest assignee [playerID] belum diassign, maka playerID itu dipush.
+            if (!in_array($this->playerIDs[$i],$this->questAssigneeIDs)) {
+                array_push($playerIDsToAssign, $this->playerIDs[$i]);
+            }
+        }
+        // format untuk option
+        $optionArray = array();
+        foreach ($playerIDsToAssign as $playerIDToAssign) {
+            array_push($optionArray,
+                array(
+                    array(
+                        "text"=>$this->getPlayerIDFullNameString($playerIDToAssign),
+                        "callback_data"=> $this->chatId.":".$playerIDToAssign,
+                    )
+                )
+            );
+        }
+
+        $countcurrassignee = count($this->questAssigneeIDs);
+        // "Pilih orang ke-%d (dari %d orang) untuk menyelesaikan quest";
+        $text = sprintf($this->langScript[Script::PR_SENDONEPLAYER],
+            ($countcurrassignee+1),
+            Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0]);
+        if (Constant::$DEVELOPMENT) {
+            $text .= " " . $this->getPlayerIDString($targetID);
+        }
+        $params = array(
+            'reply_markup'=> array(
+                'inline_keyboard' => $optionArray,
+            ),
+        );
+        $response = $this->sendDEVMessageToPrivate($text, $targetID, $params);
+        if ($response['ok']) {
+            // store messageID to be hidden later
+            $this->players[$targetID][Constant::LAST_MESSAGE_ID] =
+                $response["result"]["message_id"];
+        }
+
+    }
+
+    protected function sendPrivateToAssasin ($assassinID){
+        // siapkan array untuk diisi
+        $goodGuyIDs = array_diff($this->playerIDs, $this->all_bad_guys_id);
+
+        // format untuk option
+        $optionArray = array();
+        foreach ($goodGuyIDs as $goodGuyID) {
+            array_push($optionArray,
+                array(
+                    array(
+                        "text"=>$this->getPlayerIDFullNameString($goodGuyID),
+                        "callback_data"=> $this->chatId.":".$goodGuyID,
+                    )
+                )
+            );
+        }
+
+        // SCRIPT
+        // "Tim jahatmu sudah kalah dalam misi. Namun, kamu masih punya senjata terakhir. Bunuh Merlin!";
+        $text = $this->langScript[Script::PR_KILLMERLIN];
+        if (Constant::$DEVELOPMENT) {
+            $text .= " " . $this->getPlayerIDString($assassinID);
+        }
+        $params = array(
+            'reply_markup'=> array(
+                'inline_keyboard' => $optionArray,
+            ),
+        );
+        $response = $this->sendDEVMessageToPrivate($text, $assassinID, $params);
+        if ($response['ok']) {
+            // store messageID to be hidden later
+            $this->players[$assassinID][Constant::LAST_MESSAGE_ID] =
+                $response["result"]["message_id"];
+        }
+    }
+
+    protected function sendLadyToAssignPrivate (){
+        $ladyPlayerID = $this->playerIDs[$this->ladyLakeTokenIndex];
+
+        // siapkan array untuk diisi
+        $playerIDsToLadyLakeOption = array();
+        for ($i=0; $i<$this->playerCount; $i++) {
+            // jika quest assignee [playerID] belum diassign, maka playerID itu dipush.
+            if (!in_array($this->playerIDs[$i],$this->lady_of_the_lake_holderIDs)) {
+                array_push($playerIDsToLadyLakeOption, $this->playerIDs[$i]);
+            }
+        }
+        // format untuk option
+        $optionArray = array();
+        foreach ($playerIDsToLadyLakeOption as $playerIDToAssign) {
+            array_push($optionArray,
+                array(
+                    array(
+                        "text"=>$this->getPlayerIDFullNameString($playerIDToAssign),
+                        "callback_data"=> $this->chatId.":".$playerIDToAssign,
+                    )
+                )
+            );
+        }
+        // SKIP option
+        array_push ($optionArray ,
+            array(
+                array(
+                    "text"=>"skip",
+                    "callback_data"=> $this->chatId.":skip",
+                )
+            )
+        );
+
+        $text = $this->langScript[Script::PR_LADYCHOOSE];
+        if (Constant::$DEVELOPMENT) {
+            $text .= " " . $this->getPlayerIDString($ladyPlayerID);
+        }
+        $params = array(
+            'reply_markup'=> array(
+                'inline_keyboard' => $optionArray,
+            ),
+        );
+        $response = $this->sendDEVMessageToPrivate($text, $ladyPlayerID, $params);
+        if ($response['ok']) {
+            // store messageID to be hidden later
+            $this->players[$ladyPlayerID][Constant::LAST_MESSAGE_ID] =
+                $response["result"]["message_id"];
+        }
+    }
+
+    public function execApproveRejectQuestGroup(){
+        //reset approve reject
+        $this->currentApproveReject = array();
+        $this->approveAssigncount = 0;
+        $this->rejectAssignCount = 0;
+
+        $this->gameStatus = Constant::EXEC_APPROVE_REJECT_QUEST_GROUP;
+
+        //send Message to Group
+        $text = $this->getBoardGameText();
+        $kingPlayerID = $this->playerIDs[$this->kingTokenIndex];
+        // SCRIPT
+        // "%s telah menunjuk %s untuk menyelesaikan mission.\nSaatnya berdiskusi.. Jika setuju, ketik /approve. Jika menolak, ketik /reject.";
+        $text .= sprintf($this->langScript[Script::PU_APPRREJINST],
+            $this->getPlayerIDString($kingPlayerID),
+            $this->playersToString($this->questAssigneeIDs));
+        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+            Constant::$_execApproveRejectGroup);
+        $this->apiSendMessage($text);
+
+        $this->startTimeStamp = $this->core->getCurrentTime();
+        $this->clearFlagRemind();
+    }
+
+    //called if the fail minimum is already fulfilled
+    // or called if the reject_count already 5
+    public function failCurrentQuest(){
+        // change status this quest to fail
+        $this->questStatus[$this->currentQuestNumberStart0] = -1;
+
+        // check if fail because reject token
+        if ($this->rejectCountInQuest == 5) {
+            $text = $this->langScript[Script::PU_REJECT5TIMES];
+        }
+        else { // fail because fail_count is bigger than requirement
+            $failCount = $this->fail_count_by_badguy;
+            $text = sprintf($this->langScript[Script::PU_FAILWITHXFAIL],
+                $failCount);
+
+            $rejectIDs= array();
+            foreach ($this->currentApproveReject as $key=>$value){
+                if ($value == -1) {
+                    array_push($rejectIDs, $key );
+                }
+            }
+
+            $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::FAIL_COUNT] = $failCount;
+            $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::ASSIGNEEIDS] = $this->questAssigneeIDs;
+            $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::REJECTIDS] = $rejectIDs;
+            $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::KINGID] = $this->playerIDs[$this->kingTokenIndex];
+        }
+        $this->apiSendMessage($text);
+
+        //reset flag reject
+        $this->rejectCountInQuest = 0;
+
+        $failQuestCount = 0;
+        for ($i=0; $i<5;$i++){
+            if ($this->questStatus[$i] == -1) {
+                $failQuestCount++;
+            }
+        }
+        if ($failQuestCount >= 3) {
+            $this->badGuysWinTheGame();
+        }
+        else { //fail still less than 3
+            // change king
+            // change current quest++;
+            // do next quest (start with lady of the lake
+            $this->nextKing();
+            $this->currentQuestNumberStart0++;
+            $this->execLadyOfTheLakePrivate();
+        }
+    }
+
+    public function badGuysWinTheGame(){
+        // "Para penjahat menang! Mereka memang sudah berpengalaman lebih dari 10 dekade..";
+        $text = $this->langScript[Script::PU_BADGUYSWON];
+        $this->apiSendMessage($text);
+
+        $this->revealAllRoles();
+        $this->gameStatus = Constant::NOT_CREATED;
+    }
+
+    public function goodGuysWinTheGame(){
+        // "Selamat! Kalian tim baik memang kompak dan pintar menipu orang jahat..";
+        $text = $this->langScript[Script::PU_GOODGUYSWON];
+        $this->apiSendMessage($text);
+
+        $this->revealAllRoles();
+        $this->gameStatus = Constant::NOT_CREATED;
+    }
+
+    public function revealAllRoles(){
+        $text = $this->getBoardGameRevealedText();
+        $this->apiSendMessage($text);
+    }
+
+    // questNo already increased
+    public function execLadyOfTheLakePrivate(){
+        // this will check if there is oberon, and in quest 2 will give oberon the bad guy except mordred
+        if ($this->currentQuestNumberStart0 == 2 && isset($this->oberonID)) {
+            $all_bad_guys_no_mordred_id =
+                $this->getAllBadGuysNoMordred ($this->all_bad_guys_id);
+            $bad_guys_no_mordred_and_oberon_id =
+                $this->getAllBadGuysNoOberon($all_bad_guys_no_mordred_id);
+            // SCRIPT
+            // "Akhirnya kamu tahu juga teman jahat seperjuanganmu.. Mereka adalah %s.";
+            $text = sprintf($this->langScript[Script::PU_OBERONFINALLY],
+                $this->playersToFullNameString($bad_guys_no_mordred_and_oberon_id));
+            $this->sendDEVMessageToPrivate($text,$this->oberonID);
+        }
+
+        if ($this->currentQuestNumberStart0 >= 2 && $this->ladyLakeTokenIndex > -1) {
+            // do lady of the lake
+            $this->gameStatus = Constant::EXEC_LADY_OF_LAKE_PRIVATE;
+
+            $ladyToken = $this->ladyLakeTokenIndex;
+            $ladyPlayerID = $this->playerIDs[$ladyToken];
+
+            // SCRIPT
+            // "%s sebagai Lady of the Lake dapat menggunakan kekuatannya untuk menerawang salah seorang anggota tim. Anggota tim lain boleh memberikan petunjuk...";
+            $text = sprintf($this->langScript[Script::PU_LADYLAKEINST],
+                $this->getPlayerIDString($ladyPlayerID),
+                Constant::$_execLadyOfTheLakePrivate);
+            $this->apiSendMessage($text);
+
+            // send to private
+            $this->sendLadyToAssignPrivate();
+
+            $this->startTimeStamp = $this->core->getCurrentTime();
+            $this->clearFlagRemind();
+        }
+        else {
+            $this->discussBeforeAssigningQuest();
+        }
+    }
+
+    public function execKillMerlinPrivate (){
+        $this->gameStatus = Constant::EXEC_KILL_MERLIN_PRIVATE;
+
+        // SCRIPT
+        // "3 Quest berhasil disukseskan oleh tim. Namun, tim jahat masih mempunyai senjata terakhir. Tim jahat membuka kedok mereka %s.. Jika assassin berhasil menebak merlin, maka tim jahatlah yang menang!";
+        $text = sprintf($this->langScript[Script::PU_KILLMERLIN],
+            $this->playersToString($this->all_bad_guys_id));
+        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+            Constant::$_execKillMerlin);
+
+        $this->apiSendMessage($text);
+
+        // send to assassin
+        $this->sendPrivateToAssasin($this->assassinID);
+
+        $this->startTimeStamp = $this->core->getCurrentTime();
+        $this->clearFlagRemind();
+    }
+
+    // called all bad guys has been vote, but not meet the fail requirement
+    // timer has been half, and no have bad guys in the list
+    public function successCurrentQuest(){
+        // change status this quest to success
+        $this->questStatus[$this->currentQuestNumberStart0] = 1;
+
+        //reset flag reject
+        $this->rejectCountInQuest = 0;
+
+        $rejectIDs= array();
+        foreach ($this->currentApproveReject as $key=>$value){
+            if ($value == -1) {
+                array_push($rejectIDs, $key );
+            }
+        }
+
+        $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::FAIL_COUNT] = $this->fail_count_by_badguy;
+        $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::ASSIGNEEIDS] = $this->questAssigneeIDs;
+        $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::REJECTIDS] = $rejectIDs;
+        $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::KINGID] = $this->playerIDs[$this->kingTokenIndex];
+
+        // check if the quest success already 3 or more
+        // if yes, win the game, and execute kill merlin
+        $successQuestCount = 0;
+        for ($i=0; $i<5;$i++){
+            if ($this->questStatus[$i] == 1) {
+                $successQuestCount++;
+            }
+        }
+        if ($successQuestCount >= 3){ // 3or more, good guys almost win
+            // add this to make the history valid
+            $this->currentQuestNumberStart0++;
+
+            $this->execKillMerlinPrivate();
+        }
+        else {
+            // increase the no Quest, change king, and exec lady of the lake
+
+            // SCRIPT
+            // "Quest berhasil diselesaikan dengan baik sekali. ";
+            $text = $this->langScript[Script::PU_QSUCCESSNOFAIL];
+            if ($this->fail_count_by_badguy > 0) {
+                // SCRIPT
+                // "Namun, tim menemukan <b>%d FAIL </b> dalam quest ini..";
+                $text .= sprintf($this->langScript[Script::PU_QSUCCESSXXFAIL],
+                    $this->fail_count_by_badguy);
+            }
+            $this->apiSendMessage($text);
+
+            $this->currentQuestNumberStart0++;
+            $this->nextKing();
+            $this->execLadyOfTheLakePrivate();
+        }
+    }
+
+    /***************************************************************************************
+     * END INGAME FUNCTIONS
+     * *************************************************************************************
+     */
+
+
+    /***************************************************************************************
+     * START CALLBACK
+     * *************************************************************************************
+     */
+
+    public function callback($messageID, $from, $dataString){
+        //check if the callback is to set language
+        if ($dataString == "en" || $dataString == "id"){
+            if ($this->redis instanceof Predis\Client) {
+                $langKey = $this->chatId."_lang";
+
+                if ($this->isGroup) {
+                    $chatTitle = $this->getChatTitle();
+                    if (null == $chatTitle) {
+                        // Script
+                        // "Bahasa tidak berhasil diganti. group tidak ditemukan.";
+                        $text = $this->langScript[Script::PU_LANGGROUPNOTFOUND];
+                        $this->apiEditMessageText($text, $messageID, $from["id"]);
+                    }
+                    else {
+                        $this->redis->set($langKey, $dataString);
+                        $this->lang = $dataString;
+                        $this->langScript = Script::$script[$dataString];
+
+                        // "Bahasa di %s berhasil diganti menjadi %s.";
+                        $text = sprintf($this->langScript[Script::PR_LANGGROUPCHANGED],
+                            $chatTitle,
+                            Constant::getLanguageString($dataString));
+                        $this->apiEditMessageText($text, $messageID, $from["id"]);
+
+                        // "Bahasa berhasil diganti menjadi %s.";
+                        $textGroup = sprintf($this->langScript[Script::PU_LANGCHANGED],
+                            Constant::getLanguageString($dataString));
+                        $this->apiSendMessage($textGroup);
+                    }
+                }
+                else { // private group
+                    $this->redis->set($langKey, $dataString);
+                    $this->lang = $dataString;
+                    $this->langScript = Script::$script[$dataString];
+
+                    // "Bahasa berhasil diganti menjadi %s.";
+                    $text = sprintf($this->langScript[Script::PU_LANGCHANGED],
+                        Constant::getLanguageString($dataString));
+                    $this->apiEditMessageText($text, $messageID, $from["id"]);
+                }
+            }
+            return;
+        }
+
+        switch ($this->gameStatus) {
+            case Constant::ASSIGN_QUEST_PRIVATE: {
+                $assignedPlayerID = $dataString;
+                if (Constant::$DEVELOPMENT) {
+                    $isCorrectSender = (
+                        $from["id"] == $this->playerIDs[$this->kingTokenIndex]
+                        ||
+                        $from["id"] == "286457946");
+                } else {
+                    $isCorrectSender =
+                        ($from["id"] == $this->playerIDs[$this->kingTokenIndex]);
+                }
+                // if the sender is not king and the assignee is not in the assignee list, add it
+                // else just remove the message
+                if ($isCorrectSender && !in_array($assignedPlayerID, $this->questAssigneeIDs)
+                    &&
+                    in_array($assignedPlayerID, $this->playerIDs)
+                ) {
+                    // "Kamu berhasil memilih %s dalam quest.";
+                    $text = sprintf($this->langScript[Script::PR_ASSIGNONEQUEST],
+                        $this->getPlayerIDFullNameString($assignedPlayerID));
+                    $this->apiEditMessageText($text, $messageID, $from["id"]);
+
+                    // "%s memilih %s dalam quest.";
+                    $text = sprintf($this->langScript[Script::PU_ASSIGNONEQUEST],
+                        $this->getPlayerIDFullNameString($from["id"]),
+                        $this->getPlayerIDFullNameString($assignedPlayerID));
+                    $this->apiSendMessage($text);
+
+                    array_push($this->questAssigneeIDs, $assignedPlayerID);
+
+                    // check if it is enough already
+                    if (count($this->questAssigneeIDs)
+                        == Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0]
+                    ) {
+                        $this->execApproveRejectQuestGroup();
+                    } else {
+                        $this->sendAssignOnePlayerToPrivate($from["id"]);
+                    }
+                } else {
+                    $this->apiHideInlineKeyboard($messageID, $from["id"]);
+                }
+            }
+                break;
+
+            case Constant::EXEC_QUEST_PRIVATE: {
+                if ($dataString == 1) {
+                    $success = true;
+                }
+                else if ($dataString == -1){
+                    $success = false;
+                }
+                else {
+                    return;
+                }
+                if (Constant::$DEVELOPMENT) {
+                    $isCorrectSender = (
+                        isset($this->badGuyAssigneeChoices[$from["id"]])
+                        ||
+                        $from["id"] == "286457946");
+                } else {
+                    $isCorrectSender =
+                        isset($this->badGuyAssigneeChoices[$from["id"]]);
+                }
+                // if the sender is on the bad guy assign list and value still abstain,
+                //      assign the new value to it
+                // else just remove the message
+                if ($isCorrectSender && $this->badGuyAssigneeChoices[$from["id"]] == 0) {
+                    if ($success) {
+                        $this->success_count_by_badguy++;
+                        $this->badGuyAssigneeChoices[$from["id"]] = 1;
+                        // SCRIPT
+                        // "Meskipun kamu jahat, kamu berhasil membuat pencitraan yang baik.";
+                        $text = $this->langScript[Script::PR_BADGUYSUCCESS];
+                    }
+                    else {
+                        $this->fail_count_by_badguy++;
+                        $this->badGuyAssigneeChoices[$from["id"]] = -1;
+                        // SCRIPT
+                        // "Kamu berhasil menggagalkan quest.";
+                        $text = $this->langScript[Script::PR_BADGUYFAIL];
+                    }
+                    $this->apiEditMessageText($text, $messageID, $from["id"]);
+
+                } else {
+                    $this->apiHideInlineKeyboard($messageID, $from["id"]);
+                }
+            }
+                break;
+
+
+            case Constant::EXEC_LADY_OF_LAKE_PRIVATE: {
+                if ($dataString == "skip") {
+                    $isSkip = true;
+                }
+                else {
+                    $isSkip = false;
+                }
+                if (Constant::$DEVELOPMENT) {
+                    $isCorrectSender = (
+                        $from["id"] == $this->playerIDs[$this->ladyLakeTokenIndex]
+                        ||
+                        $from["id"] == "286457946");
+                } else {
+                    $isCorrectSender =
+                        ($from["id"] == $this->playerIDs[$this->ladyLakeTokenIndex]);
+                }
+                // if the sender is lady of the lake and the chosen person is not in the lady of the lake holder list
+                //, add it to holder list, change holder to assignee
+                // else just remove the message
+                if ($isCorrectSender) {
+                    if ($isSkip) { // SKIP
+                        // skip lady of the lake
+                        // SCRIPT
+                        // "Kamu memilih untuk tidak menerawang..";
+                        $text = $this->langScript[Script::PR_LADYNOTSEE];
+                        $this->apiEditMessageText($text, $messageID, $from["id"]);
+
+                        // SCRIPT
+                        // "%s memilih untuk tidak menerawang.";
+                        $text = sprintf($this->langScript[Script::PU_LADYNOTSEE],
+                            $this->getPlayerIDFullNameString($from["id"]));
+                        $this->apiSendMessage($text);
+
+                        $this->discussBeforeAssigningQuest();
+                    } else {
+                        $chosenPlayerID = $dataString;
+                        if (!in_array($chosenPlayerID, $this->lady_of_the_lake_holderIDs)
+                            &&
+                            in_array($chosenPlayerID, $this->playerIDs)
+                        ) {
+                            $isGoodGuy = Constant::isGoodPlayer($this->players[$chosenPlayerID][Constant::ROLE]);
+                            // SCRIPT
+                            // "Kamu berhasil menerawang %s.. Dia adalah orang ";
+                            $text = sprintf($this->langScript[Script::PR_LADYSEE],
+                                $this->getPlayerIDFullNameString($chosenPlayerID));
+                            $text .= $isGoodGuy?
+                                $this->langScript[Script::PR_GOOD] :
+                                $this->langScript[Script::PR_BAD];
+                            $this->apiEditMessageText($text, $messageID, $from["id"]);
+
+                            // SCRIPT
+                            // "%s menerawang %s.";
+                            $text = sprintf($this->langScript[Script::PU_LADYSEE],
+                                $this->getPlayerIDFullNameString($from["id"]),
+                                $this->getPlayerIDFullNameString($chosenPlayerID));
+                            $this->apiSendMessage($text);
+
+                            $this->ladyLakeTokenIndex =
+                                $this->players[$chosenPlayerID][Constant::INDEX];
+
+                            array_push($this->lady_of_the_lake_holderIDs, $chosenPlayerID);
+
+                            $this->discussBeforeAssigningQuest();
+                        }
+                        else{
+                            $this->apiHideInlineKeyboard($messageID, $from["id"]);
+                        }
+                    }
+                }
+                else {
+                    $this->apiHideInlineKeyboard($messageID, $from["id"]);
+                }
+            }
+                break;
+
+
+            case Constant::EXEC_KILL_MERLIN_PRIVATE: {
+                $merlinIDToKill = $dataString;
+
+                if (Constant::$DEVELOPMENT) {
+                    $isCorrectSender = (
+                        $from["id"] == $this->assassinID
+                        ||
+                        $from["id"] == "286457946");
+                } else {
+                    $isCorrectSender =
+                        $from["id"] == $this->assassinID;
+                }
+                // if the sender is assassin and the chosen person is in the good guy list
+                //      check if it is merlin, if yes, then bad guy win
+                //      else good guy wins
+                // else just remove the message
+                $goodGuyIDs = array_diff($this->playerIDs, $this->all_bad_guys_id);
+
+                if ($isCorrectSender && in_array($merlinIDToKill, $goodGuyIDs) ) {
+                    $isMerlin = $merlinIDToKill == $this->merlinID;
+
+                    // SCRIPT
+                    // "Kamu berhasil membunuh %s.";
+                    $text = sprintf($this->langScript[Script::PR_KILLMERLINSUCCESS],
+                        $this->getPlayerIDFullNameString($merlinIDToKill));
+                    $this->apiEditMessageText($text, $messageID, $from["id"]);
+
+                    $text = sprintf($this->langScript[Script::PU_KILLMERLINSUCCESS],
+                        $this->getPlayerIDString($this->assassinID),
+                        $this->getPlayerIDString($merlinIDToKill) ,
+                        $this->getPlayerIDString($merlinIDToKill) );
+                    if ($isMerlin) {
+                        // "adalah <b>MERLIN</b>!"
+                        $text .= $this->langScript[Script::PU_MERLIN];
+                    }
+                    else {
+                        // "<b>bukan MERLIN</b>!";
+                        $text .= $this->langScript[Script::PU_NOTMERLIN];
+                    }
+                    $this->apiSendMessage($text);
+
+                    if ($isMerlin) {
+                        $this->badGuysWinTheGame();
+                    }
+                    else {
+                        $this->goodGuysWinTheGame();
+                    }
+                }
+                else {
+                    $this->apiHideInlineKeyboard($messageID, $from["id"]);
+                }
+            }
+                break;
+        }
+    }
+
+    /***************************************************************************************
+     * END CALLBACK
+     * *************************************************************************************
+     */
+
+
+    /***************************************************************************************
+     * START CHECK TIMER
+     * *************************************************************************************
+     */
 
     public function checkTimer(){
         // created and waiting for players
@@ -493,9 +1407,7 @@ class AvalonBotChat extends TelegramBotChat {
                 $playercount = count($this->playerIDs);
                 if ($playercount == Constant::getMaxPlayer()){
                     $this->playerCount = $playercount;
-                    $this->gameStatus = Constant::START_RANDOM_ROLES;
-                    $this->sendGameStartedToGroup();
-                    $this->assigningRandomRoles();
+                    $this->startGame();
                 }
                 else { // less than 10.
                     //waiting for more players
@@ -510,9 +1422,7 @@ class AvalonBotChat extends TelegramBotChat {
                         $playercount = count($this->playerIDs);
                         if ($playercount >= Constant::getMinPlayer($this->mode)){
                             $this->playerCount = $playercount;
-                            $this->gameStatus = Constant::START_RANDOM_ROLES;
-                            $this->sendGameStartedToGroup();
-                            $this->assigningRandomRoles();
+                            $this->startGame();
                         }
                         else { // has already 2 minutes and player count is less than 5
                             $this->gameStatus = Constant::NOT_CREATED;
@@ -568,7 +1478,10 @@ class AvalonBotChat extends TelegramBotChat {
                         $kingID = $this->playerIDs[$this->kingTokenIndex];
                         if (isset($this->players[$kingID][Constant::LAST_MESSAGE_ID])) {
                             $messageID = $this->players[$kingID][Constant::LAST_MESSAGE_ID];
-                            $textPrivate = "Jawabanmu terlambat, sisa player dipilih secara random.";
+                            // SCRIPT
+                            // "Jawabanmu terlambat, sisa player dipilih secara random.";
+                            $textPrivate = $this->langScript[Script::PR_ASSIGNLATE];
+
                             if (Constant::$DEVELOPMENT) {
                                 $this->apiEditMessageText($textPrivate, $messageID, "286457946");
                             } else {
@@ -576,8 +1489,10 @@ class AvalonBotChat extends TelegramBotChat {
                             }
                         }
 
-                        $text = "Karena waktu habis, sisa pemain dipilih secara random: ".
-                            $this->playersToFullNameString($pickIDs);
+                        // SCRIPT
+                        // "Karena waktu habis, sisa pemain dipilih secara random: %s.";
+                        $text = sprintf($this->langScript[Script::PU_ASSIGNLATE],
+                            $this->playersToFullNameString($pickIDs));
                         $this->apiSendMessage($text);
 
                         $this->execApproveRejectQuestGroup();
@@ -603,18 +1518,21 @@ class AvalonBotChat extends TelegramBotChat {
 
                     if ($difftime >= Constant::$_execApproveRejectGroup) { //sudah lewat waktu
                         // defaulting to approve
-                        $text = "Karena waktu habis, pemain lain dianggap memilih approve..";
+                        // "Karena waktu habis, pemain lain dianggap memilih approve..";
+                        $text = $this->langScript[Script::PU_APPRREJLATE];
                         $this->apiSendMessage($text);
                         $this->approveCurrentQuest();
                     }
                     else if (! $this->flagRemind1
                         && $difftime >= Constant::$_execApproveRejectGroup_r1
                         && $difftime <= (Constant::$_execApproveRejectGroup_r1 + Constant::THRES_REMIND)){
-                        $text = "Pejuang di quest ini ". $this->playersToString($this->questAssigneeIDs) ."\n";
-                        $text .= "\n\n<b>".(Constant::$_execApproveRejectGroup - Constant::$_execApproveRejectGroup_r1)
-                            ." detik</b>  lagi untuk /approve atau /reject. Jika ada minimal <b>".
-                            Constant::$two_fails_required[$this->playerCount][$this->currentQuestNumberStart0]
-                            . " pemain</b> menggagalkan quest, maka quest akan dianggap gagal!";
+                        // SCRIPT
+                        // "Pejuang di quest ini %s\n\n\nPilih /approve atau /reject. Jika ada minimal <b>%d anggota</b> menggagalkan quest, maka quest akan dianggap gagal!";
+                        $text = sprintf($this->langScript[Script::PU_APPRREJREMIND],
+                            $this->playersToString($this->questAssigneeIDs),
+                            Constant::$two_fails_required[$this->playerCount][$this->currentQuestNumberStart0]);
+                        $text .= sprintf($this->langScript[Script::PU_SECONDTODECIDE],
+                            (Constant::$_execApproveRejectGroup - Constant::$_execApproveRejectGroup_r1));
                         $this->apiSendMessage($text);
                         $this->flagRemind1 = true;
                     }
@@ -637,13 +1555,15 @@ class AvalonBotChat extends TelegramBotChat {
                     foreach ($this->badGuyAssigneeChoices as $key => $value) {
                         // if abstain, default to fail the quest
                         if ($this->badGuyAssigneeChoices[$key] == 0){
-                            // 2 quest pertama paksa berhasil
-                            if ($this->currentQuestNumberStart0 < 2) {
+                            // 1 quest pertama paksa berhasil
+                            if ($this->currentQuestNumberStart0 < 1) {
                                 $this->badGuyAssigneeChoices[$key] = 1;
                                 $this->success_count_by_badguy++;
                                 if (isset($this->players[$key][Constant::LAST_MESSAGE_ID])) {
                                     $messageID = $this->players[$key][Constant::LAST_MESSAGE_ID];
-                                    $textPrivate = "Jawabanmu terlambat. Boss memaksamu untuk memberikan pencitraan yang baik.";
+                                    // SCRIPT
+                                    // "Jawabanmu terlambat. Boss memaksamu untuk memberikan pencitraan yang baik.";
+                                    $textPrivate = $this->langScript[Script::PR_BADGUYLATESUCCESS];
                                     if (Constant::$DEVELOPMENT) {
                                         $textPrivate .= $this->getPlayerIDFullNameString($key);
                                         $this->apiEditMessageText($textPrivate, $messageID, "286457946");
@@ -652,12 +1572,14 @@ class AvalonBotChat extends TelegramBotChat {
                                     }
                                 }
                             }
-                            else { // quest index ke 2,3,4, always fail
+                            else { // quest index ke 1,2,3,4, always fail
                                 $this->badGuyAssigneeChoices[$key] = -1;
                                 $this->fail_count_by_badguy++;
                                 if (isset($this->players[$key][Constant::LAST_MESSAGE_ID])) {
                                     $messageID = $this->players[$key][Constant::LAST_MESSAGE_ID];
-                                    $textPrivate = "Jawabanmu terlambat. Kamu dipaksa menggagalkan quest dari boss.";
+                                    // SCRIPT
+                                    // "Jawabanmu terlambat. Kamu dipaksa menggagalkan quest dari boss.";
+                                    $textPrivate = $this->langScript[Script::PR_BADGUYLATEFAIL];
                                     if (Constant::$DEVELOPMENT) {
                                         $textPrivate .= $this->getPlayerIDFullNameString($key);
                                         $this->apiEditMessageText($textPrivate, $messageID, "286457946");
@@ -697,6 +1619,9 @@ class AvalonBotChat extends TelegramBotChat {
                             [$this->currentQuestNumberStart0] ) {
                             $this->failCurrentQuest();
                         }
+                        else {
+                            $this->successCurrentQuest();
+                        }
                     }
                     $this->flagRemind1 = true;
                 }
@@ -715,20 +1640,22 @@ class AvalonBotChat extends TelegramBotChat {
                 else if (! $this->flagRemind1
                     && $difftime >= Constant::$_discussAssignQuestGroup_r1
                     && $difftime <= (Constant::$_discussAssignQuestGroup_r1 + Constant::THRES_REMIND)){
-                    $text = "<b>". (Constant::$_discussAssignQuestGroup - Constant::$_discussAssignQuestGroup_r1)
-                        ." detik</b> lagi untuk berdiskusi... "
-                        .$this->getPlayerIDFullNameString($this->playerIDs[$this->kingTokenIndex])
-                        ." boleh mengetik /done jika sudah mendapat pencerahan.";
+                    // SCRIPT
+                    // "<b>%d detik</b> lagi untuk berdiskusi... %s boleh mengetik /done jika sudah mendapat pencerahan.";
+                    $text = sprintf($this->langScript[Script::PU_DISCUSSREMIND],
+                        (Constant::$_discussAssignQuestGroup - Constant::$_discussAssignQuestGroup_r1),
+                        $this->getPlayerIDFullNameString($this->playerIDs[$this->kingTokenIndex]));
                     $this->apiSendMessage($text);
                     $this->flagRemind1 = true;
                 }
                 else if (!$this->flagRemind2
                     && $difftime >= Constant::$_discussAssignQuestGroup_r2
                     && $difftime <= (Constant::$_discussAssignQuestGroup_r2 + Constant::THRES_REMIND)){
-                    $text = "<b>".(Constant::$_discussAssignQuestGroup - Constant::$_discussAssignQuestGroup_r2)
-                        ." detik</b> lagi untuk berdiskusi... "
-                        .$this->getPlayerIDFullNameString($this->playerIDs[$this->kingTokenIndex])
-                        ." boleh mengetik /done jika sudah mendapat pencerahan.";
+                    // SCRIPT
+                    // "<b>%d detik</b> lagi untuk berdiskusi... %s boleh mengetik /done jika sudah mendapat pencerahan.";
+                    $text = sprintf($this->langScript[Script::PU_DISCUSSREMIND],
+                        (Constant::$_discussAssignQuestGroup - Constant::$_discussAssignQuestGroup_r2),
+                        $this->getPlayerIDFullNameString($this->playerIDs[$this->kingTokenIndex]));
                     $this->apiSendMessage($text);
                     $this->flagRemind2 = true;
                 }
@@ -749,7 +1676,7 @@ class AvalonBotChat extends TelegramBotChat {
 
                     if (isset($this->players[$ladyID][Constant::LAST_MESSAGE_ID])) {
                         $messageID = $this->players[$ladyID][Constant::LAST_MESSAGE_ID];
-                        $text = "Kamu terlambat memilih untuk menerawang..";
+                        $text = $this->langScript[Script::PR_LADYLATE];
                         if (Constant::$DEVELOPMENT) {
                             $this->apiEditMessageText($text, $messageID, "286457946");
                         } else {
@@ -757,8 +1684,8 @@ class AvalonBotChat extends TelegramBotChat {
                         }
                     }
 
-                    $text = $this->getPlayerIDFullNameString($ladyID)
-                        . " terlambat memilih sehingga tidak bisa menerawang.";
+                    $text = sprintf($this->langScript[Script::PU_LADYLATE],
+                        $this->getPlayerIDFullNameString($ladyID));
                     $this->apiSendMessage($text);
 
                     $this->discussBeforeAssigningQuest();
@@ -776,7 +1703,9 @@ class AvalonBotChat extends TelegramBotChat {
                 if ($difftime >= Constant::$_execKillMerlin) { //sudah lewat waktu
                     if (isset($this->players[$this->assassinID][Constant::LAST_MESSAGE_ID])) {
                         $messageID = $this->players[$this->assassinID][Constant::LAST_MESSAGE_ID];
-                        $text = "Kamu terlambat memilih untuk membunuh Merlin..";
+                        // SCRIPT
+                        // "Kamu terlambat memilih untuk membunuh Merlin..";
+                        $text = $this->langScript[Script::PR_KILLMERLINLATE];
                         if (Constant::$DEVELOPMENT) {
                             $this->apiEditMessageText($text, $messageID, "286457946");
                         } else {
@@ -784,8 +1713,10 @@ class AvalonBotChat extends TelegramBotChat {
                         }
                     }
 
-                    $text = $this->getPlayerIDFullNameString($this->assassinID)
-                        . " terlambat memilih.. Sepertinya Merlin selamat kali ini..";
+                    // SCRIPT
+                    // "%s terlambat memilih.. Sepertinya Merlin selamat kali ini..";
+                    $text = sprintf($this->langScript[Script::PU_KILLMERLINLATE],
+                        $this->getPlayerIDFullNameString($this->assassinID));
                     $this->apiSendMessage($text);
 
                     $this->goodGuysWinTheGame();
@@ -793,16 +1724,18 @@ class AvalonBotChat extends TelegramBotChat {
                 else if (! $this->flagRemind1
                     && $difftime >= Constant::$_execKillMerlin_r1
                     && $difftime <= (Constant::$_execKillMerlin_r1 + Constant::THRES_REMIND)){
-                    $text = "<b>".(Constant::$_execKillMerlin - Constant::$_execKillMerlin_r1)
-                        ." detik</b> lagi waktu yang dibutuhkan assassin untuk membunuh Merlin...";
+                    // "%s detik</b> lagi waktu yang dibutuhkan assassin untuk membunuh Merlin...";
+                    $text = sprintf($this->langScript[Script::PU_KILLMERLINREMIND],
+                        (Constant::$_execKillMerlin - Constant::$_execKillMerlin_r1));
                     $this->apiSendMessage($text);
                     $this->flagRemind1 = true;
                 }
                 else if (!$this->flagRemind2
                     && $difftime >= Constant::$_execKillMerlin_r2
                     && $difftime <= (Constant::$_execKillMerlin_r2 + Constant::THRES_REMIND)){
-                    $text = "<b>".(Constant::$_execKillMerlin - Constant::$_execKillMerlin_r2)
-                        ." detik</b> lagi waktu yang dibutuhkan assassin untuk membunuh Merlin...";
+                    // "%s detik</b> lagi waktu yang dibutuhkan assassin untuk membunuh Merlin...";
+                    $text = sprintf($this->langScript[Script::PU_KILLMERLINREMIND],
+                        (Constant::$_execKillMerlin - Constant::$_execKillMerlin_r2));
                     $this->apiSendMessage($text);
                     $this->flagRemind2 = true;
                 }
@@ -812,349 +1745,16 @@ class AvalonBotChat extends TelegramBotChat {
         }
     }
 
-    public function addNewPlayer($message_from){
-        $sender_id = $message_from["id"];
-        if (! in_array($sender_id, $this->playerIDs)) {
-            array_push($this->playerIDs, $sender_id );
-            $this->players[$sender_id]["first_name"] = $message_from["first_name"];
-            if (isset($message_from["last_name"])) {
-                $this->players[$sender_id]["last_name"] = $message_from["last_name"];
-                $this->players[$sender_id]["full_name"] = $message_from["first_name"] . " " . $message_from["last_name"];
-            }
-            else {
-                $this->players[$sender_id]["last_name"] = "";
-                $this->players[$sender_id]["full_name"] = $message_from["first_name"];
-            }
-            if (isset($message_from["username"])) {
-                $this->players[$sender_id]["username"] = $message_from["username"];
-            }
-        }
-    }
+    /***************************************************************************************
+     * END CHECK TIMER
+     * *************************************************************************************
+     */
 
-    public function assigningRandomRoles(){
-        $this->randomizedRole = Constant::generateRandomRoleArray($this->playerCount);
 
-        // all bad guys see your eyes! (this is just to collect all bad guys)
-        $this->all_bad_guys_id = array();
-        $morgana_and_merlin_ids= array();
-        for ($i=0 ; $i < $this->playerCount; $i++) {
-            $playerID = $this->playerIDs[$i];
-            $role = $this->randomizedRole[$i];
-            // this is to link id with its role
-            $this->players[$playerID][Constant::ROLE] = $role;
-            $this->players[$playerID][Constant::INDEX] = $i;
-            if (! Constant::isGoodPlayer($role)) {
-                array_push($this->all_bad_guys_id, $playerID);
-            }
-            if ($role == Constant::MERLIN || $role == Constant::MORGANA) {
-                array_push($morgana_and_merlin_ids, $playerID);
-            }
-        }
-
-        $all_bad_guys_no_oberon_id =
-            $this->getAllBadGuysNoOberon ($this->all_bad_guys_id);
-
-        unset( $this->merlinID );
-        unset( $this->assassinID );
-        unset( $this->oberonID );
-        // send message to all player about its role
-        for ($i=0 ; $i < $this->playerCount; $i++) {
-            $playerID = $this->playerIDs[$i];
-            $role = $this->randomizedRole[$i];
-            $text = "";
-            switch ($role) {
-                case Constant::MERLIN:
-                    $all_bad_guys_no_mordred_id =
-                        $this->getAllBadGuysNoMordred ($this->all_bad_guys_id);
-                    $text = "Kamu adalah Merlin. Aura jahat terpancar kuat dari ". $this->playersToString($all_bad_guys_no_mordred_id);
-                    $text .= ". Pandu timmu dalam quest tanpa ketahuan tim jahat!";
-                    $this->merlinID = $playerID;
-                    break;
-                case Constant::PERCIVAL:
-                    $text = "Kamu adalah Percival. Kamu melihat ". $this->playersToString($morgana_and_merlin_ids);
-                    $text .= " sebagai Merlin, namun salah satu dari mereka mungkin fake.";
-                    break;
-                case Constant::GOOD_NORMAL:
-                    $text = "Kamu adalah Rakyat jelata yang baik. Kamu tidak tahu menahu,";
-                    $text .= " yang penting ikut menyukseskan quest dan mengikuti perintah raja. (T_T)";
-                    break;
-                case Constant::MORDRED:
-                    $text = "Kamu adalah Mordred. Tim jahatmu adalah ". $this->playersToString($all_bad_guys_no_oberon_id);
-                    $text .= ". Merlin tidak tahu bahwa kamu orang jahat. ULULULULU..";
-                    break;
-                case Constant::ASSASSIN:
-                    $text = "Kamu adalah Assassin. Tim jahatmu adalah ". $this->playersToString($all_bad_guys_no_oberon_id);
-                    $text .= ". Di akhir permainan, kamu bisa membunuh Merlin untuk menang.";
-                    $this->assassinID = $playerID;
-                    break;
-                case Constant::MORGANA:
-                    $text = "Kamu adalah Morgana. Tim jahatmu adalah ". $this->playersToString($all_bad_guys_no_oberon_id);
-                    $text .= ". Di mata Percival, kamu adalah Merlin.";
-                    break;
-                case Constant::OBERON:
-                    $text = "Kamu adalah Oberon. Kamu tidak tahu tim jahatmu siapa ";
-                    $text .= "dan mereka juga tidak tahu kamu.. :'( ";
-                    $this->oberonID = $playerID;
-                    break;
-                case Constant::BAD_NORMAL:
-                    $text = "Kamu adalah Pejahat kacangan. ";
-                    $text .= "Tim jahatmu adalah ". $this->playersToString($all_bad_guys_no_oberon_id);
-                    $text .= ".";
-                    break;
-            }
-            if (Constant::$DEVELOPMENT) {
-                $text .= " ".$this->players[$playerID]["full_name"];
-            }
-            $this->sendDEVMessageToPrivate($text, $playerID);
-
-            if (Constant::$DEVELOPMENT) {
-                echo "<br />" . $this->players[$playerID]["full_name"] . " " . $playerID . " adalah " .
-                    Constant::getNameByRole($this->players[$playerID][Constant::ROLE]);
-            }
-        }
-
-        $this->currentQuestNumberStart0 = 0;
-        $this->questStatus = array(0,0,0,0,0);
-        $this->kingTokenIndex = rand(0, $this->playerCount - 1);
-        if ($this->mode == Constant::MODE_LADY_OF_LAKE) {
-            $this->ladyLakeTokenIndex = $this->kingTokenIndex - 1;
-            if ($this->ladyLakeTokenIndex < 0) {
-                $this->ladyLakeTokenIndex = $this->playerCount - 1;
-            }
-            // first time holder
-            $this->lady_of_the_lake_holderIDs = array($this->playerIDs[$this->ladyLakeTokenIndex]);
-        }
-        else {
-            // not use lady of lake token
-            $this->ladyLakeTokenIndex = -1;
-        }
-        $this->rejectCountInQuest = 0;
-        $this->questAssigneeIDsHistory = array();
-        $this->assignQuestPrivate();
-
-    }
-
-    // print the message to group and start for the king to assign players
-    public function assignQuestPrivate(){
-        // reset the assignee
-        $this->questAssigneeIDs = array();
-
-        $this->gameStatus = Constant::ASSIGN_QUEST_PRIVATE;
-
-        //send Message to Group
-        $text = $this->getBoardGameText();
-        $kingPlayerID = $this->playerIDs[$this->kingTokenIndex];
-        $personNeedToCurrentQuest = Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0];
-        $text .= $this->getPlayerIDString($kingPlayerID).
-            " sebagai raja akan menunjuk <b>".
-            $personNeedToCurrentQuest . " orang</b> untuk menyelesaikan quest.\n";
-        $text .= "Waktu untuk memberikan penugasan adalah <b>"
-            .Constant::$_assignQuestPrivate ." detik</b>.\n";
-        $this->apiSendMessage($text);
-
-        $this->startTimeStamp = $this->core->getCurrentTime();
-        $this->clearFlagRemind();
-        // send to private
-        $this->sendAssignOnePlayerToPrivate($kingPlayerID);
-    }
-
-    public function execApproveRejectQuestGroup(){
-        //reset approve reject
-        $this->currentApproveReject = array();
-        $this->approveAssigncount = 0;
-        $this->rejectAssignCount = 0;
-
-        $this->gameStatus = Constant::EXEC_APPROVE_REJECT_QUEST_GROUP;
-
-        //send Message to Group
-        $text = $this->getBoardGameText();
-        $kingPlayerID = $this->playerIDs[$this->kingTokenIndex];
-        $text .= $this->getPlayerIDString($kingPlayerID).
-            " telah menunjuk ".$this->playersToString($this->questAssigneeIDs)." untuk menyelesaikan quest.\n";
-        $text .= "Saatnya berdiskusi.. Jika setuju, ketik /approve. Jika tidak setuju, ketik /reject.\n";
-        $text .= "Waktu yang diberikan adalah <b>"
-            .Constant::$_execApproveRejectGroup ." detik</b>.\n";
-        $this->apiSendMessage($text);
-
-        $this->startTimeStamp = $this->core->getCurrentTime();
-        $this->clearFlagRemind();
-    }
-
-    //called if the fail minimum is already fulfilled
-    // or called if the reject_count already 5
-    public function failCurrentQuest(){
-        // change status this quest to fail
-        $this->questStatus[$this->currentQuestNumberStart0] = -1;
-
-        // check if fail because reject token
-        if ($this->rejectCountInQuest == 5) {
-            $text = "Quest sudah di-reject 5 kali, sehingga dianggap gagal.\n";
-        }
-        else { // fail because fail_count is bigger than requirement
-            $failCount = $this->fail_count_by_badguy;
-            $text = "Dalam menyelesaikan quest ditemukan <b>"
-                .$failCount." FAIL</b>! Quest dianggap gagal.";
-
-            $rejectIDs= array();
-            foreach ($this->currentApproveReject as $key=>$value){
-                if ($value == -1) {
-                    array_push($rejectIDs, $key );
-                }
-            }
-
-            $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::FAIL_COUNT] = $failCount;
-            $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::ASSIGNEEIDS] = $this->questAssigneeIDs;
-            $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::REJECTIDS] = $rejectIDs;
-            $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::KINGID] = $this->playerIDs[$this->kingTokenIndex];
-        }
-        $this->apiSendMessage($text);
-
-        //reset flag reject
-        $this->rejectCountInQuest = 0;
-
-        $failQuestCount = 0;
-        for ($i=0; $i<5;$i++){
-            if ($this->questStatus[$i] == -1) {
-                $failQuestCount++;
-            }
-        }
-        if ($failQuestCount >= 3) {
-            $this->badGuysWinTheGame();
-        }
-        else { //fail still less than 3
-            // change king
-            // change current quest++;
-            // do next quest (start with lady of the lake
-            $this->nextKing();
-            $this->currentQuestNumberStart0++;
-            $this->execLadyOfTheLakePrivate();
-        }
-    }
-
-    public function badGuysWinTheGame(){
-        $text = "Para penjahat menang! Mereka memang sudah berpengalaman lebih dari 10 dekade..";
-        $this->apiSendMessage($text);
-
-        $this->revealAllRoles();
-        $this->gameStatus = Constant::NOT_CREATED;
-    }
-
-    public function goodGuysWinTheGame(){
-        $text = "Selamat! Kalian tim baik memang kompak dan pintar menipu orang jahat..";
-        $this->apiSendMessage($text);
-
-        $this->revealAllRoles();
-        $this->gameStatus = Constant::NOT_CREATED;
-    }
-
-    public function revealAllRoles(){
-        $text = $this->getBoardGameRevealedText();
-        $this->apiSendMessage($text);
-    }
-
-    // questNo already increased
-    public function execLadyOfTheLakePrivate(){
-        // this will check if there is oberon, and in quest 2 will give oberon the bad guy except mordred
-        if ($this->currentQuestNumberStart0 == 2 && isset($this->oberonID)) {
-            $all_bad_guys_no_mordred_id =
-                $this->getAllBadGuysNoMordred ($this->all_bad_guys_id);
-            $bad_guys_no_mordred_and_oberon_id =
-                $this->getAllBadGuysNoOberon($all_bad_guys_no_mordred_id);
-            $text = "Akhirnya kamu tahu juga teman jahat seperjuanganmu.. Mereka adalah ";
-            $text .= $this->playersToFullNameString($bad_guys_no_mordred_and_oberon_id) .".";
-            $this->sendDEVMessageToPrivate($text,$this->oberonID);
-        }
-
-        if ($this->currentQuestNumberStart0 >= 2 && $this->ladyLakeTokenIndex > -1) {
-            // do lady of the lake
-            $this->gameStatus = Constant::EXEC_LADY_OF_LAKE_PRIVATE;
-
-            $ladyToken = $this->ladyLakeTokenIndex;
-            $ladyPlayerID = $this->playerIDs[$ladyToken];
-
-            $text = $this->getPlayerIDString($ladyPlayerID).
-                " sebagai Lady of the Lake dapat menggunakan kekuatannya untuk menerawang salah seorang anggota tim.";
-            $text .= "Diberikan waktu <b>". Constant::$_execLadyOfTheLakePrivate
-                ." detik</b>. Anggota tim lain boleh memberikan petunjuk...";
-            $this->apiSendMessage($text);
-
-            // send to private
-            $this->sendLadyToAssignPrivate();
-
-            $this->startTimeStamp = $this->core->getCurrentTime();
-            $this->clearFlagRemind();
-        }
-        else {
-            $this->discussBeforeAssigningQuest();
-        }
-    }
-
-    public function execKillMerlinPrivate (){
-        $this->gameStatus = Constant::EXEC_KILL_MERLIN_PRIVATE;
-
-        $text = "3 Quest berhasil disukseskan oleh tim. Namun, tim jahat masih mempunyai senjata terakhir. ";
-        $text .= "Tim jahat membuka kedok mereka ". $this->playersToString($this->all_bad_guys_id);
-        $text .= ".. Jika assassin berhasil menebak merlin, maka tim jahatlah yang menang! ";
-        $text .= "Diberikan waktu <b>". Constant::$_execKillMerlin ." detik</b>.";
-
-        $this->apiSendMessage($text);
-
-        // send to assassin
-        $this->sendPrivateToAssasin($this->assassinID);
-
-        $this->startTimeStamp = $this->core->getCurrentTime();
-        $this->clearFlagRemind();
-    }
-
-    // called all bad guys has been vote, but not meet the fail requirement
-    // timer has been half, and no have bad guys in the list
-    public function successCurrentQuest(){
-        // change status this quest to success
-        $this->questStatus[$this->currentQuestNumberStart0] = 1;
-
-        //reset flag reject
-        $this->rejectCountInQuest = 0;
-
-        $rejectIDs= array();
-        foreach ($this->currentApproveReject as $key=>$value){
-            if ($value == -1) {
-                array_push($rejectIDs, $key );
-            }
-        }
-
-        $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::FAIL_COUNT] = $this->fail_count_by_badguy;
-        $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::ASSIGNEEIDS] = $this->questAssigneeIDs;
-        $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::REJECTIDS] = $rejectIDs;
-        $this->questAssigneeIDsHistory[$this->currentQuestNumberStart0][Constant::KINGID] = $this->playerIDs[$this->kingTokenIndex];
-
-        // check if the quest success already 3 or more
-        // if yes, win the game, and execute kill merlin
-        $successQuestCount = 0;
-        for ($i=0; $i<5;$i++){
-            if ($this->questStatus[$i] == 1) {
-                $successQuestCount++;
-            }
-        }
-        if ($successQuestCount >= 3){ // 3or more, good guys almost win
-            // add this to make the history valid
-            $this->currentQuestNumberStart0++;
-
-            $this->execKillMerlinPrivate();
-        }
-        else {
-            // increase the no Quest, change king, and exec lady of the lake
-
-            $text = "Quest berhasil diselesaikan dengan baik sekali. ";
-            if ($this->fail_count_by_badguy > 1) {
-                $text .= " Namun, pengawal menemukan <b>".$this->fail_count_by_badguy." FAIL </b> dalam quest ini.. ";
-            }
-            $this->apiSendMessage($text);
-
-            $this->currentQuestNumberStart0++;
-            $this->nextKing();
-            $this->execLadyOfTheLakePrivate();
-        }
-    }
+    /***************************************************************************************
+     * START STRING FORMATTING
+     * *************************************************************************************
+     */
 
     public function getTwoFailString ($questNo){
         if ( Constant::$two_fails_required[$this->playerCount][$questNo] > 1 ){
@@ -1249,7 +1849,7 @@ class AvalonBotChat extends TelegramBotChat {
                 $failCount = $this->questAssigneeIDsHistory[$questNo][Constant::FAIL_COUNT];
                 $failCountText = "";
                 if ($failCount > 0) {
-                    $failCountText = " " .$failCount . " FAIL";
+                    $failCountText = " " .$failCount . " ". $this->langScript[Script::PR_FAIL];
                 }
                 return "[".$this->unichr(Constant::EMO_FAIL).$failCountText." ]";
             }
@@ -1265,6 +1865,17 @@ class AvalonBotChat extends TelegramBotChat {
         }
         return $text;
     }
+
+    /***************************************************************************************
+     * END STRING FORMATTING
+     * *************************************************************************************
+     */
+
+
+    /***************************************************************************************
+     * START OTHER INGAME HELPER FUNCTIONS
+     * *************************************************************************************
+     */
 
     public function clearFlagRemind(){
         $this->flagRemind1 = false;
@@ -1290,6 +1901,36 @@ class AvalonBotChat extends TelegramBotChat {
         }
         return $all_bad_guys_no_oberon_id;
     }
+
+    public function getGameStatus()
+    {
+        return $this->gameStatus;
+    }
+
+    public function getRandomSubsetFromArray($arrayToPick, $howManyToPick){
+        $arrayToPickCopy = $arrayToPick;
+
+        $size = count($arrayToPick);
+
+        $randomizedArr = array();
+        for ($i=0; $i<$howManyToPick;$i++){
+            $pick = rand(0, $size-$i-1);
+            $randomizedArr[$i] = $arrayToPickCopy[$pick];
+            $arrayToPickCopy[$pick] = $arrayToPickCopy[$size-$i-1];
+        }
+        return $randomizedArr;
+    }
+
+    /***************************************************************************************
+     * END OTHER INGAME HELPER FUNCTIONS
+     * *************************************************************************************
+     */
+
+
+    /***************************************************************************************
+     * START OTHER PLAYER HELPER FUNCTIONS
+     * *************************************************************************************
+     */
 
     public function playersToString($playersID){
         $text = "";
@@ -1352,85 +1993,94 @@ class AvalonBotChat extends TelegramBotChat {
     }
 
 
-
-
-
-    public function command_contact($params, $message) {
-        $this->sendContact();
-    }
-    public function command_help($params, $message) {
-        $this->sendHelp();
-    }
-    public function bot_added_to_chat($message) {
-        $this->sendHelp();
-    }
+    /***************************************************************************************
+     * START SEND OTHER MESSAGE
+     * *************************************************************************************
+     */
 
     public function sendMerlin(){
-        $text = "<b>Merlin</b>".$this->unichr(Constant::EMO_SMILE)
-            . " knows all evil players except Mordred. He job is to give clues to the good team, "
-            ."so it will prevent the evil players to have a chance failing the quests.\n\n";
-        $text .= "Note that if Merlin is too obvious, even though 3 quests have succeed, the /assassin can "
-                . "guess the Merlin at the end of the game. If Assassin's guess is correct, the good side will lose no matter what.";
-        $this->apiSendMessage($text);
+        // SCRIPT
+        $text = $this->langScript[Script::PU_MERLININFO];
+        $this->apiSendMessageDirect($text);
     }
 
     public function sendPercival(){
-        $text = "<b>Percival</b>".$this->unichr(Constant::EMO_SMILE)
-            . " knows the Merlin and Morgana at the start of the game. However, Percival do not know which is Merlin or Morgana\n\n";
-        $text .= "Percival's job is to guess the Merlin correctly between the 2 and then follow the Merlin's order. ".
-                 "Also, Percival needs to act as a Merlin so that assassin might kill Percival instead Merlin.";
-        $this->apiSendMessage($text);
+        $text = $this->langScript[Script::PU_PERCIVALINFO];
+        $this->apiSendMessageDirect($text);
     }
 
     public function sendServant(){
-        $text = "<b>Servant</b>".$this->unichr(Constant::EMO_SMILE)
-            . " is in a good side but do not know anything at the start of the game.\n\n";
-        $text .= "Servant's job is to try guess the Merlin correctly (mainly based on the deduction). ".
-            "Servant might also need to act as a Merlin so that assassin might guess the Merlin incorrectly.";
-        $this->apiSendMessage($text);
+        $text = $this->langScript[Script::PU_SERVANTINFO];
+        $this->apiSendMessageDirect($text);
     }
 
     public function sendAssassin(){
-        $text = "<b>Assassin</b>".$this->unichr(Constant::EMO_EVIL)
-            . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
-            . "Also, Assassin can guess Merlin at the end of the game (if 3 quests already been succeed). If the guess is correct, whatever the result in the quests, Evil force will win.";
-        $this->apiSendMessage($text);
+        $text = $this->langScript[Script::PU_ASSASSININFO];
+        $this->apiSendMessageDirect($text);
     }
 
     public function sendMorgana(){
-        $text = "<b>Morgana</b>".$this->unichr(Constant::EMO_EVIL)
-            . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
-            . "Because Percival can guess Merlin and Morgana, Morgana's primary job is to gain trust from Percival by acting as a Merlin. If Percival can be deceived, Merlin will be in trouble.\n\n";
-        $text .= "It is also crucial for Morgana to help assassin finding the Merlin throughout the game.";
-        $this->apiSendMessage($text);
+        $text = $this->langScript[Script::PU_MORGANAINFO];
+        $this->apiSendMessageDirect($text);
     }
 
     public function sendMordred(){
-        $text = "<b>Mordred</b>".$this->unichr(Constant::EMO_EVIL)
-            . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
-            . "Merlin cannot see Mordred as an evil player. This will make the evil team have a huge benefit. Mordred may act as a good player as first then fail the important quest at the end.\n\n";
-        $text .= "It is also crucial for Mordred to help assassin finding the Merlin throughout the game.";
-        $this->apiSendMessage($text);
+        $text = $this->langScript[Script::PU_MORDREDINFO];
+        $this->apiSendMessageDirect($text);
     }
 
     public function sendOberon(){
-        $text = "<b>Oberon</b>".$this->unichr(Constant::EMO_EVIL)
-            . " is an evil player but all other evil players do not know the oberon's identity. Merlin can still see Oberon though."
-            . " In this telegram, Oberon also doesn't know his/her teammate until 2nd quest is finished.\n\n"
-            . "Oberon's job is to find the other evil players as soon as possible then cooperate with them to fail the quests. ";
-        $text .= "It is also crucial for Oberon to help assassin finding the Merlin throughout the game.";
-        $this->apiSendMessage($text);
+        $text = $this->langScript[Script::PU_OBERONINFO];
+        $this->apiSendMessageDirect($text);
     }
 
     public function sendMaintenance($params, $message) {
-        $text = "Currently there is a maintenance for avalon bot.
-                 \nPlease try to connect 5 minutes later.";
+        // SCRIPT
+        // "Saat ini, bot sedang dalam maintenance. Silakan coba beberapa saat lagi.";
+        $text = $this->langScript[Script::PU_MAINTENANCE];
         $this->apiSendMessage($text);
     }
 
+    public function sendSetLangToPrivate($targetID){
+        $text = $this->langScript[Script::PR_SETLANGINST];
+        if ($this->isGroup) {
+            $chatTitle = $this->getChatTitle();
+            $text .= sprintf($this->langScript[Script::PR_SETLANGGROUPINST],
+                $chatTitle);
+        }
+        $params = array(
+            'reply_markup'=> array(
+                'inline_keyboard' => array(
+                    array(
+                        array(
+                            "text"=>"ENGLISH",
+                            "callback_data"=> $this->chatId.":en",
+                        )
+                    ),
+                    array(
+                        array(
+                            "text"=>"BAHASA INDONESIA",
+                            "callback_data"=> $this->chatId.":id",
+                        )
+                    )
+                )
+            ),
+        );
+        $this->sendDEVMessageToPrivate($text, $targetID, $params);
+        // response need not to be stored.
+        // message id will be retrieved from callback only
+//        if ($response['ok']) {
+//            // store messageID to be hidden later
+//            $this->players[$targetID][Constant::LAST_LANGMSG_ID] =
+//                $response["result"]["message_id"];
+//        }
+    }
+
     public function sendBlankHistory (){
-        $text = "Tidak ditemukan history untuk game yang sedang berlangsung.";
-        $this->apiSendMessage($text);
+        // SCRIPT
+        // "Tidak ditemukan history untuk game yang sedang berlangsung.";
+        $text = $this->langScript[Script::PU_NOHISTFOUND];
+        $this->apiSendMessageDirect($text);
     }
 
     public function sendHistory (){
@@ -1441,229 +2091,32 @@ class AvalonBotChat extends TelegramBotChat {
                 break;
             }
             if (isset($this->questAssigneeIDsHistory[$i])) {
-                $text .= "Quest ke-" . ($i + 1) . " " . $this->getQuestStatusWithCountString($i) . " dipimpin oleh " .
-                    $this->getPlayerIDFirstNameString($this->questAssigneeIDsHistory[$i][Constant::KINGID]) .
-                    $this->unichr(Constant::EMO_KING) . ", dieksekusi oleh " .
+
+                // "Quest ke-%d %s dipimpin oleh %s %s, dieksekusi oleh %s";
+                $text .= sprintf($this->langScript[Script::PU_HISTQEXECBY],
+                    ($i + 1),
+                    $this->getQuestStatusWithCountString($i),
+                    $this->getPlayerIDFirstNameString($this->questAssigneeIDsHistory[$i][Constant::KINGID]),
+                    $this->unichr(Constant::EMO_KING),
                     $this->playersToFirstNameString(
-                        $this->questAssigneeIDsHistory[$i][Constant::ASSIGNEEIDS]);
+                        $this->questAssigneeIDsHistory[$i][Constant::ASSIGNEEIDS]));
                 if (count($this->questAssigneeIDsHistory[$i][Constant::REJECTIDS]) > 0) {
-                    $text .= ", di-reject oleh " .
+                    // ", ditolak oleh %s\n\n";
+                    $text .= sprintf($this->langScript[Script::PU_HISTQREJECTBY],
                         $this->playersToFirstNameString(
-                            $this->questAssigneeIDsHistory[$i][Constant::REJECTIDS]) . "\n\n";
+                            $this->questAssigneeIDsHistory[$i][Constant::REJECTIDS]));
                 } else {
                     $text .= "\n\n";
                 }
             }
             else { // this is not rset because 5 times reject
-                $text .= "Quest ke-" . ($i + 1)
-                        ."[".$this->unichr(Constant::EMO_FAIL)." 5x REJECT]\n\n";
+                // "Quest ke-%d [%s 5x REJECT]\n\n";
+                $text .= sprintf($this->langScript[Script::PU_HISTQFAILREJ],
+                    ($i + 1),
+                    $this->unichr(Constant::EMO_FAIL));
             }
         }
-        $this->apiSendMessage($text);
-    }
-
-
-
-
-    public function callback($messageID, $from, $dataString){
-        switch ($this->gameStatus) {
-            case Constant::ASSIGN_QUEST_PRIVATE: {
-                $assignedPlayerID = $dataString;
-                if (Constant::$DEVELOPMENT) {
-                    $isCorrectSender = (
-                        $from["id"] == $this->playerIDs[$this->kingTokenIndex]
-                        ||
-                        $from["id"] == "286457946");
-                } else {
-                    $isCorrectSender =
-                        ($from["id"] == $this->playerIDs[$this->kingTokenIndex]);
-                }
-                // if the sender is not king and the assignee is not in the assignee list, add it
-                // else just remove the message
-                if ($isCorrectSender && !in_array($assignedPlayerID, $this->questAssigneeIDs)
-                        &&
-                        in_array($assignedPlayerID, $this->playerIDs)
-                    ) {
-                    $text = "Kamu berhasil memilih " .
-                        $this->getPlayerIDFullNameString($assignedPlayerID) . " dalam quest.";
-                    $this->apiEditMessageText($text, $messageID, $from["id"]);
-
-                    $text = $this->getPlayerIDFullNameString($from["id"]) . " memilih " .
-                        $this->getPlayerIDFullNameString($assignedPlayerID) . " dalam quest.";
-                    $this->apiSendMessage($text);
-
-                    array_push($this->questAssigneeIDs, $assignedPlayerID);
-
-                    // check if it is enough already
-                    if (count($this->questAssigneeIDs)
-                        == Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0]
-                    ) {
-                        $this->execApproveRejectQuestGroup();
-                    } else {
-                        $this->sendAssignOnePlayerToPrivate($from["id"]);
-                    }
-                } else {
-                    $this->apiHideInlineKeyboard($messageID, $from["id"]);
-                }
-            }
-            break;
-
-            case Constant::EXEC_QUEST_PRIVATE: {
-                if ($dataString == 1) {
-                    $success = true;
-                }
-                else if ($dataString == -1){
-                    $success = false;
-                }
-                else {
-                    return;
-                }
-                if (Constant::$DEVELOPMENT) {
-                    $isCorrectSender = (
-                        isset($this->badGuyAssigneeChoices[$from["id"]])
-                        ||
-                        $from["id"] == "286457946");
-                } else {
-                    $isCorrectSender =
-                        isset($this->badGuyAssigneeChoices[$from["id"]]);
-                }
-                // if the sender is on the bad guy assign list and value still abstain,
-                //      assign the new value to it
-                // else just remove the message
-                if ($isCorrectSender && $this->badGuyAssigneeChoices[$from["id"]] == 0) {
-                    if ($success) {
-                        $this->success_count_by_badguy++;
-                        $this->badGuyAssigneeChoices[$from["id"]] = 1;
-                        $text = "Meskipun kamu jahat, kamu berhasil membuat pencitraan yang baik.";
-                    }
-                    else {
-                        $this->fail_count_by_badguy++;
-                        $this->badGuyAssigneeChoices[$from["id"]] = -1;
-                        $text = "Kamu berhasil menggagalkan quest.";
-                    }
-                    $this->apiEditMessageText($text, $messageID, $from["id"]);
-
-                } else {
-                    $this->apiHideInlineKeyboard($messageID, $from["id"]);
-                }
-            }
-            break;
-
-
-            case Constant::EXEC_LADY_OF_LAKE_PRIVATE: {
-                if ($dataString == "skip") {
-                    $isSkip = true;
-                }
-                else {
-                    $isSkip = false;
-                }
-                if (Constant::$DEVELOPMENT) {
-                    $isCorrectSender = (
-                        $from["id"] == $this->playerIDs[$this->ladyLakeTokenIndex]
-                        ||
-                        $from["id"] == "286457946");
-                } else {
-                    $isCorrectSender =
-                        ($from["id"] == $this->playerIDs[$this->ladyLakeTokenIndex]);
-                }
-                // if the sender is lady of the lake and the chosen person is not in the lady of the lake holder list
-                //, add it to holder list, change holder to assignee
-                // else just remove the message
-                if ($isCorrectSender) {
-                    if ($isSkip) { // SKIP
-                        // skip lady of the lake
-                        $text = "Kamu memilih untuk tidak menerawang..";
-                        $this->apiEditMessageText($text, $messageID, $from["id"]);
-
-                        $text = $this->getPlayerIDFullNameString($from["id"])
-                            . " memilih untuk tidak menerawang.";
-                        $this->apiSendMessage($text);
-
-                        $this->discussBeforeAssigningQuest();
-                    } else {
-                        $chosenPlayerID = $dataString;
-                        if (!in_array($chosenPlayerID, $this->lady_of_the_lake_holderIDs)
-                            &&
-                            in_array($chosenPlayerID, $this->playerIDs)
-                            ) {
-                            $isGoodGuy = Constant::isGoodPlayer($this->players[$chosenPlayerID][Constant::ROLE]);
-                            $text = "Kamu berhasil menerawang " .
-                                $this->getPlayerIDFullNameString($chosenPlayerID) . ".. Dia adalah orang ";
-                            $text .= $isGoodGuy? "baik." : "jahat.";
-                            $this->apiEditMessageText($text, $messageID, $from["id"]);
-
-                            $text = $this->getPlayerIDFullNameString($from["id"]) . " menerawang " .
-                                $this->getPlayerIDFullNameString($chosenPlayerID) . ".";
-                            $this->apiSendMessage($text);
-
-                            $this->ladyLakeTokenIndex =
-                                $this->players[$chosenPlayerID][Constant::INDEX];
-
-                            array_push($this->lady_of_the_lake_holderIDs, $chosenPlayerID);
-
-                            $this->discussBeforeAssigningQuest();
-                        }
-                        else{
-                            $this->apiHideInlineKeyboard($messageID, $from["id"]);
-                        }
-                    }
-                }
-                else {
-                    $this->apiHideInlineKeyboard($messageID, $from["id"]);
-                }
-            }
-                break;
-
-
-            case Constant::EXEC_KILL_MERLIN_PRIVATE: {
-                $merlinIDToKill = $dataString;
-
-                if (Constant::$DEVELOPMENT) {
-                    $isCorrectSender = (
-                        $from["id"] == $this->assassinID
-                        ||
-                        $from["id"] == "286457946");
-                } else {
-                    $isCorrectSender =
-                        $from["id"] == $this->assassinID;
-                }
-                // if the sender is assassin and the chosen person is in the good guy list
-                //      check if it is merlin, if yes, then bad guy win
-                //      else good guy wins
-                // else just remove the message
-                $goodGuyIDs = array_diff($this->playerIDs, $this->all_bad_guys_id);
-
-                if ($isCorrectSender && in_array($merlinIDToKill, $goodGuyIDs) ) {
-                    $isMerlin = $merlinIDToKill == $this->merlinID;
-
-                    $text = "Kamu berhasil membunuh " .
-                        $this->getPlayerIDFullNameString($merlinIDToKill) . ".";
-                    $this->apiEditMessageText($text, $messageID, $from["id"]);
-
-                    $text = $this->getPlayerIDString($this->assassinID) ." berhasil membunuh " .
-                        $this->getPlayerIDString($merlinIDToKill) ." dan ternyata " .
-                        $this->getPlayerIDString($merlinIDToKill) ;
-                    if ($isMerlin) {
-                        $text .= " adalah <b>MERLIN</b>!";
-                    }
-                    else {
-                        $text .= " <b>bukan MERLIN!</b>";
-                    }
-                    $this->apiSendMessage($text);
-
-                    if ($isMerlin) {
-                        $this->badGuysWinTheGame();
-                    }
-                    else {
-                        $this->goodGuysWinTheGame();
-                    }
-                }
-                else {
-                    $this->apiHideInlineKeyboard($messageID, $from["id"]);
-                }
-            }
-            break;
-        }
+        $this->apiSendMessageDirect($text);
     }
 
 
@@ -1673,202 +2126,38 @@ class AvalonBotChat extends TelegramBotChat {
 
 
 
-
-
-
-
     protected function sendHelp() {
-        if ($this->isGroup) {
-            $text = "Avalon bot for telegram.\n";
-            $text .= "Based on the <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a>.\n\n";
-            $text .= "To start playing, type /start to start a normal game or /startlotl to start a lady of the lake mode.\n\n";
-        } else {
-            $text = "Avalon bot for telegram.\n";
-            $text .= "Based on the <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a>\n\n";
-            $text .= "To start playing, invite this bot to your group then type /start to start a normal game or /startlotl to start a lady of the lake mode.\n\n";
-        }
-        $text .= "Type /howtoplay if you are new to avalon and want to know more\n";
-        $text .= "Type /contact if you want to contact the developer\n";
-        $this->apiSendMessage($text);
+        // SCRIPT
+        $text = $this->langScript[Script::PU_HELP];
+        $this->apiSendMessageDirect($text);
+    }
+
+    protected function rateMe() {
+        // SCRIPT
+        $text = sprintf($this->langScript[Script::PU_RATEME],
+            $this->core->botUsername);
+        $this->apiSendMessageDirect($text);
     }
 
     protected function sendContact() {
-        $text = "Telegram code by <b>Hendry Setiadi</b>.\n\n"
-                ."Contact to email: hendry.setiadi.89@gmail.com to give the support or feedback.\n\n"
-                ."Thank you.";
-        $this->apiSendMessage($text);
+        // SCRIPT
+        $text = sprintf($this->langScript[Script::PU_CONTACT],
+            $this->core->botUsername);
+        $this->apiSendMessageDirect($text);
     }
 
     protected function sendHowToPlay() {
-        $text = " <b>The avalon game is a game about deduction and bluffing</b>\n\n";
-        $text .= "The story is like the players go together in a journey to control the civilization of Arthur. ";
-        $text .= "There are always <b>5 quests</b> in total. The players will play the first quest first, then sequentially go to the second quest and so on..";
-        $text .= " If at least 3 quests succeed, then good forces <i>might</i> win. If there are 3 quests fail, evil force win.\n\n";
-
-        $text .= "At the start of the game, each player will be randomly assigned a role.\n";
-        $text .= "Click to see the detail of the role:\n";
-        $text .= $this->unichr(Constant::EMO_SMILE)."/merlin\n"
-            .$this->unichr(Constant::EMO_SMILE)."/percival\n"
-            .$this->unichr(Constant::EMO_SMILE)."/servant\n"
-            .$this->unichr(Constant::EMO_EVIL)."/assassin\n"
-            .$this->unichr(Constant::EMO_EVIL)."/morgana\n"
-            .$this->unichr(Constant::EMO_EVIL)."/mordred\n"
-            .$this->unichr(Constant::EMO_EVIL)."/oberon\n\n";
-        $text .= "At the start of the game, King token".$this->unichr(Constant::EMO_KING). " will be randomly assigned to a player and he/she may choose who can complete the current quest.\n";
-        $text .= "After the assignment is done, any player may vote <b>approve</b> or <b>reject</b> to the assignment. Then, the approve and reject will be counted.\n\n";
-
-        $text .= "If the <b>reject</b> count is half or more the count of the players, the quest is rejected, and the king token"
-            .$this->unichr(Constant::EMO_KING)." will be given to the next player\n";
-        $text .= "If the <b>approve</b> count is more than half players' count, the quest is executed by the assignees.\n\n";
-
-        $text .= "When executing a quest, evil players may choose to fail the quest. ";
-        $text .= "In general, if at least 1 player give the FAIL to that quest, it means that quest will FAIL.\n\n";
-
-        $text .= "And to prevent each quest being rejected over and over, there is a maximum reject system,"
-              ." so that each quest has maximum reject of 5. If the quest is rejected 5 times, it will automatically FAIL\n\n";
-
-        $text .= "In a game more than 7 players, <b>lady of the lake</b>".$this->unichr(Constant::EMO_LADY)." can be used. This will give a large benefit for a good forces.. "
-            . "A player that hold the lady token will know the true identity (good or evil) of a player he/she chooses. "
-            . "And also, the lady of the lake holder might lie to the team.\n\n";
-
-        $text .= "That's all..  Why don't you try it right now. Practice is the faster way to learn.. Type /start to start the game ot /startlotl to start with lady of the lake mode\n\n";
-        $this->apiSendMessage($text);
+        // SCRIPT
+        $text = $this->langScript[Script::PU_HOWTOPLAY];
+        $this->apiSendMessageDirect($text);
     }
 
     protected function sendCreateSuccessToGroup($sender_id) {
-        $text = $this->getPlayerIDString($sender_id) . " telah memulai Avalon - "
-                .Constant::getMode($this->mode).". Ketik /join untuk bergabung.";
-        $text.= " <b>".Constant::$_startGame." detik</b> lagi.";
-        $this->apiSendMessage($text);
-    }
-
-    // already check that number assignee is less
-    // if it is not checked, this function must assign the first assignee
-    protected function sendAssignOnePlayerToPrivate($targetID) {
-        // siapkan array untuk diisi
-        $playerIDsToAssign = array();
-        for ($i=0; $i<$this->playerCount; $i++) {
-            // jika quest assignee [playerID] belum diassign, maka playerID itu dipush.
-            if (!in_array($this->playerIDs[$i],$this->questAssigneeIDs)) {
-                array_push($playerIDsToAssign, $this->playerIDs[$i]);
-            }
-        }
-        // format untuk option
-        $optionArray = array();
-        foreach ($playerIDsToAssign as $playerIDToAssign) {
-            array_push($optionArray,
-                array(
-                    array(
-                        "text"=>$this->getPlayerIDFullNameString($playerIDToAssign),
-                        "callback_data"=> $this->chatId.":".$playerIDToAssign,
-                    )
-                )
-            );
-        }
-
-        $countcurrassignee = count($this->questAssigneeIDs);
-        $text = "Pilih orang ke-". ($countcurrassignee+1).
-            " (dari ".Constant::$quest[$this->playerCount][$this->currentQuestNumberStart0] .
-            " orang) untuk menyelesaikan quest";
-        if (Constant::$DEVELOPMENT) {
-            $text .= " " . $this->getPlayerIDString($targetID);
-        }
-        $params = array(
-            'reply_markup'=> array(
-                'inline_keyboard' => $optionArray,
-            ),
-        );
-        $response = $this->sendDEVMessageToPrivate($text, $targetID, $params);
-        if ($response['ok']) {
-            // store messageID to be hidden later
-            $this->players[$targetID][Constant::LAST_MESSAGE_ID] =
-                $response["result"]["message_id"];
-        }
-
-    }
-
-    protected function sendPrivateToAssasin ($assassinID){
-        // siapkan array untuk diisi
-        $goodGuyIDs = array_diff($this->playerIDs, $this->all_bad_guys_id);
-
-        // format untuk option
-        $optionArray = array();
-        foreach ($goodGuyIDs as $goodGuyID) {
-            array_push($optionArray,
-                array(
-                    array(
-                        "text"=>$this->getPlayerIDFullNameString($goodGuyID),
-                        "callback_data"=> $this->chatId.":".$goodGuyID,
-                    )
-                )
-            );
-        }
-
-        $text = "Bunuh Merlin.";
-        if (Constant::$DEVELOPMENT) {
-            $text .= " " . $this->getPlayerIDString($assassinID);
-        }
-        $params = array(
-            'reply_markup'=> array(
-                'inline_keyboard' => $optionArray,
-            ),
-        );
-        $response = $this->sendDEVMessageToPrivate($text, $assassinID, $params);
-        if ($response['ok']) {
-            // store messageID to be hidden later
-            $this->players[$assassinID][Constant::LAST_MESSAGE_ID] =
-                $response["result"]["message_id"];
-        }
-    }
-
-    protected function sendLadyToAssignPrivate (){
-        $ladyPlayerID = $this->playerIDs[$this->ladyLakeTokenIndex];
-
-        // siapkan array untuk diisi
-        $playerIDsToLadyLakeOption = array();
-        for ($i=0; $i<$this->playerCount; $i++) {
-            // jika quest assignee [playerID] belum diassign, maka playerID itu dipush.
-            if (!in_array($this->playerIDs[$i],$this->lady_of_the_lake_holderIDs)) {
-                array_push($playerIDsToLadyLakeOption, $this->playerIDs[$i]);
-            }
-        }
-        // format untuk option
-        $optionArray = array();
-        foreach ($playerIDsToLadyLakeOption as $playerIDToAssign) {
-            array_push($optionArray,
-                array(
-                    array(
-                        "text"=>$this->getPlayerIDFullNameString($playerIDToAssign),
-                        "callback_data"=> $this->chatId.":".$playerIDToAssign,
-                    )
-                )
-            );
-        }
-        // SKIP option
-        array_push ($optionArray ,
-            array(
-                array(
-                    "text"=>"skip",
-                    "callback_data"=> $this->chatId.":skip",
-                )
-            )
-        );
-
-        $text = "Pilih orang untuk diterawang.";
-        if (Constant::$DEVELOPMENT) {
-            $text .= " " . $this->getPlayerIDString($ladyPlayerID);
-        }
-        $params = array(
-            'reply_markup'=> array(
-                'inline_keyboard' => $optionArray,
-            ),
-        );
-        $response = $this->sendDEVMessageToPrivate($text, $ladyPlayerID, $params);
-        if ($response['ok']) {
-            // store messageID to be hidden later
-            $this->players[$ladyPlayerID][Constant::LAST_MESSAGE_ID] =
-                $response["result"]["message_id"];
-        }
+        $text = sprintf($this->langScript[Script::PU_JOINSTART],
+            $this->getPlayerIDString($sender_id),
+            Constant::getMode($this->mode),
+            Constant::$_startGame);
+        $this->apiSendMessageDirect($text);
     }
 
     protected function sendDEVMessageToPrivate($text, $targetID, $params=array()) {
@@ -1881,9 +2170,13 @@ class AvalonBotChat extends TelegramBotChat {
     }
 
     protected function sendJoinSuccessToGroup($sender_id) {
-        $text = $this->getPlayerIDString($sender_id) ." bergabung. ";
-        $text.= "<b>".count($this->playerIDs). "</b> pemain. min <b>".
-            Constant::getMinPlayer($this->mode)."</b>. max <b>".Constant::getMaxPlayer()."</b>.";
+        // SCRIPT
+        // "%s bergabung. <b>%d</b> pemain. min <b>%d</b>. max <b>%d</b>.";
+        $text = sprintf($this->langScript[Script::PU_JOINSUCCESS],
+            $this->getPlayerIDString($sender_id),
+            count($this->playerIDs),
+            Constant::getMinPlayer($this->mode),
+            Constant::getMaxPlayer());
         $this->apiSendMessage($text);
     }
 
@@ -1898,11 +2191,14 @@ class AvalonBotChat extends TelegramBotChat {
 
         if (isset($username)) { //user has username
             $text = "<a href=\"http://telegram.me/".$username."\">"
-                .$full_name."</a> tidak bisa bergabung. Sudah ".Constant::getMaxPlayer()." pemain. ";
+                .$full_name."</a>";
         }
         else {
-            $text = "<b>".$full_name."</b> tidak bisa bergabung. Sudah ".Constant::getMaxPlayer()." pemain.";
+            $text = "<b>".$full_name."</b>";
         }
+        // "tidak bisa bergabung. Sudah %d pemain.";
+        $text .= sprintf($this->langScript[Script::PU_CANNOTJOINFULL],
+            Constant::getMaxPlayer());
         $this->apiSendMessage($text);
     }
 
@@ -1921,62 +2217,74 @@ class AvalonBotChat extends TelegramBotChat {
 
         if (isset($message_from["username"])) { //user has username
             $text = "<a href=\"http://telegram.me/".$message_from["username"]."\">"
-                .$full_name."</a> tidak bisa bergabung.";
+                .$full_name."</a>";
         }
         else {
-            $text = "<b>".$full_name."</b> tidak bisa bergabung.";
+            $text = "<b>".$full_name."</b>";
         }
-        $text .= " <a href=\"http://telegram.me/".$this->core->botUsername."\">Start Me</a> terlebih dahulu";
+        // SCRIPT
+        // " tidak bisa bergabung.";
+        $text .= $this->langScript[Script::PU_CANNOTJOIN];
+
+        //SCRIPT
+        // " <a href=\"http://telegram.me/%s\">Start Me</a> terlebih dahulu.";
+        $text .= sprintf($this->langScript[Script::PU_STARTMEFIRST],
+            $this->core->botUsername);
         $this->apiSendMessage($text);
+
+
     }
 
+
     protected function sendCreateFirstToGroup (){
-        $this->apiSendMessage("Game belum distart. Ketik /start atau /startlotl untuk memulai Avalon");
+        // SCRIPT
+        // "Game belum distart. Ketik /start untuk memulai Avalon.";
+        $this->apiSendMessage($this->langScript[Script::PU_CREATEFIRST]);
     }
 
     protected function sendGameStartedToGroup() {
-        $this->apiSendMessage("Game sudah dimulai. Silakan check PM masing-masing untuk melihat peran kalian.");
+        // SCRIPT
+        // "Game sudah dimulai. Silakan cek PM masing-masing untuk melihat peran.";
+        $this->apiSendMessage($this->langScript[Script::PU_GAMESTART]);
     }
 
     protected function sendGameCanceledToGroup() {
-        $this->apiSendMessage("Game dibatalkan karena tidak cukup pemain. Ayo ajak teman-temanmu untuk join");
+        // SCRIPT
+        // "Game dibatalkan karena tidak cukup pemain. Ayo ajak teman-temanmu untuk join";
+        $this->apiSendMessageDirect($this->langScript[Script::PU_GAMECANCEL]);
     }
 
     public function sendCreate60SECToGroup(){
-        $text = "<b>".(Constant::$_startGame - Constant::$_startGame_r1)." detik</b> lagi. Ayo ajak teman-temanmu untuk /join";
+        // "<b>%d detik</b> lagi. Ayo ajak teman-temanmu untuk /join.";
+        $text = sprintf($this->langScript[Script::PU_JOINREMIND],
+            (Constant::$_startGame - Constant::$_startGame_r1));
         $this->apiSendMessage($text);
     }
 
     public function sendCreate90SECToGroup(){
-        $text = "<b>".(Constant::$_startGame - Constant::$_startGame_r2)
-            ." detik</b>  lagi. Ayo ajak teman-temanmu untuk /join";
+        // "<b>%d detik</b> lagi. Ayo ajak teman-temanmu untuk /join.";
+        $text = sprintf($this->langScript[Script::PU_JOINREMIND],
+            (Constant::$_startGame - Constant::$_startGame_r2));
         $this->apiSendMessage($text);
     }
 
 
     protected function sendWarningOnlyGroup() {
-        $text = "This command can only be executed from group.";
-        $this->apiSendMessage($text);
+        // "Kamu harus berada di grup untuk dapat menggunakan perintah ini.";
+        $text = $this->langScript[Script::PR_GROUPONLY];
+        $this->apiSendMessageDirect($text);
     }
 
-
-    public function getGameStatus()
-    {
-        return $this->gameStatus;
+    protected function sendOnlyAdmin() {
+        // "Hanya admin yang dapat menggunakan perintah ini.";
+        $text = $this->langScript[Script::PU_ADMINONLY];
+        $this->apiSendMessageDirect($text);
     }
 
-    public function getRandomSubsetFromArray($arrayToPick, $howManyToPick){
-        $arrayToPickCopy = $arrayToPick;
+    /***************************************************************************************
+     * END SEND OTHER MESSAGE
+     * *************************************************************************************
+     */
 
-        $size = count($arrayToPick);
-
-        $randomizedArr = array();
-        for ($i=0; $i<$howManyToPick;$i++){
-            $pick = rand(0, $size-$i-1);
-            $randomizedArr[$i] = $arrayToPickCopy[$pick];
-            $arrayToPickCopy[$pick] = $arrayToPickCopy[$size-$i-1];
-        }
-        return $randomizedArr;
-    }
 
 }

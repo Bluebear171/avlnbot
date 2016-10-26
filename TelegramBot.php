@@ -24,6 +24,8 @@ abstract class TelegramBotCore {
     protected $currentTime;
     protected $isMaintenance;
 
+    public $redis;
+
     public function __construct($token, $options = array()) {
         $options += array(
             'host' => 'api.telegram.org',
@@ -90,7 +92,17 @@ abstract class TelegramBotCore {
                 $this->request('getUpdates', $params, $options);
             }
         }
+
+        $this->dbInit();
+
         return true;
+    }
+
+    public function dbInit() {
+        if (!$this->redis) {
+            \Predis\Autoloader::register();
+            $this->redis = new Predis\Client(getenv('REDIS_URL'));
+        }
     }
 
     public function runLongpoll() {
@@ -426,6 +438,17 @@ abstract class TelegramBotChat {
 //        );
 //        return $this->core->request('sendMessage', $params);
     }
+
+    protected function apiSendMessageDirect($text, $params = array()) {
+        $params += array(
+            'parse_mode' => 'HTML',
+            'disable_web_page_preview' => true,
+            'chat_id' => $this->chatId,
+            'text' => $text,
+        );
+        return $this->core->request('sendMessage', $params);
+    }
+
     protected function apiSendMessageToTarget($text, $target_id, $params = array()) {
         $params += array(
             'parse_mode' => 'HTML',
@@ -441,6 +464,29 @@ abstract class TelegramBotChat {
             'message_id' => $messageID,
         );
         return $this->core->request('editMessageReplyMarkup', $params);
+    }
+
+    protected function getStatusMember($target_id) {
+        $params = array(
+            'chat_id' => $this->chatId,
+            'user_id' => $target_id,
+        );
+        $response = $this->core->request('getChatMember', $params);
+        if ($response["ok"]){
+            return $response["result"]["status"];
+        }
+        else return null;
+    }
+
+    protected function getChatTitle() {
+        $params = array(
+            'chat_id' => $this->chatId,
+        );
+        $response = $this->core->request('getChat', $params);
+        if ($response["ok"]){
+            return $response["result"]["title"];
+        }
+        else return null;
     }
 
     protected function apiEditMessageText($text, $messageID, $target_id, $params = array()) {
