@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a73f481-ab87-4211-bcdc-4a86725a2d7e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Script.php" afterPath="$PROJECT_DIR$/Script.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/f.txt" afterPath="$PROJECT_DIR$/f.txt" />
     </list>
     <ignored path="avalon.iws" />
@@ -343,7 +342,7 @@
       <workItem from="1477365560795" duration="22828000" />
       <workItem from="1477451743927" duration="21221000" />
       <workItem from="1477474196732" duration="2839000" />
-      <workItem from="1477479070155" duration="2706000" />
+      <workItem from="1477479070155" duration="2738000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -363,7 +362,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="262249000" />
+    <option name="totallyTimeSpent" value="262281000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
