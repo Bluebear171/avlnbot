@@ -659,7 +659,7 @@ class Script{
             .self::unichr(Constant::EMO_KING)." akan berpindah ke pemain berikutnya (sesudah raja)\n"
             . "Jika jumlah <b>setuju</b> lebih besar dari jumlah pemain, maka quest akan dijalankan oleh orang yang ditunjuk oleh raja.\n\n"
 
-            . "Ketika mengerjakan quest, Pemain jahat boleh menggagalkan quest dan ini dilakukan secara rahasia."
+            . "Ketika mengerjakan quest, Pemain jahat boleh menggagalkan quest dan ini dilakukan secara rahasia. "
             . "Umumnya, Jika minimal terdapat 1 GAGAL dalam quest, maka quest tersebut akan dianggap GAGAL.\n\n"
 
             . "Untuk mencegah suatu quest ditolak terus menerus, setiap quest memiliki penolakan maksimum 5 kali. "
@@ -668,7 +668,7 @@ class Script{
             . "Dalam game dengan 8 pemain atau lebih, <b>lady of the lake</b>".self::unichr(Constant::EMO_LADY)." dapat digunakan. Lady of the Lake dapat memberikan keuntungan yang besar bagi tim baik. "
             . "Pemain yang memegang the lady token boleh menerawang sesorang untuk mengetahui identitas sebenarnya (baik atau jahat) namun hanya pemegang lady lah yang mengetahuinya.\n\n"
 
-            . "Sekian. Latihan adalah cara yang epat untuk belajar. Ketik /start untuk memulai game.\n\n";
+            . "Sekian. Latihan adalah cara yang cepat untuk belajar. Ketik /start untuk memulai game.\n\n";
 
 
             Script::$script["en"][Script::PU_RATEME]

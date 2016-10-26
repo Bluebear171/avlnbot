@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a73f481-ab87-4211-bcdc-4a86725a2d7e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/changeconnc0.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/changeconnc1.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/changef0.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/changef1.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/f.txt" afterPath="$PROJECT_DIR$/f.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Script.php" afterPath="$PROJECT_DIR$/Script.php" />
     </list>
     <ignored path="avalon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,7 +33,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AvalonBot.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="149">
@@ -62,6 +58,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="66">
               <caret line="3" column="6" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Script.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Script.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="319">
+              <caret line="760" column="5" selection-start-line="760" selection-start-column="5" selection-end-line="760" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -117,16 +123,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="f.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/f.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="Git.Settings">
@@ -145,7 +141,6 @@
         <option value="$PROJECT_DIR$/redis.php" />
         <option value="$PROJECT_DIR$/Constant.php" />
         <option value="$PROJECT_DIR$/TelegramBot.php" />
-        <option value="$PROJECT_DIR$/Script.php" />
         <option value="$PROJECT_DIR$/check.php" />
         <option value="$PROJECT_DIR$/AvalonBot.php" />
         <option value="$PROJECT_DIR$/f.txt" />
@@ -153,6 +148,7 @@
         <option value="$PROJECT_DIR$/changef0.php" />
         <option value="$PROJECT_DIR$/changeconnc1.php" />
         <option value="$PROJECT_DIR$/changeconnc0.php" />
+        <option value="$PROJECT_DIR$/Script.php" />
       </list>
     </option>
   </component>
@@ -350,7 +346,7 @@
       <workItem from="1477451743927" duration="21221000" />
       <workItem from="1477474196732" duration="2839000" />
       <workItem from="1477479070155" duration="2789000" />
-      <workItem from="1477484673152" duration="1074000" />
+      <workItem from="1477484673152" duration="1413000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -370,7 +366,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="263406000" />
+    <option name="totallyTimeSpent" value="263745000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -447,7 +443,7 @@
         <state relative-caret-position="286">
           <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding>
-            <element signature="e#6#95#0#PHP" expanded="true" />
+            <element signature="e#6#95#0#PHP" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -482,7 +478,7 @@
         <state relative-caret-position="286">
           <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding>
-            <element signature="e#6#95#0#PHP" expanded="true" />
+            <element signature="e#6#95#0#PHP" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -517,7 +513,7 @@
         <state relative-caret-position="286">
           <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding>
-            <element signature="e#6#95#0#PHP" expanded="true" />
+            <element signature="e#6#95#0#PHP" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -551,7 +547,7 @@
         <state relative-caret-position="110">
           <caret line="10" column="68" selection-start-line="10" selection-start-column="68" selection-end-line="10" selection-end-column="68" />
           <folding>
-            <element signature="e#6#95#0#PHP" expanded="true" />
+            <element signature="e#6#95#0#PHP" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -579,7 +575,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#6#95#0#PHP" expanded="true" />
+            <element signature="e#6#95#0#PHP" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -591,7 +587,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#6#95#0#PHP" expanded="true" />
+            <element signature="e#6#95#0#PHP" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -603,7 +599,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#6#95#0#PHP" expanded="true" />
+            <element signature="e#6#95#0#PHP" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -631,14 +627,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Script.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="650" column="63" selection-start-line="650" selection-start-column="63" selection-end-line="650" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/composer.lock">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -652,7 +640,7 @@
         <state relative-caret-position="88">
           <caret line="9" column="18" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
           <folding>
-            <element signature="e#6#95#0#PHP" expanded="true" />
+            <element signature="e#6#95#0#PHP" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -733,6 +721,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="149">
           <caret line="73" column="45" selection-start-line="73" selection-start-column="45" selection-end-line="73" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Script.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="760" column="5" selection-start-line="760" selection-start-column="5" selection-end-line="760" selection-end-column="5" />
           <folding />
         </state>
       </provider>
