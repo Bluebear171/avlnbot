@@ -43,72 +43,72 @@ class Script{
     const PU_APPRREJINST = 27; // %s telah menunjuk %s. time to approve reject
 
     const PU_REJECT5TIMES= 28; // Quest sudah direject 5 kali.
-    const PU_FAILWITHXFAIL= 28; // Fail with xx fail
+    const PU_FAILWITHXFAIL= 29; // Fail with xx fail
 
-    const PU_BADGUYSWON= 29; // bad guys won
-    const PU_GOODGUYSWON = 30; // good guys won
+    const PU_BADGUYSWON= 30; // bad guys won
+    const PU_GOODGUYSWON = 31; // good guys won
 
-    const PU_OBERONFINALLY = 31; // oberon finally know friends they are %s
-    const PU_LADYLAKEINST = 32; // %s as lady lake may choose 1 person
+    const PU_OBERONFINALLY = 32; // oberon finally know friends they are %s
+    const PU_LADYLAKEINST = 33; // %s as lady lake may choose 1 person
 
-    const PU_KILLMERLIN = 33; // 3 quest success. Tim jahat adalah %s.
+    const PU_KILLMERLIN = 34; // 3 quest success. Tim jahat adalah %s.
 
-    const PU_QSUCCESSNOFAIL = 34; // Quest success
-    const PU_QSUCCESSXXFAIL = 35; // but has xx fail
+    const PU_QSUCCESSNOFAIL = 35; // Quest success
+    const PU_QSUCCESSXXFAIL = 36; // but has xx fail
 
-    const PR_ASSIGNONEQUEST = 36; // you have assign %s to quest
-    const PU_ASSIGNONEQUEST = 37; // %s has assign %s to quest
+    const PR_ASSIGNONEQUEST = 37; // you have assign %s to quest
+    const PU_ASSIGNONEQUEST = 38; // %s has assign %s to quest
 
-    const PR_BADGUYSUCCESS = 38; //
-    const PR_BADGUYFAIL = 39; //
+    const PR_BADGUYSUCCESS = 39; //
+    const PR_BADGUYFAIL = 40; //
 
-    const PR_LADYNOTSEE = 40; //
-    const PU_LADYNOTSEE = 41; //
+    const PR_LADYNOTSEE = 41; //
+    const PU_LADYNOTSEE = 42; //
 
-    const PR_KILLMERLINSUCCESS = 42; //
-    const PU_KILLMERLINSUCCESS = 43; //
-    const PU_MERLIN = 44; //
-    const PU_NOTMERLIN = 45; //
+    const PR_KILLMERLINSUCCESS = 43; //
+    const PU_KILLMERLINSUCCESS = 44; //
+    const PU_MERLIN = 45; //
+    const PU_NOTMERLIN = 46; //
 
-    const PR_LADYSEE = 42; //
-    const PR_GOOD = 43; //
-    const PR_BAD = 44; //
-    const PU_LADYSEE = 42; //
+    const PR_LADYSEE = 47; //
+    const PR_GOOD = 48; //
+    const PR_BAD = 49; //
+    const PU_LADYSEE = 50; //
 
-    const PR_ASSIGNLATE = 43; //
-    const PU_ASSIGNLATE = 44; //
+    const PR_ASSIGNLATE = 51; //
+    const PU_ASSIGNLATE = 52; //
 
-    const PU_APPRREJLATE = 45; //
-    const PU_APPRREJREMIND = 46; //
+    const PU_APPRREJLATE = 53; //
+    const PU_APPRREJREMIND = 54; //
 
-    const PR_BADGUYLATESUCCESS = 47; //
-    const PR_BADGUYLATEFAIL = 48; //
+    const PR_BADGUYLATESUCCESS = 55; //
+    const PR_BADGUYLATEFAIL = 56; //
 
-    const PU_DISCUSSREMIND = 49; //
+    const PU_DISCUSSREMIND = 57; //
 
-    const PR_LADYLATE = 50; //
-    const PU_LADYLATE = 51; //
+    const PR_LADYLATE = 58; //
+    const PU_LADYLATE = 59; //
 
-    const PR_KILLMERLINLATE = 52; //
-    const PU_KILLMERLINLATE = 53; //
-    const PU_KILLMERLINREMIND = 54; //
+    const PR_KILLMERLINLATE = 60; //
+    const PU_KILLMERLINLATE = 61; //
+    const PU_KILLMERLINREMIND = 62; //
 
-    const PU_NOHISTFOUND = 55; //
-    const PU_HISTQEXECBY = 56; //
-    const PU_HISTQREJECTBY = 57; //
-    const PU_HISTQFAILREJ = 58; //
+    const PU_NOHISTFOUND = 63; //
+    const PU_HISTQEXECBY = 64; //
+    const PU_HISTQREJECTBY = 65; //
+    const PU_HISTQFAILREJ = 66; //
 
-    const PU_CANNOTJOINFULL = 59; //
-    const PU_CANNOTJOIN = 60; //
-    const PU_STARTMEFIRST = 61; //
+    const PU_CANNOTJOINFULL = 67; //
+    const PU_CANNOTJOIN = 68; //
+    const PU_STARTMEFIRST = 69; //
 
-    const PU_CREATEFIRST = 62; //
-    const PU_GAMESTART = 63; //
-    const PU_GAMECANCEL = 64; //
+    const PU_CREATEFIRST = 70; //
+    const PU_GAMESTART = 71; //
+    const PU_GAMECANCEL = 72; //
 
-    const PU_JOINREMIND = 65; //
-    const PU_JOINSTART = 66; //
-    const PU_JOINSUCCESS = 67; //
+    const PU_JOINREMIND = 73; //
+    const PU_JOINSTART = 74; //
+    const PU_JOINSUCCESS = 75; //
 
     const PU_CHCKPMTOCHGLANG = 100; // check PM untuk mengganti bahasa
     const PU_SECONDTODECIDE = 101; // you have %d to decide
@@ -151,7 +151,7 @@ class Script{
                 = "Kamu telah bergabung Avalon di group %s.";
 
             Script::$script["en"][Script::PU_KINGDONE]
-                = "The king have already found the answer and then finally decided to finish this never-ending discussion.";
+                = "The king has already found the answer and then finally decided to finish this never-ending discussion.";
             Script::$script["id"][Script::PU_KINGDONE]
                 = "Raja sudah mendapatkan pencerahan dan akhirnya memutuskan untuk mengakhiri diskusi tiada akhir ini.";
 
@@ -176,7 +176,7 @@ class Script{
                 = "%s mengganti jawaban menjadi menolak. Setuju <b>%d</b>. Menolak <b>%d</b>.";
 
             Script::$script["en"][Script::PU_REJECTCHANGEKING]
-                = "The quest lead by %s have already been rejected. The Quest was cancelled and %s is now the King.";
+                = "The quest lead by %s has been already rejected. The Quest is now lead by the new king: %s.";
             Script::$script["id"][Script::PU_REJECTCHANGEKING]
                 = "Quest yang dipimpin oleh %s telah ditolak. quest dibatalkan dan king berpindah ke %s.";
 
@@ -188,7 +188,7 @@ class Script{
             Script::$script["en"][Script::PU_AFTERAPPROVE]
                 = "Most of the team members approved. The quest will be executed!";
             Script::$script["id"][Script::PU_AFTERAPPROVE]
-                = "Sebagian besar tim meng-approve, quest pun akan dijalankan!";
+                = "Sebagian besar tim setuju, quest pun akan dijalankan!";
 
             Script::$script["en"][Script::PR_EXECQUEST]
                 = "Quest no.%d. What do you want to choose?";
