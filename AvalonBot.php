@@ -1158,6 +1158,7 @@ class AvalonBotChat extends TelegramBotChat {
                                 $textGroup = sprintf($this->langScript[Script::PU_LANGCHANGED],
                                     Constant::getLanguageString($dataString));
                                 $this->apiSendMessageDirect($textGroup);
+                                break;
                             } catch (Exception $e) {
                                 $this->core->redis = false;
                                 $this->core->dbInit();
@@ -1179,6 +1180,7 @@ class AvalonBotChat extends TelegramBotChat {
                             $text = sprintf($this->langScript[Script::PU_LANGCHANGED],
                                 Constant::getLanguageString($dataString));
                             $this->apiEditMessageText($text, $messageID, $from["id"]);
+                            break;
                         } catch (Exception $e) {
                             $this->core->redis = false;
                             $this->core->dbInit();
