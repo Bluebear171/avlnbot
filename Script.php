@@ -663,6 +663,8 @@ class Script{
                 .self::unichr(Constant::EMO_EVIL)."/morgana\n"
                 .self::unichr(Constant::EMO_EVIL)."/mordred\n"
                 .self::unichr(Constant::EMO_EVIL)."/oberon\n\n"
+            . "Tambahan role untuk Telegram:\n"
+                .self::unichr(Constant::EMO_EVIL)."/morgassassin\n\n"
             . "Di awal permainan, King token ".self::unichr(Constant::EMO_KING). " akan diberikan secara random ke salah seorang pemain dan raja boleh memilih orang yang akan berangkat untuk quest yang berlangsung.\n"
             . "Setelah raja memberikan penugasan, tiap orang boleh <b>setuju</b> or <b>menolak</b> terhadap penugasan itu. Kemudian, jumlah setuju dan jumlah menolak akan dihitung.\n\n"
 
@@ -757,7 +759,7 @@ class Script{
                 . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
                 . "Morgasassin is a combination role from /morgana and /assassin. The player with this cahracter can deceive Percival and morgassassin can also kill Merlin at the game of the game.\n\n";
             Script::$script["id"][Script::PU_MORGASSASSININFO]
-                = "<b>Morgana</b>".self::unichr(Constant::EMO_EVIL)
+                = "<b>Morgassassin</b>".self::unichr(Constant::EMO_EVIL)
                 . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n"
                 . "Morgassassin adalah peran kombinasi dari /morgana dan /assassin. Pemain dengan karakter ini dapat menipu Percival dan Morgassassin juga dapat membunuh Merlin di akhir game.\n\n";
 

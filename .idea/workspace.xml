@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a73f481-ab87-4211-bcdc-4a86725a2d7e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/changeconnc.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/changef.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/checkRedis.php" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/changeconnc0.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/changeconnc1.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/changef0.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/changef1.php" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AvalonBot.php" afterPath="$PROJECT_DIR$/AvalonBot.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Constant.php" afterPath="$PROJECT_DIR$/Constant.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Script.php" afterPath="$PROJECT_DIR$/Script.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/check.php" afterPath="$PROJECT_DIR$/check.php" />
     </list>
     <ignored path="avalon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -44,7 +34,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="check.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="check.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/check.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="110">
@@ -64,11 +54,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Script.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Script.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Script.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="127">
-              <caret line="627" column="63" selection-start-line="627" selection-start-column="63" selection-end-line="627" selection-end-column="63" />
+            <state relative-caret-position="171">
+              <caret line="113" column="31" selection-start-line="113" selection-start-column="19" selection-end-line="113" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -158,11 +148,11 @@
         <option value="$PROJECT_DIR$/changeconnc0.php" />
         <option value="$PROJECT_DIR$/changef0.php" />
         <option value="$PROJECT_DIR$/changeconnc.php" />
-        <option value="$PROJECT_DIR$/Script.php" />
         <option value="$PROJECT_DIR$/AvalonBot.php" />
         <option value="$PROJECT_DIR$/Constant.php" />
         <option value="$PROJECT_DIR$/checkRedis.php" />
         <option value="$PROJECT_DIR$/check.php" />
+        <option value="$PROJECT_DIR$/Script.php" />
       </list>
     </option>
   </component>
@@ -363,7 +353,7 @@
       <workItem from="1477484673152" duration="1728000" />
       <workItem from="1477487052799" duration="929000" />
       <workItem from="1477493926607" duration="1198000" />
-      <workItem from="1477584928323" duration="2045000" />
+      <workItem from="1477584928323" duration="2242000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -383,7 +373,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="268232000" />
+    <option name="totallyTimeSpent" value="268429000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -690,22 +680,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Constant.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3014">
-          <caret line="13" column="33" selection-start-line="13" selection-start-column="33" selection-end-line="13" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Script.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="627" column="63" selection-start-line="627" selection-start-column="63" selection-end-line="627" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/checkRedis.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
@@ -718,6 +692,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="110">
           <caret line="5" column="41" selection-start-line="5" selection-start-column="41" selection-end-line="5" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Constant.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3014">
+          <caret line="13" column="33" selection-start-line="13" selection-start-column="33" selection-end-line="13" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Script.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="113" column="31" selection-start-line="113" selection-start-column="19" selection-end-line="113" selection-end-column="31" />
           <folding />
         </state>
       </provider>
