@@ -419,7 +419,7 @@ class Script{
             Script::$script["en"][Script::PU_APPRREJREMIND]
                 = "The assignees in this quest are %s\n\n<b>%d seconds</b> left to choose /approve or /reject. If there is minimum <b>%d members</b> fail the quest, the quest will be failed.";
             Script::$script["id"][Script::PU_APPRREJREMIND]
-                = "Pejuang di quest ini %s\n\n<b>%d detik</b>lagi pilih /approve atau /reject. Jika ada minimal <b>%d anggota</b> menggagalkan quest, maka quest akan dianggap gagal!";
+                = "Pejuang di quest ini %s\n\n<b>%d detik</b> lagi untuk memilih /approve atau /reject. Jika ada minimal <b>%d anggota</b> menggagalkan quest, maka quest akan dianggap gagal!";
 
             Script::$script["en"][Script::PR_BADGUYLATESUCCESS]
                 = "You answered late. Boss forced you to give the good impression this time.";

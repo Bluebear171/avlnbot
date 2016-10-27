@@ -1569,8 +1569,9 @@ class AvalonBotChat extends TelegramBotChat {
                         // "Pejuang di quest ini %s\n\n\nPilih /approve atau /reject. Jika ada minimal <b>%d anggota</b> menggagalkan quest, maka quest akan dianggap gagal!";
                         $text = sprintf($this->langScript[Script::PU_APPRREJREMIND],
                             $this->playersToString($this->questAssigneeIDs),
-                            Constant::$two_fails_required[$this->playerCount][$this->currentQuestNumberStart0],
-                            (Constant::$_execApproveRejectGroup - Constant::$_execApproveRejectGroup_r1));
+                            (Constant::$_execApproveRejectGroup - Constant::$_execApproveRejectGroup_r1),
+                            Constant::$two_fails_required[$this->playerCount][$this->currentQuestNumberStart0]
+                            );
                         $this->apiSendMessage($text);
                         $this->flagRemind1 = true;
                     }
