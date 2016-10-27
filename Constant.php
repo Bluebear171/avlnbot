@@ -16,7 +16,6 @@ class Constant{
     const EXEC_KILL_MERLIN_PRIVATE = 8;
 
     const MIN_PLAYER = 5;
-    const MIN_LOL_PLAYER = 7;
     const MAX_PLAYER = 10;
 
     const MERLIN = 0;
@@ -27,6 +26,9 @@ class Constant{
     const MORGANA = 5;
     const OBERON = 6;
     const BAD_NORMAL = 7;
+
+    const MORGASSASSIN = 8;
+
 
     const THRES_REMIND = 10; // $updatesTimeout+1
 
@@ -121,6 +123,8 @@ class Constant{
                 return "Oberon";
             case Constant::BAD_NORMAL:
                 return "Thief";
+            case Constant::MORGASSASSIN:
+                return "Morgassassin";
         }
     }
 
@@ -193,16 +197,16 @@ class Constant{
 
             Constant::$players = array(
                 5 => array(Constant::MERLIN,
+                            Constant::PERCIVAL,
                             Constant::GOOD_NORMAL,
-                            Constant::GOOD_NORMAL,
-                            Constant::ASSASSIN,
+                            Constant::MORGASSASSIN,
                             Constant::MORDRED),
                 6 => array(Constant::MERLIN,
-                    Constant::GOOD_NORMAL,
+                    Constant::PERCIVAL,
                     Constant::GOOD_NORMAL,
                     Constant::GOOD_NORMAL,
                     Constant::MORDRED,
-                    Constant::ASSASSIN),
+                    Constant::MORGASSASSIN),
                 7 => array(Constant::MERLIN,
                     Constant::PERCIVAL,
                     Constant::GOOD_NORMAL,
@@ -241,11 +245,8 @@ class Constant{
         }
     }
 
-    static function getMinPlayer($mode){
-        if ($mode == Constant::MODE_NORMAL) {
-            return Constant::MIN_PLAYER;
-        }
-        return Constant::MIN_LOL_PLAYER;
+    static function getMinPlayer(){
+        return Constant::MIN_PLAYER;
     }
 
     static function getMaxPlayer(){

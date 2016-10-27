@@ -110,6 +110,9 @@ class Script{
     const PU_JOINSTART = 74; //
     const PU_JOINSUCCESS = 75; //
 
+
+    const PR_YOUAREMORGASSASSIN= 76; // you are morgassassin.
+
     const PU_CHCKPMTOCHGLANG = 100; // check PM untuk mengganti bahasa
     const PU_SECONDTODECIDE = 101; // you have %d to decide
     const PU_LANGGROUPNOTFOUND = 102; // "Bahasa tidak berhasil diganti. group tidak ditemukan.";
@@ -134,6 +137,7 @@ class Script{
     const PU_ASSASSININFO = 125;
     const PU_OBERONINFO = 126;
     const PU_THIEFINFO = 127;
+    const PU_MORGASSASSININFO = 128;
 
     static $script;
     static function init(){
@@ -254,6 +258,11 @@ class Script{
                 = "You are the bad guy. Your evil team are %s.";
             Script::$script["id"][Script::PR_YOUAREBADNORMAL]
                 = "Kamu adalah Pejahat kacangan. Tim jahatmu adalah %s.";
+
+            Script::$script["en"][Script::PR_YOUAREMORGASSASSIN]
+                = "You are Morgassassin (Morgana with assassin ability). Your team are %s.  On Percival's eyes, you were Merlin. At the end of the game, you can kill Merlin to win.";
+            Script::$script["id"][Script::PR_YOUAREMORGASSASSIN]
+                = "Kamu adalah Morgassassin (Morgana dengan kemampuan assassin). Tim jahatmu adalah %s. Di mata Percival, kamu adalah Merlin. Di akhir permainan, kamu bisa membunuh Merlin untuk menang.";
 
 
             Script::$script["en"][Script::PU_KINGNEEDASSIGN]
@@ -617,6 +626,8 @@ class Script{
                 .self::unichr(Constant::EMO_EVIL)."/morgana\n"
                 .self::unichr(Constant::EMO_EVIL)."/mordred\n"
                 .self::unichr(Constant::EMO_EVIL)."/oberon\n\n"
+            . "Addition role for telegram:\n"
+                .self::unichr(Constant::EMO_EVIL)."/morgassassin\n\n"
             . "At the start of the game, King token".self::unichr(Constant::EMO_KING). " will be randomly assigned to a player and the King may choose who can complete the current quest.\n"
             . "After the king has done the assignment, any player may vote <b>approve</b> or <b>reject</b> to the assignment. Then, the approve and reject will be counted.\n\n"
 
@@ -739,6 +750,16 @@ class Script{
                 = "<b>Assassin</b>".self::unichr(Constant::EMO_EVIL)
                 . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n"
                 . "Assassin dapat menebak Merlin di akhir game (jika 3 quest sudah sukses). Jika Merlin berhasil dibunuh, apapun hasil di quest, tim jahat akan menang.";
+
+
+            Script::$script["en"][Script::PU_MORGASSASSININFO]
+                = "<b>Morgassassin</b>".self::unichr(Constant::EMO_EVIL)
+                . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
+                . "Morgasassin is a combination role from /morgana and /assassin. The player with this cahracter can deceive Percival and morgassassin can also kill Merlin at the game of the game.\n\n";
+            Script::$script["id"][Script::PU_MORGASSASSININFO]
+                = "<b>Morgana</b>".self::unichr(Constant::EMO_EVIL)
+                . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n"
+                . "Morgassassin adalah peran kombinasi dari /morgana dan /assassin. Pemain dengan karakter ini dapat menipu Percival dan Morgassassin juga dapat membunuh Merlin di akhir game.\n\n";
 
             Script::$script["en"][Script::PU_OBERONINFO]
                 = "<b>Oberon</b>".self::unichr(Constant::EMO_EVIL)

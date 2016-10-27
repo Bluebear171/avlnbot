@@ -462,6 +462,9 @@ class AvalonBotChat extends TelegramBotChat {
     public function command_oberon($params, $message) {
         $this->sendOberon();
     }
+    public function command_morgassassin($params, $message) {
+        $this->sendMorgassassin();
+    }
 
     public function command_contact($params, $message) {
         $this->sendContact();
@@ -659,7 +662,9 @@ class AvalonBotChat extends TelegramBotChat {
             if (! Constant::isGoodPlayer($role)) {
                 array_push($this->all_bad_guys_id, $playerID);
             }
-            if ($role == Constant::MERLIN || $role == Constant::MORGANA) {
+            if ($role == Constant::MERLIN
+                || $role == Constant::MORGANA
+                || $role == Constant::MORGASSASSIN) {
                 array_push($morgana_and_merlin_ids, $playerID);
             }
         }
@@ -714,6 +719,11 @@ class AvalonBotChat extends TelegramBotChat {
                 case Constant::BAD_NORMAL:
                     $text = sprintf($this->langScript[Script::PR_YOUAREBADNORMAL],
                         $this->playersToString($all_bad_guys_no_oberon_id));
+                    break;
+                case Constant::MORGASSASSIN:
+                    $text = sprintf($this->langScript[Script::PR_YOUAREMORGASSASSIN],
+                        $this->playersToString($all_bad_guys_no_oberon_id));
+                    $this->assassinID = $playerID;
                     break;
             }
             if (Constant::$DEVELOPMENT) {
@@ -1449,7 +1459,7 @@ class AvalonBotChat extends TelegramBotChat {
                     // if time is between 90 to 95 and flagremind30 is false, send message 30 sec left, and add boolean flag remind30 to true
                     if ($difftime >= Constant::$_startGame) {
                         $playercount = count($this->playerIDs);
-                        if ($playercount >= Constant::getMinPlayer($this->mode)){
+                        if ($playercount >= Constant::getMinPlayer()){
                             $this->playerCount = $playercount;
                             $this->startGame();
                         }
@@ -2052,6 +2062,11 @@ class AvalonBotChat extends TelegramBotChat {
         $this->apiSendMessageDirect($text);
     }
 
+    public function sendMorgassassin(){
+        $text = $this->langScript[Script::PU_MORGASSASSININFO];
+        $this->apiSendMessageDirect($text);
+    }
+
     public function sendMordred(){
         $text = $this->langScript[Script::PU_MORDREDINFO];
         $this->apiSendMessageDirect($text);
@@ -2203,7 +2218,7 @@ class AvalonBotChat extends TelegramBotChat {
         $text = sprintf($this->langScript[Script::PU_JOINSUCCESS],
             $this->getPlayerIDString($sender_id),
             count($this->playerIDs),
-            Constant::getMinPlayer($this->mode),
+            Constant::getMinPlayer(),
             Constant::getMaxPlayer());
         $this->apiSendMessage($text);
     }
