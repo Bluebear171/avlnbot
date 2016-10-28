@@ -2089,8 +2089,10 @@ class AvalonBotChat extends TelegramBotChat {
         $text = $this->langScript[Script::PR_SETLANGINST];
         if ($this->isGroup) {
             $chatTitle = $this->getChatTitle();
-            $text .= sprintf($this->langScript[Script::PR_SETLANGGROUPINST],
-                $chatTitle);
+            if (null!= $chatTitle) {
+                $text .= sprintf($this->langScript[Script::PR_SETLANGGROUPINST],
+                    $chatTitle);
+            }
         }
         $params = array(
             'reply_markup'=> array(
