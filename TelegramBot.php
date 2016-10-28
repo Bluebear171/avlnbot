@@ -122,6 +122,21 @@ abstract class TelegramBotCore {
                 $connfile = fopen("connc.txt", "w") or die("Unable to open file!");
                 fwrite($connfile,"1");
                 fclose($connfile);
+
+                // start longpoll add the timestamp
+                if (Constant::$DEVELOPMENT) {
+                    $file = 'devlongpolllog.txt';
+                    $text = date("Y-m-d h:i:sa", strtotime("+5 hours"))."\n";
+                }
+                else {
+                    $text = date("Y-m-d h:i:sa", strtotime("+9 hours"))."\n";
+                    $file = 'longpolllog.txt';
+                }
+                // Write the contents to the file,
+                // using the FILE_APPEND flag to append the content to the end of the file
+                // and the LOCK_EX flag to prevent anyone else writing to the file at the same time
+                file_put_contents($file, $text, FILE_APPEND | LOCK_EX);
+
                 $this->longpoll();
             }
         }
