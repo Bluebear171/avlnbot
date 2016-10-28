@@ -129,7 +129,7 @@ abstract class TelegramBotCore {
                     $text = date("Y-m-d h:i:sa", strtotime("+5 hours"))."\n";
                 }
                 else {
-                    $text = date("Y-m-d h:i:sa", strtotime("+9 hours"))."\n";
+                    $text = date("Y-m-d h:i:sa", strtotime("+7 hours"))."\n";
                     $file = 'longpolllog.txt';
                 }
                 // Write the contents to the file,
