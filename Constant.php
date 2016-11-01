@@ -87,14 +87,14 @@ class Constant{
     public static $good_guys_numbers;
     public static $players;
 
-    static function isGoodPlayer($role){
+    static function isGNBPlayer($role){
         switch ($role) {
             case Constant::MERLIN:
             case Constant::PERCIVAL:
             case Constant::GOOD_NORMAL:
-                return true;
+                return 1;
             default:
-                return false;
+                return -1;
         }
     }
 
@@ -138,14 +138,22 @@ class Constant{
                 Constant::$DEVELOPMENT = false;
             }
             if (Constant::$DEVELOPMENT) {
-                Constant::$_120 = 20;
-                Constant::$_30 = 5;
-                Constant::$_60 = 10;
-                Constant::$_90 = 15;
+//                Constant::$_120 = 20;
+//                Constant::$_30 = 5;
+//                Constant::$_60 = 10;
+//                Constant::$_90 = 15;
+//
+//                Constant::$_startGame = 15;
+//                Constant::$_startGame_r1 = 5;
+//                Constant::$_startGame_r2 = 10;
+                Constant::$_120 = 8;
+                Constant::$_30 = 2;
+                Constant::$_60 = 4;
+                Constant::$_90 = 6;
 
-                Constant::$_startGame = 15;
-                Constant::$_startGame_r1 = 5;
-                Constant::$_startGame_r2 = 10;
+                Constant::$_startGame = 6;
+                Constant::$_startGame_r1 = 2;
+                Constant::$_startGame_r2 = 4;
             }
             else{
                 Constant::$_120 = 120;
@@ -179,7 +187,7 @@ class Constant{
             Constant::$inited = true;
             // $quest [number of player][quest no]
             Constant::$quest = array(
-                5 => array(2,3,3,3,3),
+                5 => array(2,3,2,3,3),
                 6 => array(2,3,4,3,4),
                 7 => array(2,3,3,4,4),
                 8 => array(3,4,4,5,5),

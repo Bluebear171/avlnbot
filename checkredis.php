@@ -8,7 +8,7 @@ require 'vendor/predis/predis/autoload.php';
 $redis = new Predis\Client(getenv('REDIS_URL'));
 //$redis->connect('redis://h:pf93dvkuhnprvr9pbad8k3j2206@ec2-23-23-218-119.compute-1.amazonaws.com',
 //    23399);
-echo "Connection to server sucessfully<br/>";
+echo "Connection to server successfully<br/>";
 //check whether server is running or not
 echo "Server is running: ".$redis->ping() ."<br />";
 
@@ -40,18 +40,32 @@ echo "Server is running: ".$redis->ping() ."<br />";
 // INCREMENT DECREMENT
 // set key
 //$redis->set('foo5', 1);
-//$redis->incr('foo5');
-//echo "<br />". $redis->get('foo5');
+//$redis->incr('foo558');
+//echo "<br />". $redis->get('foo558');
 
 
 //****************************************************************
 // OBJECT HMSET HMGET
 //$redis->hmset('obj', array(
-//    "a"=>100,
-//    "b"=>200
+//    "np"=>300
+/*, "cp"=>200*/
 //));
-//$obj = $redis->hmget('obj', array("b"));
+
+//$obj = $redis->hmget('obj', array("Np2","Cp2"));
+//$redis->hmset('obj', array("Np2"=>$obj["0"]+1,"Cp2"=>$obj["1"]+1));
+//$obj = $redis->hmget('obj', array("Np2","Cp2"));
 //print_r($obj);
+
+//$redis->del('obj');
+
+
+//$obj = $redis->hmget('stats',array("Np","Nb","Nw"));
+//print_r($obj);
+//echo "<br />";
+//
+//$obj = $redis->hgetall('obj');
+//print_r($obj);
+//echo "<br />";
 
 
 //****************************************************************
@@ -99,8 +113,27 @@ echo "Server is running: ".$redis->ping() ."<br />";
 // GET ALL KEYS
 $redisKeys = $redis->keys("*");
 foreach ($redisKeys as $key) {
-    echo $key . " - " . $redis->get($key). "<br />";
+    if ( endsWith($key, "_lang")) {
+        echo $key . " - " . $redis->get($key). "<br />";
+    }
+    else if ( endsWith($key, "stats")){
+        $obj = $redis->hgetall($key);
+        echo $key . " : ";
+        print_r($obj);
+    }
 }
+
+// http://stackoverflow.com/questions/834303/startswith-and-endswith-functions-in-php
+function startsWith($haystack, $needle) {
+    // search backwards starting from haystack length characters from the end
+    return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
+}
+
+function endsWith($haystack, $needle) {
+    // search forward starting from end minus needle length characters
+    return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
+}
+
 //echo "<br/>";
 //print_r($a);
 

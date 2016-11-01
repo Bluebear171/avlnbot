@@ -402,12 +402,12 @@ class Script{
                 = "<b>bukan MERLIN</b>!";
 
             Script::$script["en"][Script::PR_ASSIGNLATE]
-                = "The time's up. The rest of players is assigned randomly. ";
+                = "The time's up. The rest of players are assigned randomly. ";
             Script::$script["id"][Script::PR_ASSIGNLATE]
                 = "Jawabanmu terlambat, sisa player dipilih secara random. ";
 
             Script::$script["en"][Script::PU_ASSIGNLATE]
-                = "Because the time's up, The rest of players is assigned randomly: %s.";
+                = "Because the time's up, The rest of players are assigned randomly: %s.";
             Script::$script["id"][Script::PU_ASSIGNLATE]
                 = "Karena waktu habis, sisa pemain dipilih secara random: %s.";
 
@@ -417,7 +417,7 @@ class Script{
                 = "Karena waktu habis, pemain lain dianggap memilih approve..";
 
             Script::$script["en"][Script::PU_APPRREJREMIND]
-                = "The assignees in this quest are %s\n\n<b>%d seconds</b> left to choose /approve or /reject. If there is minimum <b>%d members</b> fail the quest, the quest will be failed.";
+                = "The assignees in this quest are %s\n\n<b>%d seconds</b> left to choose /approve or /reject. If there is minimum <b>%d member(s)</b> fail the quest, the quest will be failed.";
             Script::$script["id"][Script::PU_APPRREJREMIND]
                 = "Pejuang di quest ini %s\n\n<b>%d detik</b> lagi untuk memilih /approve atau /reject. Jika ada minimal <b>%d anggota</b> menggagalkan quest, maka quest akan dianggap gagal!";
 

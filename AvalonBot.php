@@ -438,6 +438,26 @@ class AvalonBotChat extends TelegramBotChat {
         }
     }
 
+    // view my stats
+    public function command_stats($params, $message) {
+        $this->sendPrivateStats($message["from"]);
+    }
+
+    // view global stats
+    public function command_statsglobal($params, $message) {
+        $this->sendGlobalStats();
+    }
+
+    // view global stats
+    public function command_statsgroup($params, $message) {
+        if ($this->isGroup){
+            $this->sendGroupStats($message);
+        }
+        else {
+            $this->sendWarningOnlyGroup();
+        }
+    }
+
     public function command_howtoplay($params, $message) {
         $this->sendHowToPlay();
     }
@@ -659,7 +679,7 @@ class AvalonBotChat extends TelegramBotChat {
             // this is to link id with its role
             $this->players[$playerID][Constant::ROLE] = $role;
             $this->players[$playerID][Constant::INDEX] = $i;
-            if (! Constant::isGoodPlayer($role)) {
+            if (Constant::isGNBPlayer($role) == -1) {
                 array_push($this->all_bad_guys_id, $playerID);
             }
             if ($role == Constant::MERLIN
@@ -995,6 +1015,8 @@ class AvalonBotChat extends TelegramBotChat {
         $this->apiSendMessage($text);
 
         $this->revealAllRoles();
+        $this->saveDB(-1);
+        $this->savePlayerStats(-1);
         $this->gameStatus = Constant::NOT_CREATED;
     }
 
@@ -1004,7 +1026,114 @@ class AvalonBotChat extends TelegramBotChat {
         $this->apiSendMessage($text);
 
         $this->revealAllRoles();
+        $this->saveDB(1);
+        $this->savePlayerStats(1);
         $this->gameStatus = Constant::NOT_CREATED;
+    }
+
+    public function saveDB($whowon){
+        $retry = 0;
+        while ($retry < 2) {
+            try {
+                //save to Global
+                if ($this->redis instanceof Predis\Client){
+                    $prefixMode = "";
+                    if ($this->mode == Constant::MODE_NORMAL) {
+                        $prefixMode = "N";
+                    }
+                    else if ($this->mode == Constant::MODE_CHAOS){
+                        $prefixMode = "C";
+                    }
+
+                    // increase global count "stats"
+                    // GET Np and Ngw index (Normal play and Normal good wins)
+                    // increase by 1
+
+                    if ($whowon == 1) {
+                        $whoWonKey = $prefixMode ."gw";
+                    }
+                    else if ($whowon == -1){
+                        $whoWonKey = $prefixMode ."bw";
+                    }
+                    else {
+                        $whoWonKey = $prefixMode ."nw";
+                    }
+
+                    $obj = $this->redis->hmget('stats', array($prefixMode ."p" , $whoWonKey));
+                    $this->redis->hmset('stats', array($prefixMode ."p"=>$obj[0]+1,$whoWonKey =>$obj[1]+1));
+
+                    // increase group count "-groupid_stats"
+                    // GET Np and Ngw index (Normal play and Normal good wins)
+                    // increase by 1
+                    $groupKey = $this->chatId . '_stats';
+                    $obj = $this->redis->hmget($groupKey, array($prefixMode ."p" , $whoWonKey));
+                    $this->redis->hmset($groupKey, array($prefixMode ."p"=>$obj[0]+1,$whoWonKey=>$obj[1]+1));
+                }
+                break;
+            } catch (Exception $e) {
+                $this->core->redis = false;
+                $this->core->dbInit();
+                $this->redis = $this->core->redis;
+            }
+            $retry++;
+        };
+    }
+
+
+    public function savePlayerStats($whowon){
+        $retry = 0;
+        while ($retry < 2) {
+            try {
+                //save to Global
+                if ($this->redis instanceof Predis\Client) {
+                    $prefixMode = "";
+                    if ($this->mode == Constant::MODE_NORMAL) {
+                        $prefixMode = "N";
+                    } else if ($this->mode == Constant::MODE_CHAOS) {
+                        $prefixMode = "C";
+                    }
+
+                    // increase count "-playerid_stats"
+                    for ($i = 0; $i < $this->playerCount; $i++) {
+                        $playerKey = $this->playerIDs[$i] . '_stats';
+                        $isGNBPlayer = Constant::isGNBPlayer($this->randomizedRole[$i]);
+                        $isWon = ( $isGNBPlayer == $whowon );
+
+                        switch ($isGNBPlayer) {
+                            case -1: // this player is Bad {
+                                $roleKey = $prefixMode. "b";
+                                break;
+                            case 1: // this player is Good
+                                $roleKey = $prefixMode. "g";
+                                break;
+                            default : // this player is neutral
+                                $roleKey = $prefixMode. "n";
+                                break;
+                        }
+                        if ($isWon) {
+                            $obj = $this->redis->hmget($playerKey, array($prefixMode . "p", $prefixMode . "w", $roleKey, $roleKey . "w"));
+                            $this->redis->hmset($playerKey, array(
+                                $prefixMode . "p" => $obj[0] + 1,
+                                $prefixMode . "w" => $obj[1] + 1,
+                                $roleKey => $obj[2] + 1,
+                                $roleKey . "w" => $obj[3] + 1));
+                        }
+                        else {
+                            $obj = $this->redis->hmget($playerKey, array($prefixMode . "p", $roleKey));
+                            $this->redis->hmset($playerKey, array(
+                                $prefixMode . "p" => $obj[0] + 1,
+                                $roleKey => $obj[1] + 1));
+                        }
+                    }
+                }
+                break;
+            } catch (Exception $e) {
+                $this->core->redis = false;
+                $this->core->dbInit();
+                $this->redis = $this->core->redis;
+            }
+            $retry++;
+        };
     }
 
     public function revealAllRoles(){
@@ -1335,7 +1464,7 @@ class AvalonBotChat extends TelegramBotChat {
                             &&
                             in_array($chosenPlayerID, $this->playerIDs)
                         ) {
-                            $isGoodGuy = Constant::isGoodPlayer($this->players[$chosenPlayerID][Constant::ROLE]);
+                            $isGoodGuy = ( Constant::isGNBPlayer($this->players[$chosenPlayerID][Constant::ROLE]) == 1 );
                             // SCRIPT
                             // "Kamu berhasil menerawang %s.. Dia adalah orang ";
                             $text = sprintf($this->langScript[Script::PR_LADYSEE],
@@ -1850,7 +1979,7 @@ class AvalonBotChat extends TelegramBotChat {
                 $text .= "\n";
             }
             $role = $this->randomizedRole[$i];
-            if (Constant::isGoodPlayer($role) ){
+            if (Constant::isGNBPlayer($role) == 1){
                 $emoText = $this->unichr(Constant::EMO_SMILE);
             }
             else {
@@ -2226,6 +2355,182 @@ class AvalonBotChat extends TelegramBotChat {
         $this->apiSendMessage($text);
     }
 
+    protected function sendPrivateStats($message_from){
+        // Script
+        // Player Name
+        // Normal Mode - 100x play,
+        // EMOGOOD 70x winrate 50%,
+        // EMOBAD  30x winrate 80%
+        // Chaos Mode - 100x play,
+        // EMOGOOD     70x winrate 50%,
+        // EMONEUTRAL  30x winrate 80%
+        // EMOBAD      30x winrate 80%
+
+        if ($this->redis instanceof Predis\Client) {
+            $retry = 0;
+            while ($retry < 2) {
+                try {
+                    $playerKey = $message_from["id"] . "_stats";
+                    $redisGet = $this->redis->hgetall($playerKey);
+
+                    $first_name = $message_from["first_name"];
+                    $last_name = "";
+                    if (isset($message_from["last_name"])) {
+                        $last_name = $message_from["last_name"];
+                    }
+                    $full_name = trim($first_name . " " . $last_name);
+                    $text = "<b>" . $full_name . "</b>\n";
+
+                    $hasStat = false;
+                    if ( isset($redisGet["Np"] )) { // has player normal
+                        $hasStat = true;
+                        $normalPlay = $redisGet["Np"];
+                        $text .= "NORMAL MODE - played ".$normalPlay . " times. ";
+                        if (isset($redisGet["Nw"])) { // has normal win value
+                            $winrate = round (100* $redisGet["Nw"] / $normalPlay);
+                            $text .= " Winrate: ". $winrate . "%\n";
+                        }
+                        if (isset($redisGet["Ng"])) { // has normal good value
+                            $text .= $this->unichr(Constant::EMO_SMILE)." ". $redisGet["Ng"] ." times. ";
+                            if (isset($redisGet["Ngw"])) { // has normal good win value
+                                $winrate = round (100* $redisGet["Ngw"] / $redisGet["Ng"]);
+                                $text .= " Winrate: ". $winrate . "%\n";
+                            }
+                        }
+                        if (isset($redisGet["Nb"])) { // has normal bad value
+                            $text .= $this->unichr(Constant::EMO_EVIL)." ". $redisGet["Nb"] ." times. ";
+                            if (isset($redisGet["Nbw"])) { // has normal bad win value
+                                $winrate = round (100* $redisGet["Nbw"] / $redisGet["Nb"]);
+                                $text .= " Winrate: ". $winrate . "%\n";
+                            }
+                        }
+                    }
+                    if (isset($redisGet["Cp"] )){ // has played chaos
+                        $hasStat = true;
+                        $chaosPlay = $redisGet["Cp"];
+                        $text .= "CHAOS MODE - played ".$chaosPlay . " times. ";
+                        if (isset($redisGet["Cw"])) { // has chaos win value
+                            $winrate = round (100* $redisGet["Cw"] / $chaosPlay);
+                            $text .= " Winrate: ". $winrate . "%\n";
+                        }
+                        if (isset($redisGet["Cg"])) { // has normal good value
+                            $text .= $this->unichr(Constant::EMO_SMILE). " ". $redisGet["Cg"] ." times. ";
+                            if (isset($redisGet["Cgw"])) { // has normal good win value
+                                $winrate = round (100* $redisGet["Cgw"] / $redisGet["Cg"]);
+                                $text .= " Winrate: ". $winrate . "%\n";
+                            }
+                        }
+                        if (isset($redisGet["Cb"])) { // has chaos bad value
+                            $text .= $this->unichr(Constant::EMO_EVIL). " ". $redisGet["Cb"] ." times. ";
+                            if (isset($redisGet["Cbw"])) { // has chaos bad win value
+                                $winrate = round (100* $redisGet["Cbw"] / $redisGet["Cb"]);
+                                $text .= " Winrate: ". $winrate . "%\n";
+                            }
+                        }
+                    }
+                    if (!$hasStat) {
+                        $text .= "You have to play a game to have the statistics\n";
+                    }
+
+                    $this->apiSendMessageDirect($text);
+                    break;
+                } catch (Exception $e) {
+                    $this->core->redis = false;
+                    $this->core->dbInit();
+                    $this->redis = $this->core->redis;
+                }
+                $retry++;
+            };
+        }
+    }
+
+    protected function sendGlobalStats(){
+        // Script
+        // Avalon
+        // Normal Mode - 100x play,
+        // EMOGOOD win 50%, EMOBAD win 80%, EMONEUTRAL winrate 80%
+
+        if ($this->redis instanceof Predis\Client) {
+            $retry = 0;
+            while ($retry < 2) {
+                try {
+                    $redisGet = $this->redis->hgetall("stats");
+                    $text = "<b>Avalon Bot for Telegram</b>\n";
+
+                    $hasStat = false;
+                    if ( isset($redisGet["Np"] )) { // has player normal
+                        $hasStat = true;
+                        $normalPlay = $redisGet["Np"];
+                        $text .= "NORMAL MODE - played ".$normalPlay . " times.\n";
+                        if (isset($redisGet["Ngw"])) { // has normal good win value
+                            $winrate = round (100* $redisGet["Ngw"] / $normalPlay);
+                            $text .= $this->unichr(Constant::EMO_SMILE)." Good Team Won ". $winrate . "%\n";
+                        }
+                        if (isset($redisGet["Nbw"])) { // has normal bad win value
+                            $winrate = round (100* $redisGet["Nbw"] / $normalPlay);
+                            $text .= $this->unichr(Constant::EMO_EVIL)." Evil Team Won ". $winrate . "%\n";
+                        }
+                    }
+                    if (!$hasStat) {
+                        $text .= "This bot has no statistics yet.\n";
+                    }
+
+                    $this->apiSendMessageDirect($text);
+                    break;
+                } catch (Exception $e) {
+                    $this->core->redis = false;
+                    $this->core->dbInit();
+                    $this->redis = $this->core->redis;
+                }
+                $retry++;
+            };
+        }
+    }
+
+    protected function sendGroupStats($message){
+        // Script
+        // Avalon
+        // Normal Mode - 100x play,
+        // EMOGOOD win 50%, EMOBAD win 80%, EMONEUTRAL winrate 80%
+
+        if ($this->redis instanceof Predis\Client) {
+            $retry = 0;
+            while ($retry < 2) {
+                try {
+                    $key = $this->chatId . "_stats";
+                    $redisGet = $this->redis->hgetall($key);
+                    $text = "<b>".$message["chat"]["title"]."</b>\n";
+
+                    $hasStat = false;
+                    if ( isset($redisGet["Np"] )) { // has player normal
+                        $hasStat = true;
+                        $normalPlay = $redisGet["Np"];
+                        $text .= "NORMAL MODE - played ".$normalPlay . " times.\n";
+                        if (isset($redisGet["Ngw"])) { // has normal good win value
+                            $winrate = round (100* $redisGet["Ngw"] / $normalPlay);
+                            $text .= $this->unichr(Constant::EMO_SMILE)." Good Team Won ". $winrate . "%\n";
+                        }
+                        if (isset($redisGet["Nbw"])) { // has normal bad win value
+                            $winrate = round (100* $redisGet["Nbw"] / $normalPlay);
+                            $text .= $this->unichr(Constant::EMO_EVIL)." Evil Team Won ". $winrate . "%\n";
+                        }
+                    }
+                    if (!$hasStat) {
+                        $text .= "This group has no statistics yet.\n";
+                    }
+
+                    $this->apiSendMessageDirect($text);
+                    break;
+                } catch (Exception $e) {
+                    $this->core->redis = false;
+                    $this->core->dbInit();
+                    $this->redis = $this->core->redis;
+                }
+                $retry++;
+            };
+        }
+    }
+
     protected function sendJoinFullToGroup($message_from) {
         $first_name = $message_from["first_name"];
         $last_name = "";
@@ -2245,7 +2550,7 @@ class AvalonBotChat extends TelegramBotChat {
         // "tidak bisa bergabung. Sudah %d pemain.";
         $text .= sprintf($this->langScript[Script::PU_CANNOTJOINFULL],
             Constant::getMaxPlayer());
-        $this->apiSendMessage($text);
+        $this->apiSendMessageDirect($text);
     }
 
     protected function sendStartMeFirstToGroup($message_from) {
