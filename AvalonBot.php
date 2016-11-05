@@ -29,7 +29,7 @@ class AvalonBotChat extends TelegramBotChat {
     protected $randomizedRole;
     protected $kingTokenIndex;
     protected $ladyLakeTokenIndex;
-    protected $rejectCountInQuest; // if already 5, fail the quest
+    protected $rejectCountInAQuest; // if already 5, fail the quest
 
     protected $mode;
 
@@ -461,6 +461,9 @@ class AvalonBotChat extends TelegramBotChat {
     public function command_howtoplay($params, $message) {
         $this->sendHowToPlay();
     }
+    public function command_rolelist($params, $message) {
+        $this->sendRoleList();
+    }
     public function command_merlin($params, $message) {
         $this->sendMerlin();
     }
@@ -484,6 +487,9 @@ class AvalonBotChat extends TelegramBotChat {
     }
     public function command_morgassassin($params, $message) {
         $this->sendMorgassassin();
+    }
+    public function command_guard($params, $message) {
+        $this->sendGuard();
     }
 
     public function command_contact($params, $message) {
@@ -519,8 +525,8 @@ class AvalonBotChat extends TelegramBotChat {
 
     // already count reject, reject is more or half the playercount
     public function rejectCurrentQuest(){
-        $this->rejectCountInQuest++;
-        if ($this->rejectCountInQuest == 5) {
+        $this->rejectCountInAQuest++;
+        if ($this->rejectCountInAQuest == 5) {
             $this->failCurrentQuest();
         }
         else { // reject still less than 5, can continue this quest
@@ -719,6 +725,31 @@ class AvalonBotChat extends TelegramBotChat {
                     // "Kamu adalah Rakyat jelata yang baik. Kamu tidak tahu menahu, yang penting ikut menyukseskan quest dan mengikuti perintah raja.";
                     $text = $this->langScript[Script::PR_YOUAREGOODNORMAL];
                     break;
+                case Constant::GUARD:
+                    // "Kamu adalah Guard.";
+                    // check kiri dan kanan
+                    // index is $i
+                    // left $i-1, right $i+1
+                    $leftIndex = $i == 0 ? $this->playerCount-1 : $i-1;
+                    $rightIndex = $i == $this->playerCount-1 ? 0 : $i+1;
+                    $leftRole = $this->randomizedRole[$leftIndex];
+                    $rightRole = $this->randomizedRole[$rightIndex];
+                    if (Constant::isAppearGoodPlayer($leftRole) == -1
+                        ||
+                        Constant::isAppearGoodPlayer($rightRole) == -1 ) {
+                        // if at least left is bad or right is bad
+                        $text = sprintf($this->langScript[Script::PR_YOUAREGUARDTHEREBAD],
+                            $this->getPlayerIDString($this->playerIDs[$leftIndex]) ,
+                            $this->getPlayerIDString($this->playerIDs[$rightIndex]));
+                    }
+                    else {
+                        // both left and right appears good
+                        // if at least left is bad or right is bad
+                        $text = sprintf($this->langScript[Script::PR_YOUAREGUARDNOBAD],
+                            $this->getPlayerIDString($this->playerIDs[$leftIndex]) ,
+                            $this->getPlayerIDString($this->playerIDs[$rightIndex]));
+                    }
+                    break;
                 case Constant::MORDRED:
                     $text = sprintf($this->langScript[Script::PR_YOUAREMORDRED],
                         $this->playersToString($all_bad_guys_no_oberon_id));
@@ -772,7 +803,7 @@ class AvalonBotChat extends TelegramBotChat {
             // not use lady of lake token
             $this->ladyLakeTokenIndex = -1;
         }
-        $this->rejectCountInQuest = 0;
+        $this->rejectCountInAQuest = 0;
         $this->questAssigneeIDsHistory = array();
         $this->assignQuestPrivate();
 
@@ -965,7 +996,7 @@ class AvalonBotChat extends TelegramBotChat {
         $this->questStatus[$this->currentQuestNumberStart0] = -1;
 
         // check if fail because reject token
-        if ($this->rejectCountInQuest == 5) {
+        if ($this->rejectCountInAQuest == 5) {
             $text = $this->langScript[Script::PU_REJECT5TIMES];
         }
         else { // fail because fail_count is bigger than requirement
@@ -988,7 +1019,7 @@ class AvalonBotChat extends TelegramBotChat {
         $this->apiSendMessage($text);
 
         //reset flag reject
-        $this->rejectCountInQuest = 0;
+        $this->rejectCountInAQuest = 0;
 
         $failQuestCount = 0;
         for ($i=0; $i<5;$i++){
@@ -1206,7 +1237,7 @@ class AvalonBotChat extends TelegramBotChat {
         $this->questStatus[$this->currentQuestNumberStart0] = 1;
 
         //reset flag reject
-        $this->rejectCountInQuest = 0;
+        $this->rejectCountInAQuest = 0;
 
         $rejectIDs= array();
         foreach ($this->currentApproveReject as $key=>$value){
@@ -1689,7 +1720,13 @@ class AvalonBotChat extends TelegramBotChat {
                         // "Karena waktu habis, pemain lain dianggap memilih approve..";
                         $text = $this->langScript[Script::PU_APPRREJLATE];
                         $this->apiSendMessage($text);
-                        $this->approveCurrentQuest();
+                        // if the current approve is higher, then approve it
+                        if ($this->approveAssigncount > $this->rejectAssignCount) {
+                            $this->approveCurrentQuest();
+                        }
+                        else { // if reject equals approve, then reject it
+                            $this->rejectCurrentQuest();
+                        }
                     }
                     else if (! $this->flagRemind1
                         && $difftime >= Constant::$_execApproveRejectGroup_r1
@@ -1944,7 +1981,7 @@ class AvalonBotChat extends TelegramBotChat {
                     $this->getQuestStatusString($i) . "\n";
             }
         }
-        if ($this->rejectCountInQuest > 0) {
+        if ($this->rejectCountInAQuest > 0) {
             $text .= "Token Reject = " . $this->getRejectCounterString() . "\n";
         }
         $text .= "\n";
@@ -1971,7 +2008,7 @@ class AvalonBotChat extends TelegramBotChat {
         for ($i = 0; $i<5;$i++) {
             $text .= "Quest-" . ($i + 1) . "(" . $questByPlayer[$i] . ") " . $this->getQuestStatusString($i) . "\n";
         }
-        if ($this->rejectCountInQuest > 0) {
+        if ($this->rejectCountInAQuest > 0) {
             $text .= "Token Reject = " . $this->getRejectCounterString() . "\n";
         }
         for ($i =0; $i<$this->playerCount; $i++) {
@@ -2028,7 +2065,7 @@ class AvalonBotChat extends TelegramBotChat {
 
     public function getRejectCounterString(){
         $text = "";
-        for ($i = 0; $i<$this->rejectCountInQuest ; $i++) {
+        for ($i = 0; $i<$this->rejectCountInAQuest ; $i++) {
             $text.= $this->unichr(Constant::EMO_RED_CIRCLE)." ";
         }
         return $text;
@@ -2197,6 +2234,11 @@ class AvalonBotChat extends TelegramBotChat {
         $this->apiSendMessageDirect($text);
     }
 
+    public function sendGuard(){
+        $text = $this->langScript[Script::PU_GUARDINFO];
+        $this->apiSendMessageDirect($text);
+    }
+
     public function sendMordred(){
         $text = $this->langScript[Script::PU_MORDREDINFO];
         $this->apiSendMessageDirect($text);
@@ -2327,6 +2369,12 @@ class AvalonBotChat extends TelegramBotChat {
         $this->apiSendMessageDirect($text);
     }
 
+    protected function sendRoleList() {
+        // SCRIPT
+        $text = $this->langScript[Script::PU_ROLELIST];
+        $this->apiSendMessageDirect($text);
+    }
+
     protected function sendCreateSuccessToGroup($sender_id) {
         $text = sprintf($this->langScript[Script::PU_JOINSTART],
             $this->getPlayerIDString($sender_id),
@@ -2413,7 +2461,7 @@ class AvalonBotChat extends TelegramBotChat {
                             $winrate = round (100* $redisGet["Cw"] / $chaosPlay);
                             $text .= " Winrate: ". $winrate . "%\n";
                         }
-                        if (isset($redisGet["Cg"])) { // has normal good value
+                        if (isset($redisGet["Cg"])) { // has chaos good value
                             $text .= $this->unichr(Constant::EMO_SMILE). " ". $redisGet["Cg"] ." times. ";
                             if (isset($redisGet["Cgw"])) { // has normal good win value
                                 $winrate = round (100* $redisGet["Cgw"] / $redisGet["Cg"]);
@@ -2449,6 +2497,8 @@ class AvalonBotChat extends TelegramBotChat {
         // Avalon
         // Normal Mode - 100x play,
         // EMOGOOD win 50%, EMOBAD win 80%, EMONEUTRAL winrate 80%
+        // Chaos Mode - 100x play,
+        // EMOGOOD win 50%, EMOBAD win 80%, EMONEUTRAL winrate 80%
 
         if ($this->redis instanceof Predis\Client) {
             $retry = 0;
@@ -2468,6 +2518,19 @@ class AvalonBotChat extends TelegramBotChat {
                         }
                         if (isset($redisGet["Nbw"])) { // has normal bad win value
                             $winrate = round (100* $redisGet["Nbw"] / $normalPlay);
+                            $text .= $this->unichr(Constant::EMO_EVIL)." Evil Team Won ". $winrate . "%\n";
+                        }
+                    }
+                    if ( isset($redisGet["Cp"] )) { // has player Chaos
+                        $hasStat = true;
+                        $chaosPlay = $redisGet["Cp"];
+                        $text .= "CHAOS MODE - played ".$chaosPlay . " times.\n";
+                        if (isset($redisGet["Cgw"])) { // has chaos good win value
+                            $winrate = round (100* $redisGet["Cgw"] / $chaosPlay);
+                            $text .= $this->unichr(Constant::EMO_SMILE)." Good Team Won ". $winrate . "%\n";
+                        }
+                        if (isset($redisGet["Cbw"])) { // has chaos bad win value
+                            $winrate = round (100* $redisGet["Cbw"] / $chaosPlay);
                             $text .= $this->unichr(Constant::EMO_EVIL)." Evil Team Won ". $winrate . "%\n";
                         }
                     }
@@ -2512,6 +2575,19 @@ class AvalonBotChat extends TelegramBotChat {
                         }
                         if (isset($redisGet["Nbw"])) { // has normal bad win value
                             $winrate = round (100* $redisGet["Nbw"] / $normalPlay);
+                            $text .= $this->unichr(Constant::EMO_EVIL)." Evil Team Won ". $winrate . "%\n";
+                        }
+                    }
+                    if ( isset($redisGet["Cp"] )) { // has player chaos
+                        $hasStat = true;
+                        $chaosPlay = $redisGet["Cp"];
+                        $text .= "CHAOS MODE - played ".$chaosPlay . " times.\n";
+                        if (isset($redisGet["Cgw"])) { // has chaos good win value
+                            $winrate = round (100* $redisGet["Cgw"] / $chaosPlay);
+                            $text .= $this->unichr(Constant::EMO_SMILE)." Good Team Won ". $winrate . "%\n";
+                        }
+                        if (isset($redisGet["Cbw"])) { // has chaos bad win value
+                            $winrate = round (100* $redisGet["Cbw"] / $chaosPlay);
                             $text .= $this->unichr(Constant::EMO_EVIL)." Evil Team Won ". $winrate . "%\n";
                         }
                     }

@@ -112,6 +112,8 @@ class Script{
 
 
     const PR_YOUAREMORGASSASSIN= 76; // you are morgassassin.
+    const PR_YOUAREGUARDTHEREBAD= 77; // you are guard, at least 1 bad
+    const PR_YOUAREGUARDNOBAD= 78; // you are guard, no bad
 
     const PU_CHCKPMTOCHGLANG = 100; // check PM untuk mengganti bahasa
     const PU_SECONDTODECIDE = 101; // you have %d to decide
@@ -128,6 +130,7 @@ class Script{
     const PU_HELP = 111;
     const PU_HOWTOPLAY = 112;
     const PU_RATEME = 113;
+    const PU_ROLELIST = 114;
 
     const PU_MERLININFO = 120;
     const PU_PERCIVALINFO = 121;
@@ -138,6 +141,7 @@ class Script{
     const PU_OBERONINFO = 126;
     const PU_THIEFINFO = 127;
     const PU_MORGASSASSININFO = 128;
+    const PU_GUARDINFO = 129;
 
     static $script;
     static function init(){
@@ -264,6 +268,15 @@ class Script{
             Script::$script["id"][Script::PR_YOUAREMORGASSASSIN]
                 = "Kamu adalah Morgassassin (Morgana dengan kemampuan assassin). Tim jahatmu adalah %s. Di mata Percival, kamu adalah Merlin. Di akhir permainan, kamu bisa membunuh Merlin untuk menang.";
 
+            Script::$script["en"][Script::PR_YOUAREGUARDTHEREBAD]
+                = "You are Guard, a good person whose job is to guard the king. Between %s and %s, there is at least 1 person is bad role. (Remember, guard cannot detect Mordred)";
+            Script::$script["id"][Script::PR_YOUAREGUARDTHEREBAD]
+                = "Kamu adalah seorang Guard (Penjaga) yang bertugas untuk melindungi raja. Di antara %s dan %s, terdapat setidaknya 1 orang jahat (Ingat, guard tidak dapat mendeteksi Mordred)";
+
+            Script::$script["en"][Script::PR_YOUAREGUARDNOBAD]
+                = "You are Guard, a good person who served to guard the king. Between %s and %s, it seems that there is no bad guys. (Remember, guard cannot detect Mordred)";
+            Script::$script["id"][Script::PR_YOUAREGUARDNOBAD]
+                = "Kamu adalah seorang Guard (Penjaga) yang bertugas untuk melindungi raja. Di antara %s dan %s, sepertinya tidak terdapat orang jahat. (Ingat, guard tidak dapat mendeteksi Mordred)";
 
             Script::$script["en"][Script::PU_KINGNEEDASSIGN]
                 = "%s as king will assign <b>%d persons</b> to execute the quest. The king is given time <b>%d seconds</b>";
@@ -412,9 +425,9 @@ class Script{
                 = "Karena waktu habis, sisa pemain dipilih secara random: %s.";
 
             Script::$script["en"][Script::PU_APPRREJLATE]
-                = "Because the time's up, the other members are assumed to choose approve..";
+                = "Because the time's up, the rest of the members are assumed abstain.";
             Script::$script["id"][Script::PU_APPRREJLATE]
-                = "Karena waktu habis, pemain lain dianggap memilih approve..";
+                = "Karena waktu habis, pemain lain dianggap memilih abstain.";
 
             Script::$script["en"][Script::PU_APPRREJREMIND]
                 = "The assignees in this quest are %s\n\n<b>%d seconds</b> left to choose /approve or /reject. If there is minimum <b>%d member(s)</b> fail the quest, the quest will be failed.";
@@ -601,14 +614,39 @@ class Script{
                 . "Based on the <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a>\n\n"
                 . "To start playing, invite this bot to your group then type /start to start the game.\n\n"
                 . "Type /howtoplay if you are new to avalon and want to know more\n"
+                . "Type /rolelist to see the avalon role list\n"
                 . "Type /contact if you want to contact the developer\n";
             Script::$script["id"][Script::PU_HELP]
                 = "Avalon bot untuk Telegram.\n"
                 . "Berdasarkan game <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a>\n\n"
                 . "Untuk bermain, undang bot ini ke dalam grup kemudian ketik /start untuk memulai permainan.\n\n"
                 . "Ketik /howtoplay untuk tahu cara bermain avalon\n"
+                . "Ketik /rolelist untuk melihat daftar peran Avalon\n"
                 . "Ketik /contact untuk menghubungi developer\n";
 
+
+            Script::$script["en"][Script::PU_ROLELIST]
+                = self::unichr(Constant::EMO_SMILE)."/merlin\n"
+                .self::unichr(Constant::EMO_SMILE)."/percival\n"
+                .self::unichr(Constant::EMO_SMILE)."/servant\n"
+                .self::unichr(Constant::EMO_EVIL)."/assassin\n"
+                .self::unichr(Constant::EMO_EVIL)."/morgana\n"
+                .self::unichr(Constant::EMO_EVIL)."/mordred\n"
+                .self::unichr(Constant::EMO_EVIL)."/oberon\n\n"
+                . "Addition roles exclusive for telegram:\n"
+                .self::unichr(Constant::EMO_SMILE)."/guard\n"
+                .self::unichr(Constant::EMO_EVIL)."/morgassassin";
+            Script::$script["id"][Script::PU_ROLELIST]
+                = self::unichr(Constant::EMO_SMILE)."/merlin\n"
+                .self::unichr(Constant::EMO_SMILE)."/percival\n"
+                .self::unichr(Constant::EMO_SMILE)."/servant\n"
+                .self::unichr(Constant::EMO_EVIL)."/assassin\n"
+                .self::unichr(Constant::EMO_EVIL)."/morgana\n"
+                .self::unichr(Constant::EMO_EVIL)."/mordred\n"
+                .self::unichr(Constant::EMO_EVIL)."/oberon\n\n"
+                . "Tambahan role khusus untuk Telegram:\n"
+                .self::unichr(Constant::EMO_SMILE)."/guard\n"
+                .self::unichr(Constant::EMO_EVIL)."/morgassassin";
 
 
             Script::$script["en"][Script::PU_HOWTOPLAY]
@@ -619,16 +657,10 @@ class Script{
 
             . "At the start of the game, each player will be randomly assigned a role secretly.\n"
             . "Click to see the detail of the role:\n"
-                .self::unichr(Constant::EMO_SMILE)."/merlin\n"
-                .self::unichr(Constant::EMO_SMILE)."/percival\n"
-                .self::unichr(Constant::EMO_SMILE)."/servant\n"
-                .self::unichr(Constant::EMO_EVIL)."/assassin\n"
-                .self::unichr(Constant::EMO_EVIL)."/morgana\n"
-                .self::unichr(Constant::EMO_EVIL)."/mordred\n"
-                .self::unichr(Constant::EMO_EVIL)."/oberon\n\n"
-            . "Addition role for telegram:\n"
-                .self::unichr(Constant::EMO_EVIL)."/morgassassin\n\n"
-            . "At the start of the game, King token".self::unichr(Constant::EMO_KING). " will be randomly assigned to a player and the King may choose who can complete the current quest.\n"
+
+            . Script::$script["en"][Script::PU_ROLELIST]
+
+            . "\n\nAt the start of the game, King token".self::unichr(Constant::EMO_KING). " will be randomly assigned to a player and the King may choose who can complete the current quest.\n"
             . "After the king has done the assignment, any player may vote <b>approve</b> or <b>reject</b> to the assignment. Then, the approve and reject will be counted.\n\n"
 
             . "If the <b>reject</b> count is half or more the count of the players, then the quest is rejected, and the king token"
@@ -656,16 +688,10 @@ class Script{
 
             . "Di awal permainan, Tiap orang akan diberikan peran secara rahasia.\n"
             . "Klik untuk melihat detil peran :\n"
-                .self::unichr(Constant::EMO_SMILE)."/merlin\n"
-                .self::unichr(Constant::EMO_SMILE)."/percival\n"
-                .self::unichr(Constant::EMO_SMILE)."/servant\n"
-                .self::unichr(Constant::EMO_EVIL)."/assassin\n"
-                .self::unichr(Constant::EMO_EVIL)."/morgana\n"
-                .self::unichr(Constant::EMO_EVIL)."/mordred\n"
-                .self::unichr(Constant::EMO_EVIL)."/oberon\n\n"
-            . "Tambahan role untuk Telegram:\n"
-                .self::unichr(Constant::EMO_EVIL)."/morgassassin\n\n"
-            . "Di awal permainan, King token ".self::unichr(Constant::EMO_KING). " akan diberikan secara random ke salah seorang pemain dan raja boleh memilih orang yang akan berangkat untuk quest yang berlangsung.\n"
+
+            . Script::$script["id"][Script::PU_ROLELIST]
+
+            . "\n\nDi awal permainan, King token ".self::unichr(Constant::EMO_KING). " akan diberikan secara random ke salah seorang pemain dan raja boleh memilih orang yang akan berangkat untuk quest yang berlangsung.\n"
             . "Setelah raja memberikan penugasan, tiap orang boleh <b>setuju</b> or <b>menolak</b> terhadap penugasan itu. Kemudian, jumlah setuju dan jumlah menolak akan dihitung.\n\n"
 
             . "Jika jumlah <b>menolak</b> lebih besar atau sama dengan jumlah pemain, maka quest akan ditolak dan King token"
@@ -682,6 +708,8 @@ class Script{
             . "Pemain yang memegang the lady token boleh menerawang sesorang untuk mengetahui identitas sebenarnya (baik atau jahat) namun hanya pemegang lady lah yang mengetahuinya.\n\n"
 
             . "Sekian. Latihan adalah cara yang cepat untuk belajar. Ketik /start untuk memulai game.\n\n";
+
+
 
 
             Script::$script["en"][Script::PU_RATEME]
@@ -763,6 +791,15 @@ class Script{
                 . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n"
                 . "Morgassassin adalah peran kombinasi dari /morgana dan /assassin. Pemain dengan karakter ini dapat menipu Percival dan Morgassassin juga dapat membunuh Merlin di akhir game.\n\n";
 
+            Script::$script["en"][Script::PU_GUARDINFO]
+                = "<b>Guard</b>".self::unichr(Constant::EMO_SMILE)
+                . " is a good person whose job is to protect the king and make the quests succeed.\n\n"
+                . "At the start of the game, guard can have information about 2 neighborhood players. Guard knows whether there is no bad person between them, or there is at least 1 bad person. However, Guard cannot detect Mordred, so Mordred will be seen as a good person.\n\n";
+            Script::$script["id"][Script::PU_GUARDINFO]
+                = "<b>Guard</b>".self::unichr(Constant::EMO_SMILE)
+                . " (Penjaga) adalah pemain baik yang bertugas melindungi raja dan turut menyukseskan quest.\n\n"
+                . "Di awal permainan, guard dapat memperoleh informasi mengenai 2 pemain di sekelilingnya. Guard tahu apakah tidak ada pemain jahat dari kedua orang itu, atau terdapat minimal 1 orang jahat. Namun, Guard tidak dapat mendeteksi Mordred, sehingga Mordred terlihat seperti orang baik.\n\n";
+
             Script::$script["en"][Script::PU_OBERONINFO]
                 = "<b>Oberon</b>".self::unichr(Constant::EMO_EVIL)
                 . " is an evil player but all other evil players do not know the oberon's identity. Merlin can still see Oberon though."
@@ -774,7 +811,7 @@ class Script{
 
             Script::$script["en"][Script::PU_THIEFINFO]
                 = "<b>Thief</b>".self::unichr(Constant::EMO_EVIL)
-                . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n";
+                . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n";
             Script::$script["id"][Script::PU_THIEFINFO]
                 = "<b>Thief</b>".self::unichr(Constant::EMO_EVIL)
                 . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n";

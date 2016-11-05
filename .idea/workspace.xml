@@ -2,13 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a73f481-ab87-4211-bcdc-4a86725a2d7e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Redis Structure.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/longpolllog.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AvalonBot.php" afterPath="$PROJECT_DIR$/AvalonBot.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Constant.php" afterPath="$PROJECT_DIR$/Constant.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Script.php" afterPath="$PROJECT_DIR$/Script.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/checkredis.php" afterPath="$PROJECT_DIR$/checkredis.php" />
     </list>
     <ignored path="avalon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -32,8 +29,8 @@
       <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AvalonBot.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="127">
-              <caret line="2307" column="5" selection-start-line="2307" selection-start-column="5" selection-end-line="2307" selection-end-column="5" />
+            <state relative-caret-position="171">
+              <caret line="742" column="67" selection-start-line="742" selection-start-column="67" selection-end-line="742" selection-end-column="67" />
               <folding />
             </state>
           </provider>
@@ -42,18 +39,8 @@
       <file leaf-file-name="Constant.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Constant.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="199">
-              <caret line="193" column="38" selection-start-line="193" selection-start-column="38" selection-end-line="193" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Redis Structure.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Redis Structure.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="23" column="36" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="36" />
+            <state relative-caret-position="381">
+              <caret line="105" column="36" selection-start-line="105" selection-start-column="36" selection-end-line="105" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -62,8 +49,8 @@
       <file leaf-file-name="Script.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Script.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="237">
-              <caret line="602" column="84" selection-start-line="602" selection-start-column="84" selection-end-line="602" selection-end-column="84" />
+            <state relative-caret-position="259">
+              <caret line="278" column="124" selection-start-line="278" selection-start-column="124" selection-end-line="278" selection-end-column="124" />
               <folding />
             </state>
           </provider>
@@ -74,6 +61,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/index.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="14" column="14" selection-start-line="14" selection-start-column="14" selection-end-line="14" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -148,13 +145,13 @@
         <option value="$PROJECT_DIR$/test.php" />
         <option value="$PROJECT_DIR$/TelegramBot.php" />
         <option value="$PROJECT_DIR$/Redis Structure.txt" />
-        <option value="$PROJECT_DIR$/Constant.php" />
-        <option value="$PROJECT_DIR$/AvalonBot.php" />
         <option value="$PROJECT_DIR$/longpolllog.txt" />
-        <option value="$PROJECT_DIR$/devlongpolllog.txt" />
-        <option value="$PROJECT_DIR$/Script.php" />
-        <option value="$PROJECT_DIR$/connc.txt" />
         <option value="$PROJECT_DIR$/checkredis.php" />
+        <option value="$PROJECT_DIR$/Constant.php" />
+        <option value="$PROJECT_DIR$/Script.php" />
+        <option value="$PROJECT_DIR$/AvalonBot.php" />
+        <option value="$PROJECT_DIR$/connc.txt" />
+        <option value="$PROJECT_DIR$/devlongpolllog.txt" />
       </list>
     </option>
   </component>
@@ -199,6 +196,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -219,8 +218,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -364,7 +361,11 @@
       <workItem from="1477982999084" duration="12704000" />
       <workItem from="1478001853536" duration="879000" />
       <workItem from="1478016932147" duration="213000" />
-      <workItem from="1478023366707" duration="4765000" />
+      <workItem from="1478023366707" duration="5269000" />
+      <workItem from="1478319553746" duration="257000" />
+      <workItem from="1478338125789" duration="3346000" />
+      <workItem from="1478356364992" duration="710000" />
+      <workItem from="1478361689509" duration="6219000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -384,7 +385,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="296662000" />
+    <option name="totallyTimeSpent" value="307698000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -432,13 +433,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/f.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
@@ -459,7 +453,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5962">
           <caret line="271" column="23" selection-start-line="271" selection-start-column="23" selection-end-line="271" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -489,7 +482,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6028">
           <caret line="274" column="33" selection-start-line="274" selection-start-column="33" selection-end-line="274" selection-end-column="33" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -519,7 +511,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="308">
           <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -561,7 +552,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
           <caret line="105" column="3" selection-start-line="105" selection-start-column="3" selection-end-line="105" selection-end-column="3" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -571,13 +561,6 @@
     <entry file="file://$PROJECT_DIR$/test.txt" />
     <entry file="file://$PROJECT_DIR$/serverlog.txt" />
     <entry file="file://$PROJECT_DIR$/test.php" />
-    <entry file="file://$PROJECT_DIR$/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="14" column="14" selection-start-line="14" selection-start-column="14" selection-end-line="14" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/composer.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -596,7 +579,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="9218">
           <caret line="419" column="4" selection-start-line="419" selection-start-column="4" selection-end-line="428" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -604,6 +586,28 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
           <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/_types.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="105" column="13" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Redis Structure.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="23" column="36" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/checkredis.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="11" column="40" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
           <folding />
         </state>
       </provider>
@@ -616,7 +620,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="14" column="14" selection-start-line="14" selection-start-column="14" selection-end-line="14" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Script.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="278" column="124" selection-start-line="278" selection-start-column="124" selection-end-line="278" selection-end-column="124" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/devlongpolllog.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/longpolllog.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -640,50 +668,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/checkredis.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="40" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Constant.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="193" column="38" selection-start-line="193" selection-start-column="38" selection-end-line="193" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/longpolllog.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Redis Structure.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="23" column="36" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Script.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="602" column="84" selection-start-line="602" selection-start-column="84" selection-end-line="602" selection-end-column="84" />
+        <state relative-caret-position="381">
+          <caret line="105" column="36" selection-start-line="105" selection-start-column="36" selection-end-line="105" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AvalonBot.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="2307" column="5" selection-start-line="2307" selection-start-column="5" selection-end-line="2307" selection-end-column="5" />
+        <state relative-caret-position="171">
+          <caret line="742" column="67" selection-start-line="742" selection-start-column="67" selection-end-line="742" selection-end-column="67" />
           <folding />
         </state>
       </provider>

@@ -28,6 +28,7 @@ class Constant{
     const BAD_NORMAL = 7;
 
     const MORGASSASSIN = 8;
+    const GUARD = 9;
 
 
     const THRES_REMIND = 10; // $updatesTimeout+1
@@ -92,6 +93,20 @@ class Constant{
             case Constant::MERLIN:
             case Constant::PERCIVAL:
             case Constant::GOOD_NORMAL:
+            case Constant::GUARD:
+                return 1;
+            default:
+                return -1;
+        }
+    }
+
+    static function isAppearGoodPlayer($role){
+        switch ($role) {
+            case Constant::MERLIN:
+            case Constant::PERCIVAL:
+            case Constant::GOOD_NORMAL:
+            case Constant::GUARD:
+            case Constant::MORDRED:
                 return 1;
             default:
                 return -1;
@@ -125,6 +140,8 @@ class Constant{
                 return "Thief";
             case Constant::MORGASSASSIN:
                 return "Morgassassin";
+            case Constant::GUARD:
+                return "Guard";
         }
     }
 
@@ -172,8 +189,8 @@ class Constant{
 
             Constant::$_assignQuestPrivate = Constant::$_60;
 
-            Constant::$_execApproveRejectGroup = Constant::$_60;
-            Constant::$_execApproveRejectGroup_r1 = Constant::$_30;
+            Constant::$_execApproveRejectGroup = Constant::$_90;
+            Constant::$_execApproveRejectGroup_r1 = Constant::$_60;
 
             Constant::$_execQuestPrivate = Constant::$_30;
             Constant::$_execQuestPrivate_r1 = Constant::$_30/2;
@@ -206,12 +223,12 @@ class Constant{
             Constant::$players = array(
                 5 => array(Constant::MERLIN,
                             Constant::PERCIVAL,
-                            Constant::GOOD_NORMAL,
+                            Constant::GUARD,
                             Constant::MORGASSASSIN,
                             Constant::MORDRED),
                 6 => array(Constant::MERLIN,
                     Constant::PERCIVAL,
-                    Constant::GOOD_NORMAL,
+                    Constant::GUARD,
                     Constant::GOOD_NORMAL,
                     Constant::MORDRED,
                     Constant::MORGASSASSIN),
