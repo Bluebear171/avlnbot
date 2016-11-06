@@ -72,8 +72,8 @@
       <file leaf-file-name="Script.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Script.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
-              <caret line="286" column="109" selection-start-line="286" selection-start-column="109" selection-end-line="286" selection-end-column="109" />
+            <state relative-caret-position="171">
+              <caret line="828" column="98" selection-start-line="828" selection-start-column="98" selection-end-line="828" selection-end-column="98" />
               <folding />
             </state>
           </provider>
@@ -82,8 +82,8 @@
       <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AvalonBot.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
-              <caret line="1934" column="0" selection-start-line="1934" selection-start-column="0" selection-end-line="1934" selection-end-column="0" />
+            <state relative-caret-position="39">
+              <caret line="1924" column="26" selection-start-line="1924" selection-start-column="26" selection-end-line="1924" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -169,7 +169,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -191,6 +190,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -343,7 +343,8 @@
       <workItem from="1478413349382" duration="5832000" />
       <workItem from="1478429236400" duration="21560000" />
       <workItem from="1478451986345" duration="248000" />
-      <workItem from="1478452361888" duration="68000" />
+      <workItem from="1478452361888" duration="156000" />
+      <workItem from="1478452709786" duration="61000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -363,7 +364,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="338731000" />
+    <option name="totallyTimeSpent" value="338880000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -615,26 +616,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/f.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Script.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="286" column="109" selection-start-line="286" selection-start-column="109" selection-end-line="286" selection-end-column="109" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/changeconnc.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
           <caret line="8" column="6" selection-start-line="8" selection-start-column="6" selection-end-line="8" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/f.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
           <folding />
         </state>
       </provider>
@@ -647,10 +640,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Script.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="828" column="98" selection-start-line="828" selection-start-column="98" selection-end-line="828" selection-end-column="98" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/AvalonBot.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
-          <caret line="1934" column="0" selection-start-line="1934" selection-start-column="0" selection-end-line="1934" selection-end-column="0" />
+        <state relative-caret-position="39">
+          <caret line="1924" column="26" selection-start-line="1924" selection-start-column="26" selection-end-line="1924" selection-end-column="26" />
           <folding />
         </state>
       </provider>

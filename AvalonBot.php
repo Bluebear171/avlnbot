@@ -1924,7 +1924,7 @@ class AvalonBotChat extends TelegramBotChat {
                         isset($this->auditorID)
                         &&
                         in_array($this->auditorID, $this->questAssigneeIDs)) {
-                        $successEliminateFail = (rand(0,3) == 0);
+                        $successEliminateFail = (rand(0,4) == 0);
                         if ($successEliminateFail) {
                             $this->fail_count_by_badguy--;
 
@@ -1971,7 +1971,7 @@ class AvalonBotChat extends TelegramBotChat {
                             isset($this->auditorID)
                             &&
                             in_array($this->auditorID, $this->questAssigneeIDs)) {
-                            $successEliminateFail = (rand(0,3) == 0);
+                            $successEliminateFail = (rand(0,4) == 0);
                             if ($successEliminateFail) {
                                 $this->fail_count_by_badguy--;
 
