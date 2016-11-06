@@ -282,9 +282,9 @@ class Script{
                 = "Kamu adalah Witch, orang jahat. Tim jahatmu adalah %s. Dengan kemampuanmu, kamu tahu bahwa ada peran-peran ini di sisi baik: %s.";
 
             Script::$script["en"][Script::PR_YOUAREAUDITOR]
-                = "You are Auditor, a good person. When you are assigned for a quest, there is 20% chance you can eliminate 1 FAIL for that quest.";
+                = "You are Auditor, a good person. When you are assigned for a quest, there is 25% chance you can eliminate 1 FAIL for that quest.";
             Script::$script["id"][Script::PR_YOUAREAUDITOR]
-                = "Kamu adalah Auditor, orang baik. Ketika kamu ditunjuk di sebuah quest, ada 20% kemungkinan kamu dapat menghilangkan 1 FAIL dari quest itu.";
+                = "Kamu adalah Auditor, orang baik. Ketika kamu ditunjuk di sebuah quest, ada 25% kemungkinan kamu dapat menghilangkan 1 FAIL dari quest itu.";
 
             Script::$script["en"][Script::PR_FAILDECREASE1]
                 = "You use the ability of auditor. You have decreased the 1 FAIL for this quest.";
@@ -823,10 +823,10 @@ class Script{
 
             Script::$script["en"][Script::PU_AUDITORINFO]
                 = "<b>Auditor</b>".self::unichr(Constant::EMO_SMILE)
-                . " is in a good side. If auditor is assigned in a quest, there is 20% chance 1 FAIL can be eliminated.\n\n";
+                . " is in a good side. If auditor is assigned in a quest, there is 25% chance 1 FAIL can be eliminated.\n\n";
             Script::$script["id"][Script::PU_AUDITORINFO]
                 = "<b>Auditor</b>".self::unichr(Constant::EMO_SMILE)
-                . " adalah pemain baik. Jika auditor ditunjuk dalam sebuah quest, maka terdapat 20% kemungkinan 1 FAIL dapat dieliminasi.\n\n";
+                . " adalah pemain baik. Jika auditor ditunjuk dalam sebuah quest, maka terdapat 25% kemungkinan 1 FAIL dapat dieliminasi.\n\n";
 
 
             Script::$script["en"][Script::PU_MORDREDINFO]
