@@ -845,7 +845,7 @@ class Script{
             Script::$script["id"][Script::PU_NINJAINFO]
                 = "<b>Ninja</b>".self::unichr(Constant::EMO_EVIL)
                 . " (Super Mordred) adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n"
-                . "Merlin tidak dapat melihat Ninja sehingga Ninja dapat berpura-pura menjadi pemain yang baik tanpa diketahui. Ninja dapaet memberikan 2 GAGAL jika diikutkan dalam quest, namun kemampuan ini hanya bisa digunkan sekali dalam satu game.\n\n";
+                . "Merlin tidak dapat melihat Ninja sehingga Ninja dapat berpura-pura menjadi pemain yang baik tanpa diketahui. Ninja dapat memberikan 2 GAGAL jika diikutkan dalam quest, namun kemampuan ini hanya bisa digunakan sekali dalam satu game.\n\n";
 
             Script::$script["en"][Script::SECRETCODES] = array(
                 "thanks",

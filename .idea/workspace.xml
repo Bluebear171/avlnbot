@@ -32,8 +32,8 @@
       <file leaf-file-name="Constant.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Constant.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="22">
-              <caret line="582" column="49" selection-start-line="582" selection-start-column="49" selection-end-line="582" selection-end-column="49" />
+            <state relative-caret-position="171">
+              <caret line="381" column="39" selection-start-line="381" selection-start-column="34" selection-end-line="381" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -69,21 +69,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Script.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Script.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Script.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="828" column="98" selection-start-line="828" selection-start-column="98" selection-end-line="828" selection-end-column="98" />
+            <state relative-caret-position="220">
+              <caret line="852" column="25" selection-start-line="852" selection-start-column="25" selection-end-line="852" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AvalonBot.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="39">
-              <caret line="1924" column="26" selection-start-line="1924" selection-start-column="26" selection-end-line="1924" selection-end-column="26" />
+            <state relative-caret-position="259">
+              <caret line="775" column="9" selection-start-line="775" selection-start-column="9" selection-end-line="775" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -169,6 +169,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -190,7 +191,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -344,7 +344,8 @@
       <workItem from="1478429236400" duration="21560000" />
       <workItem from="1478451986345" duration="248000" />
       <workItem from="1478452361888" duration="156000" />
-      <workItem from="1478452709786" duration="61000" />
+      <workItem from="1478452709786" duration="159000" />
+      <workItem from="1478454529905" duration="95000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -364,7 +365,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="338880000" />
+    <option name="totallyTimeSpent" value="339073000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -608,14 +609,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/devlongpolllog.txt" />
-    <entry file="file://$PROJECT_DIR$/connc.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/changeconnc.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
@@ -632,26 +625,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Constant.php">
+    <entry file="file://$PROJECT_DIR$/connc.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="582" column="49" selection-start-line="582" selection-start-column="49" selection-end-line="582" selection-end-column="49" />
+        <state relative-caret-position="0">
+          <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Script.php">
+    <entry file="file://$PROJECT_DIR$/Constant.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
-          <caret line="828" column="98" selection-start-line="828" selection-start-column="98" selection-end-line="828" selection-end-column="98" />
+          <caret line="381" column="39" selection-start-line="381" selection-start-column="34" selection-end-line="381" selection-end-column="39" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AvalonBot.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="39">
-          <caret line="1924" column="26" selection-start-line="1924" selection-start-column="26" selection-end-line="1924" selection-end-column="26" />
+        <state relative-caret-position="259">
+          <caret line="775" column="9" selection-start-line="775" selection-start-column="9" selection-end-line="775" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Script.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="852" column="25" selection-start-line="852" selection-start-column="25" selection-end-line="852" selection-end-column="25" />
           <folding />
         </state>
       </provider>

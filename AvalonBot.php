@@ -771,7 +771,7 @@ class AvalonBotChat extends TelegramBotChat {
         }
         $agentSecretCode = "";
         if ($thereIsAgent) {
-            $randomSecretCodes = Constant::getRandomSubsetFromArray($this->langScript[Script::SECRETCODES],2);
+            $randomSecretCodes = Constant::getRandomSubsetFromArray($this->langScript[Script::SECRETCODES],1);
             $agentSecretCode = Constant::arrayToString($randomSecretCodes);
         }
 
