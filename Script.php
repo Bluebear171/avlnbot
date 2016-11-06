@@ -48,7 +48,7 @@ class Script{
     const PU_BADGUYSWON= 30; // bad guys won
     const PU_GOODGUYSWON = 31; // good guys won
 
-    const PU_OBERONFINALLY = 32; // oberon finally know friends they are %s
+    // const PR_OBERONFINALLY = 32; // oberon finally know friends they are %s
     const PU_LADYLAKEINST = 33; // %s as lady lake may choose 1 person
 
     const PU_KILLMERLIN = 34; // 3 quest success. Tim jahat adalah %s.
@@ -112,8 +112,19 @@ class Script{
 
 
     const PR_YOUAREMORGASSASSIN= 76; // you are morgassassin.
-    const PR_YOUAREGUARDTHEREBAD= 77; // you are guard, at least 1 bad
-    const PR_YOUAREGUARDNOBAD= 78; // you are guard, no bad
+    const PR_YOUAREKNIGHTTHEREBAD= 77; // you are knight, at least 1 bad
+    const PR_YOUAREKNIGHTNOBAD= 78; // you are knight, no bad
+
+    const PR_YOUARENINJA = 79; // you are ninja. Your bad team are xxx
+    const PR_BADGUY2FAIL = 80; //
+
+    const PR_2FAIL = 81; // fail
+
+    const PR_YOUAREAGENT = 82; // you are agent. Your code are xxx
+    const PR_YOUAREWITCH = 83; // you are witch. The other roles are xxx
+    const PR_YOUAREAUDITOR = 84; // you are auditor.
+
+    const PR_FAILDECREASE1 = 85;
 
     const PU_CHCKPMTOCHGLANG = 100; // check PM untuk mengganti bahasa
     const PU_SECONDTODECIDE = 101; // you have %d to decide
@@ -141,7 +152,13 @@ class Script{
     const PU_OBERONINFO = 126;
     const PU_THIEFINFO = 127;
     const PU_MORGASSASSININFO = 128;
-    const PU_GUARDINFO = 129;
+    const PU_KNIGHTINFO = 129;
+    const PU_NINJAINFO = 130;
+    const PU_AGENTINFO = 131;
+    const PU_WITCHINFO = 132;
+    const PU_AUDITORINFO = 133;
+
+    const SECRETCODES = 200;
 
     static $script;
     static function init(){
@@ -213,6 +230,11 @@ class Script{
             Script::$script["id"][Script::PR_FAIL]
                 = "GAGAL";
 
+            Script::$script["en"][Script::PR_2FAIL]
+                = "2 FAIL";
+            Script::$script["id"][Script::PR_2FAIL]
+                = "2 GAGAL";
+
             Script::$script["en"][Script::PR_EXECQUESTGOOD]
                 = "You are a good guy. You put a lot effort to finish the quest as well as possible.";
             Script::$script["id"][Script::PR_EXECQUESTGOOD]
@@ -224,14 +246,14 @@ class Script{
                 = "%s pergi untuk menyelesaikan quest. Diberikan waktu <b>%d detik</b> untuk menyelesaikan quest.";
 
             Script::$script["en"][Script::PR_YOUAREMERLIN]
-                = "You are Merlin. Bad aura is radiated from %s. Guide your team without getting caught by the bad guys!";
+                = "You are Merlin. Bad aura is radiated from %s. Guide your team without getting caught by the bad guys! Note: Merlin should not use the Private Message to communicate with the team.";
             Script::$script["id"][Script::PR_YOUAREMERLIN]
-                = "Kamu adalah Merlin. Aura jahat terpancar kuat dari %s. Pandu timmu dalam quest tanpa ketahuan tim jahat!";
+                = "Kamu adalah Merlin. Aura jahat terpancar kuat dari %s. Pandu timmu dalam quest tanpa ketahuan tim jahat! Catatan: Merlin tidak boleh menggunakan PM untuk berkomunikasi dengan tim.";
 
             Script::$script["en"][Script::PR_YOUAREPERCIVAL]
-                = "You are Percival. You see %s as Merlin, but it seems that only one of them is the true Merlin.";
+                = "You are Percival. You see %s as Merlin, but it seems that only one of them is the true Merlin. Note: you should not use Private Message to ask Merlin directly.";
             Script::$script["id"][Script::PR_YOUAREPERCIVAL]
-                = "Kamu adalah Percival. Kamu melihat %s sebagai Merlin, namun hanya satu dari mereka Merlin yang asli.";
+                = "Kamu adalah Percival. Kamu melihat %s sebagai Merlin, namun hanya satu dari mereka Merlin yang asli. Catatan: kamu tidak boleh menggunakan PM untuk bertanya Merlin secara langsung.";
 
             Script::$script["en"][Script::PR_YOUAREGOODNORMAL]
                 = "You are the good villager. You don't know anything good or bad, but it is important to follow the right king.";
@@ -243,20 +265,47 @@ class Script{
             Script::$script["id"][Script::PR_YOUAREMORDRED]
                 = "Kamu adalah Mordred. Tim jahatmu adalah %s. Merlin tidak tahu bahwa kamu orang jahat.";
 
+            Script::$script["en"][Script::PR_YOUARENINJA]
+                = "You are Ninja (Super Mordred). You team are %s. Merlin does not know you are in the bad side. You can give 2 FAILs if you are assigned in a quest, but this ability can only be used once per one game.";
+            Script::$script["id"][Script::PR_YOUARENINJA]
+                = "Kamu adalah Ninja (Super Mordred). Tim jahatmu adalah %s. Merlin tidak tahu bahwa kamu orang jahat. Kamu bisa memberikan 2 GAGAL jika kamu diikutkan dalam sebuah quest, namun kemampuan ini hanya bisa dipakai 1 kali saja dalam 1 game.";
+
+            Script::$script["en"][Script::PR_YOUAREAGENT]
+                = "You are Agent, a good person whose job is to succeed the missions. All agents are shared the same secret codes: %s. Find your agent teammates, then together you will succeed the mission easier. Note: you should not use the Private Message to communicate.";
+            Script::$script["id"][Script::PR_YOUAREAGENT]
+                = "Kamu adalah agent, orang baik yang bertugas untuk menyukseskan misi. Semua agent diberikan kode rahasia yang sama: %s. Temukan teman agenmu, maka bersama-sama kalian akan menyukseskan misi lebih mudah. Catatan: kamu tidak boleh menggunakan PM untuk berkomunikasi.";
+
+
+            Script::$script["en"][Script::PR_YOUAREWITCH]
+                = "You are Witch, an evil person. Your evil teams are %s. With your ability, you know that there are these roles on the good sides: %s.";
+            Script::$script["id"][Script::PR_YOUAREWITCH]
+                = "Kamu adalah Witch, orang jahat. Tim jahatmu adalah %s. Dengan kemampuanmu, kamu tahu bahwa ada peran-peran ini di sisi baik: %s.";
+
+            Script::$script["en"][Script::PR_YOUAREAUDITOR]
+                = "You are Auditor, a good person. When you are assigned for a quest, there is 20% chance you can eliminate 1 FAIL for that quest.";
+            Script::$script["id"][Script::PR_YOUAREAUDITOR]
+                = "Kamu adalah Auditor, orang baik. Ketika kamu ditunjuk di sebuah quest, ada 20% kemungkinan kamu dapat menghilangkan 1 FAIL dari quest itu.";
+
+            Script::$script["en"][Script::PR_FAILDECREASE1]
+                = "You use the ability of auditor. You have decreased the 1 FAIL for this quest.";
+            Script::$script["id"][Script::PR_FAILDECREASE1]
+                = "Kamu menggunakan kemampuan auditor. Kamu berhasil mengurangi 1 FAIL for this quest.";
+
+
             Script::$script["en"][Script::PR_YOUAREASSASSIN]
                 = "You are Assassin. Your team are %s. At the end of the game, you can kill Merlin to win.";
             Script::$script["id"][Script::PR_YOUAREASSASSIN]
                 = "Kamu adalah Assassin. Tim jahatmu adalah %s. Di akhir permainan, kamu bisa membunuh Merlin untuk menang.";
 
             Script::$script["en"][Script::PR_YOUAREMORGANA]
-                = "You are Morgana. Your evil team are %s. On Percival's eyes, you were Merlin.";
+                = "You are Morgana. Your evil team are %s. On Percival's eyes, you are Merlin.";
             Script::$script["id"][Script::PR_YOUAREMORGANA]
                 = "Kamu adalah Morgana. Tim jahatmu adalah %s. Di mata Percival, kamu adalah Merlin.";
 
             Script::$script["en"][Script::PR_YOUAREOBERON]
-                = "You are Oberon. Currently you know nothing about your team and the team also doesn't know you.";
+                = "You are Oberon. Your evil teams are %s. The other evil teams don't know that you are evil. You should not use Private Message to communicate.";
             Script::$script["id"][Script::PR_YOUAREOBERON]
-                = "Kamu adalah Oberon. Sekarang, kamu belum tahu tim jahatmu siapa dan mereka juga belum tahu kamu.. :'( ";
+                = "Kamu adalah Oberon. Tim jahatmu adalah %s. Tim jahat yang lain tidak tahu bahwa kamu adalah jahat. Kamu tidak boleh menggunakan PM untuk berkomunikasi.";
 
             Script::$script["en"][Script::PR_YOUAREBADNORMAL]
                 = "You are the bad guy. Your evil team are %s.";
@@ -268,15 +317,15 @@ class Script{
             Script::$script["id"][Script::PR_YOUAREMORGASSASSIN]
                 = "Kamu adalah Morgassassin (Morgana dengan kemampuan assassin). Tim jahatmu adalah %s. Di mata Percival, kamu adalah Merlin. Di akhir permainan, kamu bisa membunuh Merlin untuk menang.";
 
-            Script::$script["en"][Script::PR_YOUAREGUARDTHEREBAD]
-                = "You are Guard, a good person whose job is to guard the king. Between %s and %s, there is at least 1 person is bad role. (Remember, guard cannot detect Mordred)";
-            Script::$script["id"][Script::PR_YOUAREGUARDTHEREBAD]
-                = "Kamu adalah seorang Guard (Penjaga) yang bertugas untuk melindungi raja. Di antara %s dan %s, terdapat setidaknya 1 orang jahat (Ingat, guard tidak dapat mendeteksi Mordred)";
+            Script::$script["en"][Script::PR_YOUAREKNIGHTTHEREBAD]
+                = "You are Knight, a good person whose job is to succeed the mission. Between %s and %s, there is at least 1 person is bad role. (Remember, knight cannot detect Mordred)";
+            Script::$script["id"][Script::PR_YOUAREKNIGHTTHEREBAD]
+                = "Kamu adalah seorang Knight (Ksatria) yang bertugas untuk mensukseskan misi. Di antara %s dan %s, terdapat setidaknya 1 orang jahat (Ingat, knight tidak dapat mendeteksi Mordred)";
 
-            Script::$script["en"][Script::PR_YOUAREGUARDNOBAD]
-                = "You are Guard, a good person who served to guard the king. Between %s and %s, it seems that there is no bad guys. (Remember, guard cannot detect Mordred)";
-            Script::$script["id"][Script::PR_YOUAREGUARDNOBAD]
-                = "Kamu adalah seorang Guard (Penjaga) yang bertugas untuk melindungi raja. Di antara %s dan %s, sepertinya tidak terdapat orang jahat. (Ingat, guard tidak dapat mendeteksi Mordred)";
+            Script::$script["en"][Script::PR_YOUAREKNIGHTNOBAD]
+                = "You are Knight, a good person whose job it to succeed the quests. Between %s and %s, it seems that there is no bad guys. (Remember, knight cannot detect Mordred)";
+            Script::$script["id"][Script::PR_YOUAREKNIGHTNOBAD]
+                = "Kamu adalah seorang Knight (Penjaga) yang bertugas menyukseskan misi. Di antara %s dan %s, sepertinya tidak terdapat orang jahat. (Ingat, knight tidak dapat mendeteksi Mordred)";
 
             Script::$script["en"][Script::PU_KINGNEEDASSIGN]
                 = "%s as king will assign <b>%d persons</b> to execute the quest. The king is given time <b>%d seconds</b>";
@@ -324,10 +373,10 @@ class Script{
             Script::$script["id"][Script::PU_GOODGUYSWON]
                 = "Selamat! Tim baik menang! Tim baik memang kompak dan pintar menipu orang jahat..";
 
-            Script::$script["en"][Script::PU_OBERONFINALLY]
-                = "Finally you know your teammates. They are %s.";
-            Script::$script["id"][Script::PU_OBERONFINALLY]
-                = "Akhirnya kamu tahu juga teman jahat seperjuanganmu.. Mereka adalah %s.";
+//            Script::$script["en"][Script::PR_OBERONFINALLY]
+//                = "Finally you know your teammates. They are %s.";
+//            Script::$script["id"][Script::PR_OBERONFINALLY]
+//                = "Akhirnya kamu tahu juga teman jahat seperjuanganmu.. Mereka adalah %s.";
 
             Script::$script["en"][Script::PU_LADYLAKEINST]
                 = "%s as Lady of the Lake may use the power to see the true identity of one player. The other team members may give the advice.. <b>%d seconds</b> are given to do the action.";
@@ -354,6 +403,11 @@ class Script{
             Script::$script["id"][Script::PR_ASSIGNONEQUEST]
                 = "Kamu berhasil memilih %s dalam quest.";
 
+            Script::$script["en"][Script::PU_ASSIGNONEQUEST]
+                = "%s assigned %s in quest.";
+            Script::$script["id"][Script::PU_ASSIGNONEQUEST]
+                = "%s memilih %s dalam quest.";
+
             Script::$script["en"][Script::PR_BADGUYSUCCESS]
                 = "Although you are evil, you have successfully made a good impression.";
             Script::$script["id"][Script::PR_BADGUYSUCCESS]
@@ -363,6 +417,11 @@ class Script{
                 = "You have successfully failed the quest.";
             Script::$script["id"][Script::PR_BADGUYFAIL]
                 = "Kamu berhasil menggagalkan quest.";
+
+            Script::$script["en"][Script::PR_BADGUY2FAIL]
+                = "You have successfully used ninja ability. This quest is given 2 FAILS!";
+            Script::$script["id"][Script::PR_BADGUY2FAIL]
+                = "Kamu berhasil menggunakan kemampuan ninja. Quest ini diberikan 2 kegagalan!";
 
             Script::$script["en"][Script::PR_LADYNOTSEE]
                 = "You decided to not use your power to see.";
@@ -511,12 +570,12 @@ class Script{
 
 
             Script::$script["en"][Script::PU_CREATEFIRST]
-                = "Game has not started yet. Type /start to start Avalon.";
+                = "Game has not started yet. Type /start or /startchaos to start Avalon.";
             Script::$script["id"][Script::PU_CREATEFIRST]
-                = "Game belum distart. Ketik /start untuk memulai Avalon.";
+                = "Game belum distart. Ketik /start atau /startchaos untuk memulai Avalon.";
 
             Script::$script["en"][Script::PU_GAMESTART]
-                = "Game has been started. Please anyone to check the private chat to know your role.";
+                = "Game has been started. Please anyone check the private message to know your role.";
             Script::$script["id"][Script::PU_GAMESTART]
                 = "Game sudah dimulai. Silakan cek PM masing-masing untuk melihat peran.";
 
@@ -548,7 +607,7 @@ class Script{
 
 
             Script::$script["en"][Script::PU_CHCKPMTOCHGLANG]
-                = "Please check private chat to change the language.";
+                = "Please check private message to change the language.";
             Script::$script["id"][Script::PU_CHCKPMTOCHGLANG]
                 = "Silakan mengecek PM untuk memilih bahasa.";
 
@@ -612,14 +671,14 @@ class Script{
             Script::$script["en"][Script::PU_HELP]
                 = "Avalon bot for telegram.\n"
                 . "Based on the <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a>\n\n"
-                . "To start playing, invite this bot to your group then type /start to start the game.\n\n"
+                . "To start playing, invite this bot to your group then type /start or /startchaos to start the game.\n\n"
                 . "Type /howtoplay if you are new to avalon and want to know more\n"
                 . "Type /rolelist to see the avalon role list\n"
                 . "Type /contact if you want to contact the developer\n";
             Script::$script["id"][Script::PU_HELP]
                 = "Avalon bot untuk Telegram.\n"
                 . "Berdasarkan game <a href=\"https://boardgamegeek.com/boardgame/128882/resistance-avalon\">The Resistance:Avalon BoardGame</a>\n\n"
-                . "Untuk bermain, undang bot ini ke dalam grup kemudian ketik /start untuk memulai permainan.\n\n"
+                . "Untuk bermain, undang bot ini ke dalam grup kemudian ketik /start atau /startchaos untuk memulai permainan.\n\n"
                 . "Ketik /howtoplay untuk tahu cara bermain avalon\n"
                 . "Ketik /rolelist untuk melihat daftar peran Avalon\n"
                 . "Ketik /contact untuk menghubungi developer\n";
@@ -634,8 +693,12 @@ class Script{
                 .self::unichr(Constant::EMO_EVIL)."/mordred\n"
                 .self::unichr(Constant::EMO_EVIL)."/oberon\n\n"
                 . "Addition roles exclusive for telegram:\n"
-                .self::unichr(Constant::EMO_SMILE)."/guard\n"
-                .self::unichr(Constant::EMO_EVIL)."/morgassassin";
+                .self::unichr(Constant::EMO_SMILE)."/knight\n"
+                .self::unichr(Constant::EMO_SMILE)."/agent\n"
+                .self::unichr(Constant::EMO_SMILE)."/auditor\n"
+                .self::unichr(Constant::EMO_EVIL)."/morgassassin\n"
+                .self::unichr(Constant::EMO_EVIL)."/witch\n"
+                .self::unichr(Constant::EMO_EVIL)."/ninja\n";
             Script::$script["id"][Script::PU_ROLELIST]
                 = self::unichr(Constant::EMO_SMILE)."/merlin\n"
                 .self::unichr(Constant::EMO_SMILE)."/percival\n"
@@ -645,8 +708,12 @@ class Script{
                 .self::unichr(Constant::EMO_EVIL)."/mordred\n"
                 .self::unichr(Constant::EMO_EVIL)."/oberon\n\n"
                 . "Tambahan role khusus untuk Telegram:\n"
-                .self::unichr(Constant::EMO_SMILE)."/guard\n"
-                .self::unichr(Constant::EMO_EVIL)."/morgassassin";
+                .self::unichr(Constant::EMO_SMILE)."/knight\n"
+                .self::unichr(Constant::EMO_SMILE)."/agent\n"
+                .self::unichr(Constant::EMO_SMILE)."/auditor\n"
+                .self::unichr(Constant::EMO_EVIL)."/morgassassin\n"
+                .self::unichr(Constant::EMO_EVIL)."/witch\n"
+                .self::unichr(Constant::EMO_EVIL)."/ninja\n";
 
 
             Script::$script["en"][Script::PU_HOWTOPLAY]
@@ -660,7 +727,7 @@ class Script{
 
             . Script::$script["en"][Script::PU_ROLELIST]
 
-            . "\n\nAt the start of the game, King token".self::unichr(Constant::EMO_KING). " will be randomly assigned to a player and the King may choose who can complete the current quest.\n"
+            . "\nAt the start of the game, King token".self::unichr(Constant::EMO_KING). " will be randomly assigned to a player and the King may choose who can complete the current quest.\n"
             . "After the king has done the assignment, any player may vote <b>approve</b> or <b>reject</b> to the assignment. Then, the approve and reject will be counted.\n\n"
 
             . "If the <b>reject</b> count is half or more the count of the players, then the quest is rejected, and the king token"
@@ -675,7 +742,7 @@ class Script{
             . "In a game 8 players or more, <b>lady of the lake</b>".self::unichr(Constant::EMO_LADY)." can be used. Lady of The Lake will give a large benefit for a good forces.. "
             . "A player who hold the lady token may choose a player to know his/her true identity (good or evil) but only the lady holder knows the truth.\n\n"
 
-            . "That's all. Practice is the faster way to learn.. Type /start to start the game.\n\n";
+            . "That's all. Practice is the faster way to learn.. Type /start or /startchaos to start the game.\n\n";
 
 
 
@@ -691,7 +758,7 @@ class Script{
 
             . Script::$script["id"][Script::PU_ROLELIST]
 
-            . "\n\nDi awal permainan, King token ".self::unichr(Constant::EMO_KING). " akan diberikan secara random ke salah seorang pemain dan raja boleh memilih orang yang akan berangkat untuk quest yang berlangsung.\n"
+            . "\nDi awal permainan, King token ".self::unichr(Constant::EMO_KING). " akan diberikan secara random ke salah seorang pemain dan raja boleh memilih orang yang akan berangkat untuk quest yang berlangsung.\n"
             . "Setelah raja memberikan penugasan, tiap orang boleh <b>setuju</b> or <b>menolak</b> terhadap penugasan itu. Kemudian, jumlah setuju dan jumlah menolak akan dihitung.\n\n"
 
             . "Jika jumlah <b>menolak</b> lebih besar atau sama dengan jumlah pemain, maka quest akan ditolak dan King token"
@@ -707,7 +774,7 @@ class Script{
             . "Dalam game dengan 8 pemain atau lebih, <b>lady of the lake</b>".self::unichr(Constant::EMO_LADY)." dapat digunakan. Lady of the Lake dapat memberikan keuntungan yang besar bagi tim baik. "
             . "Pemain yang memegang the lady token boleh menerawang sesorang untuk mengetahui identitas sebenarnya (baik atau jahat) namun hanya pemegang lady lah yang mengetahuinya.\n\n"
 
-            . "Sekian. Latihan adalah cara yang cepat untuk belajar. Ketik /start untuk memulai game.\n\n";
+            . "Sekian. Latihan adalah cara yang cepat untuk belajar. Ketik /start atau /startchaos untuk memulai game.\n\n";
 
 
 
@@ -721,13 +788,13 @@ class Script{
 
             Script::$script["en"][Script::PU_MERLININFO]
                 = "<b>Merlin</b>".self::unichr(Constant::EMO_SMILE)
-                . " knows all evil players except /mordred. His job is to give clues to the good team, "
+                . " knows all evil players except /mordred (and also /ninja). His job is to give clues to the good team, "
                 . "so it will prevent the evil players having a chance failing the quests.\n\n"
                 . "Note that if Merlin is too obvious, even though 3 quests have succeed, the /assassin can "
                 . "guess the Merlin at the end of the game. If Assassin's guess is correct, the good side will lose although 3 quests has been success.";
             Script::$script["id"][Script::PU_MERLININFO]
                 = "<b>Merlin</b>".self::unichr(Constant::EMO_SMILE)
-                . " tahu semua pemain jahat kecuali Mordred. Merlin harus memberikan petunjuk-petunjuk ke tim baik, "
+                . " tahu semua pemain jahat kecuali Mordred (dan juga /ninja). Merlin harus memberikan petunjuk-petunjuk ke tim baik, "
                 . "sehingga mencegah pemain jahat untuk mengerjakan quest.\n\n"
                 . "Penting juga bagi Merlin agar dia tidak ketahuan tim jahat karena /assassin dapat "
                 . "menebak Merlin di akhir game. Jika assassin berhasil menebak Merlin, tim baik akan kalah meskipun 3 quest sudah berhasil.";
@@ -754,18 +821,76 @@ class Script{
                 ."Tugas servant adalah menyukseskan quest dan mencoba menebak Merlin (berdasarkan deduksi). ".
                 "Servant mungkin juga perlu berpura-pura menjadi Merlin untuk mengelabui tim jahat.";
 
+            Script::$script["en"][Script::PU_AUDITORINFO]
+                = "<b>Auditor</b>".self::unichr(Constant::EMO_SMILE)
+                . " is in a good side. If auditor is assigned in a quest, there is 20% chance 1 FAIL can be eliminated.\n\n";
+            Script::$script["id"][Script::PU_AUDITORINFO]
+                = "<b>Auditor</b>".self::unichr(Constant::EMO_SMILE)
+                . " adalah pemain baik. Jika auditor ditunjuk dalam sebuah quest, maka terdapat 20% kemungkinan 1 FAIL dapat dieliminasi.\n\n";
+
+
             Script::$script["en"][Script::PU_MORDREDINFO]
                 = "<b>Mordred</b>".self::unichr(Constant::EMO_EVIL)
-                . " as an evil player knows the other evil players at the start of the game (except Oberon) and have to cooperate together to fail the quests.\n\n"
+                . " as an evil player knows the other evil players at the start of the game (except Oberon) and has to cooperate together to fail the quests.\n\n"
                 . "Merlin cannot see Mordred as an evil player so Mordred may act as a good player without being known.";
             Script::$script["id"][Script::PU_MORDREDINFO]
                 = "<b>Mordred</b>".self::unichr(Constant::EMO_EVIL)
                 . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n"
                 . "Merlin tidak dapat melihat Mordred sehingga Mordred dapat berpura-pura menjadi pemain yang baik tanpa diketahui.\n\n";
 
+            Script::$script["en"][Script::PU_NINJAINFO]
+                = "<b>Ninja</b>".self::unichr(Constant::EMO_EVIL)
+                . " (Super Mordred) as an evil player knows the other evil players at the start of the game (except Oberon) and has to cooperate together to fail the quests.\n\n"
+                . "Merlin cannot see Ninja as an evil player so Ninja may act as a good player without being known. Ninja can also give 2 FAILS if being assigned in the quest, but this ability can only be used once per game.";
+            Script::$script["id"][Script::PU_NINJAINFO]
+                = "<b>Ninja</b>".self::unichr(Constant::EMO_EVIL)
+                . " (Super Mordred) adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n"
+                . "Merlin tidak dapat melihat Ninja sehingga Ninja dapat berpura-pura menjadi pemain yang baik tanpa diketahui. Ninja dapaet memberikan 2 GAGAL jika diikutkan dalam quest, namun kemampuan ini hanya bisa digunkan sekali dalam satu game.\n\n";
+
+            Script::$script["en"][Script::SECRETCODES] = array(
+                "thanks",
+                "sorry",
+                "honest",
+                "lie",
+                "perfect",
+                "happy",
+                "sad",
+                "stupid",
+                "smart",
+                "Oh my God",
+                "believe",
+                "pray",
+            );
+            Script::$script["id"][Script::SECRETCODES] = array(
+                "terima kasih",
+                "maaf",
+                "jujur",
+                "bohong",
+                "sempurna",
+                "senang",
+                "sedih",
+                "bodoh",
+                "pintar",
+                "ya Tuhan",
+                "percaya",
+                "berdoa",
+            );
+
+            Script::$script["en"][Script::PU_AGENTINFO]
+                = "<b>Agent</b>".self::unichr(Constant::EMO_SMILE)
+                . " is in a good side. All agents in the team share the same secret codes given via Bot Private Message.\n\n"
+                . "Agents can find the other teammates by using those secret codes, so that together they will succeed the mission easier. Remember, do not make it too obvious, or the bad guys will know the agents and it will make assassin's job easier to kill Merlin.\n\n"
+                . "Possible secret codes: ".Constant::arrayToString(Script::$script["en"][Script::SECRETCODES]).".\n\n";
+            Script::$script["id"][Script::PU_AGENTINFO]
+                = "<b>Agent</b>".self::unichr(Constant::EMO_SMILE)
+                . " berada di tim baik. Semua agent dalam tim mendapatkan kode rahasia yang sama yang diberikan melalui PM Bot.\n\n"
+                . "Agent dapat menemukan teman agen lainnya menggunakan kode rahasia tersebut, sehingga bersama-sama agent dapat menyukseskan misi lebih mudah. Ingat, jangan terlalu jelas memberikan kode, atau penjahat akan tahu semua agent sehingga membuat tugas assassin untuk membunuh Merlin menjadi lebih mudah.\n\n"
+                . "Kode rahasia yang mungkin: ".Constant::arrayToString(Script::$script["id"][Script::SECRETCODES]).".\n\n";
+
+
             Script::$script["en"][Script::PU_MORGANAINFO]
                 = "<b>Morgana</b>".self::unichr(Constant::EMO_EVIL)
-                . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
+                . " as an evil player knows the other evil players at the start of the game and has to cooperate together to fail the quests.\n\n"
                 . "Because Percival can see Merlin and Morgana, Morgana's primary job is to gain trust from Percival by acting as a Merlin. If Percival can be deceived, Merlin will be in trouble.\n\n";
             Script::$script["id"][Script::PU_MORGANAINFO]
                 = "<b>Morgana</b>".self::unichr(Constant::EMO_EVIL)
@@ -774,7 +899,7 @@ class Script{
 
             Script::$script["en"][Script::PU_ASSASSININFO]
                 = "<b>Assassin</b>".self::unichr(Constant::EMO_EVIL)
-                . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
+                . " as an evil player knows the other evil players at the start of the game and has to cooperate together to fail the quests.\n\n"
                 . "Assassin can guess Merlin at the end of the game (if 3 quests already been succeed). If the guess is correct, whatever the result in the quests, Evil force will win.";
             Script::$script["id"][Script::PU_ASSASSININFO]
                 = "<b>Assassin</b>".self::unichr(Constant::EMO_EVIL)
@@ -782,36 +907,46 @@ class Script{
                 . "Assassin dapat menebak Merlin di akhir game (jika 3 quest sudah sukses). Jika Merlin berhasil dibunuh, apapun hasil di quest, tim jahat akan menang.";
 
 
+            Script::$script["en"][Script::PU_WITCHINFO]
+                = "<b>Witch</b>".self::unichr(Constant::EMO_EVIL)
+                . " as an evil player knows the other evil players at the start of the game and has to cooperate together to fail the quests.\n\n"
+                . "Witch has the ability to know what are the roles that the good team holds, but witch doesn't know how much or who hold the roles. Use this information to narrow down the merlin.\n";
+            Script::$script["id"][Script::PU_WITCHINFO]
+                = "<b>Witch</b>".self::unichr(Constant::EMO_EVIL)
+                . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n"
+                . "Witch mempunyai kemampuan untuk mengetahui peran apa saja yang ada di tim baik, tapi witch tidak mengetahui jumlah dan siapa yang memegang peran tersebut. Gunakan informasi ini untuk mencari merlin.";
+
+
             Script::$script["en"][Script::PU_MORGASSASSININFO]
                 = "<b>Morgassassin</b>".self::unichr(Constant::EMO_EVIL)
-                . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n"
+                . " as an evil player knows the other evil players at the start of the game and has to cooperate together to fail the quests.\n\n"
                 . "Morgasassin is a combination role from /morgana and /assassin. The player with this cahracter can deceive Percival and morgassassin can also kill Merlin at the game of the game.\n\n";
             Script::$script["id"][Script::PU_MORGASSASSININFO]
                 = "<b>Morgassassin</b>".self::unichr(Constant::EMO_EVIL)
                 . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n"
                 . "Morgassassin adalah peran kombinasi dari /morgana dan /assassin. Pemain dengan karakter ini dapat menipu Percival dan Morgassassin juga dapat membunuh Merlin di akhir game.\n\n";
 
-            Script::$script["en"][Script::PU_GUARDINFO]
-                = "<b>Guard</b>".self::unichr(Constant::EMO_SMILE)
-                . " is a good person whose job is to protect the king and make the quests succeed.\n\n"
-                . "At the start of the game, guard can have information about 2 neighborhood players. Guard knows whether there is no bad person between them, or there is at least 1 bad person. However, Guard cannot detect Mordred, so Mordred will be seen as a good person.\n\n";
-            Script::$script["id"][Script::PU_GUARDINFO]
-                = "<b>Guard</b>".self::unichr(Constant::EMO_SMILE)
-                . " (Penjaga) adalah pemain baik yang bertugas melindungi raja dan turut menyukseskan quest.\n\n"
-                . "Di awal permainan, guard dapat memperoleh informasi mengenai 2 pemain di sekelilingnya. Guard tahu apakah tidak ada pemain jahat dari kedua orang itu, atau terdapat minimal 1 orang jahat. Namun, Guard tidak dapat mendeteksi Mordred, sehingga Mordred terlihat seperti orang baik.\n\n";
+            Script::$script["en"][Script::PU_KNIGHTINFO]
+                = "<b>Knight</b>".self::unichr(Constant::EMO_SMILE)
+                . " is a good person whose job is to succeed the quests.\n\n"
+                . "At the start of the game, knight can have information about 2 neighborhood players. Knight knows whether there is no bad person between them, or there is at least 1 bad person. However, Knight cannot detect Mordred, so Mordred will be seen as a good person.\n\n";
+            Script::$script["id"][Script::PU_KNIGHTINFO]
+                = "<b>Knight</b>".self::unichr(Constant::EMO_SMILE)
+                . " (Ksatria) adalah pemain baik yang bertugas menyukseskan quest.\n\n"
+                . "Di awal permainan, knight dapat memperoleh informasi mengenai 2 pemain di sekelilingnya. Knight tahu apakah tidak ada pemain jahat dari kedua orang itu, atau terdapat minimal 1 orang jahat. Namun, Knight tidak dapat mendeteksi Mordred, sehingga Mordred terlihat seperti orang baik.\n\n";
 
             Script::$script["en"][Script::PU_OBERONINFO]
                 = "<b>Oberon</b>".self::unichr(Constant::EMO_EVIL)
                 . " is an evil player but all other evil players do not know the oberon's identity. Merlin can still see Oberon though."
-                . " In this telegram, Oberon will know the evil teammate until 2nd quest is finished.";
+                . " Oberon knows all the evil teammates but should not use Private Message to communicate.";
             Script::$script["id"][Script::PU_OBERONINFO]
                 = "<b>Oberon</b>".self::unichr(Constant::EMO_EVIL)
                 . " adalah pemain jahat namun pemain jahat lain tidak tahu identitas Oberon. Sayangnya, Merlin masih dapat melihat Oberon."
-                . " Di telegram, Oberon akan tahu teman jahatnya setelah quest kedua selesai.";
+                . " Oberon tahu semua teman jahatnya, namun tidak boleh menggunakan PM untuk berkomunasi.";
 
             Script::$script["en"][Script::PU_THIEFINFO]
                 = "<b>Thief</b>".self::unichr(Constant::EMO_EVIL)
-                . " as an evil player knows the other evil players at the start of the game and have to cooperate together to fail the quests.\n\n";
+                . " as an evil player knows the other evil players at the start of the game and has to cooperate together to fail the quests.\n\n";
             Script::$script["id"][Script::PU_THIEFINFO]
                 = "<b>Thief</b>".self::unichr(Constant::EMO_EVIL)
                 . " adalah pemain jahat yang tahu teman-teman jahatnya di awal permainan (kecuali Oberon) dan harus bekerja sama dengan tim jahat untuk mengagalkan quest.\n\n";
