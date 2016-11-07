@@ -1306,9 +1306,8 @@ class AvalonBotChat extends TelegramBotChat {
 //            $this->sendDEVMessageToPrivate($text,$this->oberonID);
 //        }
 
-        if ($this->currentQuestNumberStart0 >= 1 && count($this->agentsIdNotHaveCode) > 0) {
-            //50% to pop
-            if ($this->currentQuestNumberStart0 >= 3){
+        if ($this->currentQuestNumberStart0 >= 2 && count($this->agentsIdNotHaveCode) > 0) {
+            if ($this->currentQuestNumberStart0 >= 3){ // send to all agent if quest no. 4
                 // pop all
                 foreach ($this->agentsIdNotHaveCode as $agentID) {
                     $text = sprintf($this->langScript[Script::PR_AGENTSECRETCODE],
@@ -1317,12 +1316,16 @@ class AvalonBotChat extends TelegramBotChat {
                 }
                 $this->agentsIdNotHaveCode = array();
             }
-            if (rand(0,9) <= 4) {
-                // pop it
-                $agentID = array_pop($this->agentsIdNotHaveCode);
-                $text = sprintf($this->langScript[Script::PR_AGENTSECRETCODE],
-                    $this->agentSecretCode);
-                $this->sendDEVMessageToPrivate($text,$agentID);
+            else { // quest no. 3, buat fail is one or more, then broadcast it.
+                if ($this->failQuestCount >= 1){
+                    // pop all
+                    foreach ($this->agentsIdNotHaveCode as $agentID) {
+                        $text = sprintf($this->langScript[Script::PR_AGENTSECRETCODE],
+                            $this->agentSecretCode);
+                        $this->sendDEVMessageToPrivate($text,$agentID);
+                    }
+                    $this->agentsIdNotHaveCode = array();
+                }
             }
         }
 

@@ -273,9 +273,9 @@ class Script{
                 = "Kamu adalah Ninja (Super Mordred). Tim jahatmu adalah %s. Merlin tidak tahu bahwa kamu orang jahat. Kamu bisa memberikan 2 GAGAL jika kamu diikutkan dalam sebuah quest, namun kemampuan ini hanya bisa dipakai 1 kali saja dalam 1 game.";
 
             Script::$script["en"][Script::PR_YOUAREAGENT]
-                = "You are Agent, a good person whose job is to succeed the missions. The same secret codes are given to agents after quest 1/2/3/4 finished. Find your agent teammates, then together you will succeed the mission easier. Note: you should not use the Private Message to communicate.";
+                = "You are Agent, a good person whose job is to succeed the missions. The same secret codes are given to agents after quest 2 or 3 finished. Find your agent teammates, then together you will succeed the mission easier. Note: you should not use the Private Message to communicate.";
             Script::$script["id"][Script::PR_YOUAREAGENT]
-                = "Kamu adalah agent, orang baik yang bertugas untuk menyukseskan misi. Kode rahasia yang sama akan diberikan ke agent setelah quest 1/2/3/4 selesai. Temukan teman agenmu, maka bersama-sama kalian akan menyukseskan misi lebih mudah. Catatan: kamu tidak boleh menggunakan PM untuk berkomunikasi.";
+                = "Kamu adalah agent, orang baik yang bertugas untuk menyukseskan misi. Kode rahasia yang sama akan diberikan ke agent setelah quest 2 atau 3 selesai. Temukan teman agenmu, maka bersama-sama kalian akan menyukseskan misi lebih mudah. Catatan: kamu tidak boleh menggunakan PM untuk berkomunikasi.";
 
 
             Script::$script["en"][Script::PR_YOUAREWITCH]
