@@ -37,6 +37,8 @@ class AvalonBotChat extends TelegramBotChat {
     protected $mode;
 
     protected $all_bad_guys_id = array();
+    protected $agentsIdNotHaveCode = array();
+    protected $agentSecretCode;
 
     // 0,1,2,3,4
     protected $currentQuestNumberStart0;
@@ -707,6 +709,7 @@ class AvalonBotChat extends TelegramBotChat {
 
         // all bad guys see your eyes! (this is just to collect all bad guys)
         $this->all_bad_guys_id = array();
+        $this->agentsIdNotHaveCode = array();
         $morgana_and_merlin_ids= array();
         $thereIsAgent = false;
         $thereIsKnight = false;
@@ -721,6 +724,8 @@ class AvalonBotChat extends TelegramBotChat {
         unset( $this->ninjaID );
         unset( $this->mordredID );
         unset( $this->auditorID );
+
+        $this->agentSecretCode = "";
 
         for ($i=0 ; $i < $this->playerCount; $i++) {
             $playerID = $this->playerIDs[$i];
@@ -747,6 +752,7 @@ class AvalonBotChat extends TelegramBotChat {
             }
             else if ($role == Constant::AGENT) {
                 $thereIsAgent = true;
+                array_push($this->agentsIdNotHaveCode, $playerID);
             }
             else if ($role == Constant::WITCH) {
                 $thereIsWitch = true;
@@ -769,10 +775,14 @@ class AvalonBotChat extends TelegramBotChat {
                 $this->merlinID = $playerID;
             }
         }
-        $agentSecretCode = "";
+
         if ($thereIsAgent) {
-            $randomSecretCodes = Constant::getRandomSubsetFromArray($this->langScript[Script::SECRETCODES],1);
-            $agentSecretCode = Constant::arrayToString($randomSecretCodes);
+            $randomSecretCodes = Constant::getRandomSubsetFromArray($this->langScript[Script::SECRETCODES],2);
+            $this->agentSecretCode = Constant::arrayToString($randomSecretCodes);
+
+            // random agents
+            $agentCount = count($this->agentsIdNotHaveCode);
+            $this->agentsIdNotHaveCode = Constant::getRandomSubsetFromArray($this->agentsIdNotHaveCode, $agentCount);
         }
 
         $goodRolesSeenByWitch = "<b>Merlin</b>";
@@ -847,8 +857,7 @@ class AvalonBotChat extends TelegramBotChat {
                     break;
 
                 case Constant::AGENT:
-                    $text = sprintf($this->langScript[Script::PR_YOUAREAGENT],
-                        $agentSecretCode);
+                    $text = sprintf($this->langScript[Script::PR_YOUAREAGENT]);
                     break;
                 case Constant::AUDITOR:
                     $text = $this->langScript[Script::PR_YOUAREAUDITOR];
@@ -1296,6 +1305,26 @@ class AvalonBotChat extends TelegramBotChat {
 //                $this->playersToFullNameString($bad_guys_no_mordred_and_oberon_id));
 //            $this->sendDEVMessageToPrivate($text,$this->oberonID);
 //        }
+
+        if ($this->currentQuestNumberStart0 >= 1 && count($this->agentsIdNotHaveCode) > 0) {
+            //50% to pop
+            if ($this->currentQuestNumberStart0 >= 3){
+                // pop all
+                foreach ($this->agentsIdNotHaveCode as $agentID) {
+                    $text = sprintf($this->langScript[Script::PR_AGENTSECRETCODE],
+                        $this->agentSecretCode);
+                    $this->sendDEVMessageToPrivate($text,$agentID);
+                }
+                $this->agentsIdNotHaveCode = array();
+            }
+            if (rand(0,9) <= 4) {
+                // pop it
+                $agentID = array_pop($this->agentsIdNotHaveCode);
+                $text = sprintf($this->langScript[Script::PR_AGENTSECRETCODE],
+                    $this->agentSecretCode);
+                $this->sendDEVMessageToPrivate($text,$agentID);
+            }
+        }
 
         if ($this->currentQuestNumberStart0 >= 2 && $this->ladyLakeTokenIndex > -1) {
             // do lady of the lake

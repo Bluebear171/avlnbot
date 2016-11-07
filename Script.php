@@ -126,6 +126,8 @@ class Script{
 
     const PR_FAILDECREASE1 = 85;
 
+    const PR_AGENTSECRETCODE = 86;
+
     const PU_CHCKPMTOCHGLANG = 100; // check PM untuk mengganti bahasa
     const PU_SECONDTODECIDE = 101; // you have %d to decide
     const PU_LANGGROUPNOTFOUND = 102; // "Bahasa tidak berhasil diganti. group tidak ditemukan.";
@@ -271,9 +273,9 @@ class Script{
                 = "Kamu adalah Ninja (Super Mordred). Tim jahatmu adalah %s. Merlin tidak tahu bahwa kamu orang jahat. Kamu bisa memberikan 2 GAGAL jika kamu diikutkan dalam sebuah quest, namun kemampuan ini hanya bisa dipakai 1 kali saja dalam 1 game.";
 
             Script::$script["en"][Script::PR_YOUAREAGENT]
-                = "You are Agent, a good person whose job is to succeed the missions. All agents are shared the same secret codes: %s. Find your agent teammates, then together you will succeed the mission easier. Note: you should not use the Private Message to communicate.";
+                = "You are Agent, a good person whose job is to succeed the missions. The same secret codes are given to agents after quest 1/2/3/4 finished. Find your agent teammates, then together you will succeed the mission easier. Note: you should not use the Private Message to communicate.";
             Script::$script["id"][Script::PR_YOUAREAGENT]
-                = "Kamu adalah agent, orang baik yang bertugas untuk menyukseskan misi. Semua agent diberikan kode rahasia yang sama: %s. Temukan teman agenmu, maka bersama-sama kalian akan menyukseskan misi lebih mudah. Catatan: kamu tidak boleh menggunakan PM untuk berkomunikasi.";
+                = "Kamu adalah agent, orang baik yang bertugas untuk menyukseskan misi. Kode rahasia yang sama akan diberikan ke agent setelah quest 1/2/3/4 selesai. Temukan teman agenmu, maka bersama-sama kalian akan menyukseskan misi lebih mudah. Catatan: kamu tidak boleh menggunakan PM untuk berkomunikasi.";
 
 
             Script::$script["en"][Script::PR_YOUAREWITCH]
@@ -326,6 +328,12 @@ class Script{
                 = "You are Knight, a good person whose job it to succeed the quests. Between %s and %s, it seems that there is no bad guys. (Remember, knight cannot detect Mordred)";
             Script::$script["id"][Script::PR_YOUAREKNIGHTNOBAD]
                 = "Kamu adalah seorang Knight (Penjaga) yang bertugas menyukseskan misi. Di antara %s dan %s, sepertinya tidak terdapat orang jahat. (Ingat, knight tidak dapat mendeteksi Mordred)";
+
+            Script::$script["en"][Script::PR_AGENTSECRETCODE]
+                = "The secret codes have been decrypted: %s. Use this code to find the other agents! Note: you cannot use Private Message to communicate.";
+            Script::$script["id"][Script::PR_AGENTSECRETCODE]
+                = "Kode rahasia sudah terpecahkan: %s. gunakan kode ini untuk menemukan agent lainnya! Catatan: kamu tidak boleh menggunakan PM untuk berkomunikasi.";
+
 
             Script::$script["en"][Script::PU_KINGNEEDASSIGN]
                 = "%s as king will assign <b>%d persons</b> to execute the quest. The king is given time <b>%d seconds</b>";
