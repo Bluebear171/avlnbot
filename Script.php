@@ -389,7 +389,7 @@ class Script{
 //                = "Akhirnya kamu tahu juga teman jahat seperjuanganmu.. Mereka adalah %s.";
 
             Script::$script["en"][Script::PU_LADYCHAOS]
-                = "Lady of the Lake in Chaos Mode can only be used after 3rd quest finiehed (except there is already 2 FAILs in first 2 quests).";
+                = "Lady of the Lake in Chaos Mode can only be used after 3rd quest finiehed (except there are already 2 FAILs in first 2 quests).";
             Script::$script["id"][Script::PU_LADYCHAOS]
                 = "Lady of the Lake di mode chaos hanya bisa dipakai setelah quest 3 selesai. (kecuali jika sudah ada 2 GAGAL di 2 quest pertama).";
 
