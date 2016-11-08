@@ -1329,7 +1329,20 @@ class AvalonBotChat extends TelegramBotChat {
             }
         }
 
-        if ($this->currentQuestNumberStart0 >= 2 && $this->ladyLakeTokenIndex > -1) {
+        if ($this->mode == Constant::MODE_CHAOS ) {
+            $startLadyCheck = $this->currentQuestNumberStart0 >= 3 ||
+                ($this->currentQuestNumberStart0 == 2 && $this->failQuestCount == 2);
+            if ($this->currentQuestNumberStart0 == 2 && $this->failQuestCount < 2){
+                // SCRIPT
+                // lady of lake di mode chaos hanya bisa dipakai setelah quest 3 selesai.
+                $text = $this->langScript[Script::PU_LADYCHAOS];
+                $this->apiSendMessage($text);
+            }
+        }
+        else { // MODE NORMAL
+            $startLadyCheck = $this->currentQuestNumberStart0 >= 2;
+        }
+        if ($startLadyCheck && $this->ladyLakeTokenIndex > -1) {
             // do lady of the lake
             $this->gameStatus = Constant::EXEC_LADY_OF_LAKE_PRIVATE;
 

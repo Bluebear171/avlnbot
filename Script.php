@@ -128,6 +128,8 @@ class Script{
 
     const PR_AGENTSECRETCODE = 86;
 
+    const PU_LADYCHAOS = 87;
+
     const PU_CHCKPMTOCHGLANG = 100; // check PM untuk mengganti bahasa
     const PU_SECONDTODECIDE = 101; // you have %d to decide
     const PU_LANGGROUPNOTFOUND = 102; // "Bahasa tidak berhasil diganti. group tidak ditemukan.";
@@ -385,6 +387,12 @@ class Script{
 //                = "Finally you know your teammates. They are %s.";
 //            Script::$script["id"][Script::PR_OBERONFINALLY]
 //                = "Akhirnya kamu tahu juga teman jahat seperjuanganmu.. Mereka adalah %s.";
+
+            Script::$script["en"][Script::PU_LADYCHAOS]
+                = "Lady of the Lake in Chaos Mode can only be used after 3rd quest finiehed (except there is already 2 FAILs in first 2 quests).";
+            Script::$script["id"][Script::PU_LADYCHAOS]
+                = "Lady of the Lake di mode chaos hanya bisa dipakai setelah quest 3 selesai. (kecuali jika sudah ada 2 GAGAL di 2 quest pertama).";
+
 
             Script::$script["en"][Script::PU_LADYLAKEINST]
                 = "%s as Lady of the Lake may use the power to see the true identity of one player. The other team members may give the advice.. <b>%d seconds</b> are given to do the action.";

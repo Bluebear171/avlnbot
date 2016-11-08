@@ -304,6 +304,11 @@ class Constant{
                         Constant::GOOD_NORMAL,
                         Constant::MORDRED,
                         Constant::MORGASSASSIN),
+                    array(Constant::MERLIN,
+                        Constant::AGENT,
+                        Constant::AGENT,
+                        Constant::NINJA,
+                        Constant::ASSASSIN),
                 ),
                 6 =>
                 array(
@@ -342,9 +347,24 @@ class Constant{
                         Constant::AGENT,
                         Constant::NINJA,
                         Constant::MORGASSASSIN),
+                    array(
+                        Constant::MERLIN,
+                        Constant::AGENT,
+                        Constant::AGENT,
+                        Constant::AGENT,
+                        Constant::NINJA,
+                        Constant::ASSASSIN),
                 ),
                 7 =>
                 array(
+                    array(
+                        Constant::MERLIN,
+                        Constant::PERCIVAL,
+                        Constant::KNIGHT,
+                        Constant::KNIGHT,
+                        Constant::MORDRED,
+                        Constant::WITCH,
+                        Constant::MORGASSASSIN),
                     array(
                         Constant::MERLIN,
                         Constant::PERCIVAL,
@@ -395,7 +415,7 @@ class Constant{
                         Constant::PERCIVAL,
                         Constant::AGENT,
                         Constant::AGENT,
-                        Constant::AGENT,
+                        Constant::GOOD_NORMAL,
                         Constant::NINJA,
                         Constant::WITCH,
                         Constant::MORGASSASSIN),
@@ -404,8 +424,8 @@ class Constant{
                     array(
                         Constant::MERLIN,
                         Constant::PERCIVAL,
-                        Constant::AGENT,
-                        Constant::AGENT,
+                        Constant::KNIGHT,
+                        Constant::KNIGHT,
                         Constant::GOOD_NORMAL,
                         Constant::MORDRED,
                         Constant::WITCH,
@@ -415,25 +435,7 @@ class Constant{
                         Constant::PERCIVAL,
                         Constant::KNIGHT,
                         Constant::KNIGHT,
-                        Constant::KNIGHT,
-                        Constant::MORDRED,
-                        Constant::WITCH,
-                        Constant::MORGASSASSIN),
-                    array(
-                        Constant::MERLIN,
-                        Constant::PERCIVAL,
-                        Constant::GOOD_NORMAL,
-                        Constant::GOOD_NORMAL,
-                        Constant::GOOD_NORMAL,
-                        Constant::MORDRED,
-                        Constant::WITCH,
-                        Constant::MORGASSASSIN),
-                    array(
-                        Constant::MERLIN,
-                        Constant::PERCIVAL,
                         Constant::AGENT,
-                        Constant::KNIGHT,
-                        Constant::GOOD_NORMAL,
                         Constant::MORDRED,
                         Constant::WITCH,
                         Constant::MORGASSASSIN),
@@ -473,10 +475,10 @@ class Constant{
 
                     array(Constant::MERLIN,
                         Constant::PERCIVAL,
-                        Constant::AGENT,
-                        Constant::AGENT,
-                        Constant::AGENT,
                         Constant::KNIGHT,
+                        Constant::KNIGHT,
+                        Constant::AGENT,
+                        Constant::GOOD_NORMAL,
                         Constant::NINJA,
                         Constant::WITCH,
                         Constant::MORGASSASSIN),
@@ -492,21 +494,10 @@ class Constant{
                         Constant::WITCH,
                         Constant::MORGASSASSIN),
 
-                    // mordred witch, morgas
                     array(Constant::MERLIN,
                         Constant::PERCIVAL,
                         Constant::KNIGHT,
-                        Constant::KNIGHT,
-                        Constant::KNIGHT,
-                        Constant::GOOD_NORMAL,
-                        Constant::MORDRED,
-                        Constant::WITCH,
-                        Constant::MORGASSASSIN),
-
-                    array(Constant::MERLIN,
-                        Constant::PERCIVAL,
                         Constant::AUDITOR,
-                        Constant::GOOD_NORMAL,
                         Constant::GOOD_NORMAL,
                         Constant::GOOD_NORMAL,
                         Constant::MORDRED,
@@ -549,6 +540,7 @@ class Constant{
                 10 =>
                 array(
                     // ninja witch morga oberon
+                    // witch can guess, then 50:50
                     array(Constant::MERLIN,
                         Constant::PERCIVAL,
                         Constant::AGENT,
@@ -560,7 +552,20 @@ class Constant{
                         Constant::MORGASSASSIN,
                         Constant::OBERON),
 
+                    // witch can guess, then 50:50
+                    array(Constant::MERLIN,
+                        Constant::PERCIVAL,
+                        Constant::AGENT,
+                        Constant::AGENT,
+                        Constant::KNIGHT,
+                        Constant::KNIGHT,
+                        Constant::NINJA,
+                        Constant::WITCH,
+                        Constant::MORGASSASSIN,
+                        Constant::OBERON),
+
                     // mordred witch, morgas
+                    // witch can guess, then 1:4
                     array(Constant::MERLIN,
                         Constant::PERCIVAL,
                         Constant::AGENT,
@@ -572,6 +577,7 @@ class Constant{
                         Constant::MORGASSASSIN,
                         Constant::OBERON),
 
+                    // witch can guess, then 1:3
                     array(Constant::MERLIN,
                         Constant::PERCIVAL,
                         Constant::AGENT,
@@ -583,10 +589,11 @@ class Constant{
                         Constant::MORGASSASSIN,
                         Constant::OBERON),
 
+                    // witch can guess, then 1:4
                     array(Constant::MERLIN,
                         Constant::PERCIVAL,
                         Constant::KNIGHT,
-                        Constant::KNIGHT,
+                        Constant::AUDITOR,
                         Constant::GOOD_NORMAL,
                         Constant::GOOD_NORMAL,
                         Constant::MORDRED,
@@ -599,18 +606,7 @@ class Constant{
                         Constant::PERCIVAL,
                         Constant::KNIGHT,
                         Constant::KNIGHT,
-                        Constant::KNIGHT,
-                        Constant::KNIGHT,
-                        Constant::MORDRED,
-                        Constant::WITCH,
-                        Constant::MORGANA,
-                        Constant::ASSASSIN),
-
-                    array(Constant::MERLIN,
-                        Constant::PERCIVAL,
-                        Constant::AGENT,
-                        Constant::AGENT,
-                        Constant::AGENT,
+                        Constant::GOOD_NORMAL,
                         Constant::GOOD_NORMAL,
                         Constant::MORDRED,
                         Constant::WITCH,
@@ -619,9 +615,9 @@ class Constant{
 
                     array(Constant::MERLIN,
                         Constant::PERCIVAL,
-                        Constant::AUDITOR,
-                        Constant::KNIGHT,
-                        Constant::KNIGHT,
+                        Constant::AGENT,
+                        Constant::AGENT,
+                        Constant::GOOD_NORMAL,
                         Constant::GOOD_NORMAL,
                         Constant::MORDRED,
                         Constant::WITCH,
@@ -634,7 +630,7 @@ class Constant{
                         Constant::AGENT,
                         Constant::AGENT,
                         Constant::AGENT,
-                        Constant::KNIGHT,
+                        Constant::GOOD_NORMAL,
                         Constant::NINJA,
                         Constant::MORGANA,
                         Constant::ASSASSIN,
