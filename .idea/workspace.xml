@@ -6,7 +6,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8a73f481-ab87-4211-bcdc-4a86725a2d7e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Constant.php" afterPath="$PROJECT_DIR$/Constant.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Script.php" afterPath="$PROJECT_DIR$/Script.php" />
     </list>
     <ignored path="avalon.iws" />
@@ -28,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="Constant.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Constant.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Constant.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="182">
-              <caret line="434" column="0" selection-start-line="434" selection-start-column="0" selection-end-line="434" selection-end-column="0" />
+            <state relative-caret-position="293">
+              <caret line="477" column="48" selection-start-line="477" selection-start-column="48" selection-end-line="477" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -88,11 +88,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Script.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Script.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Script.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="674" column="0" selection-start-line="674" selection-start-column="0" selection-end-line="674" selection-end-column="0" />
+            <state relative-caret-position="347">
+              <caret line="677" column="91" selection-start-line="677" selection-start-column="91" selection-end-line="677" selection-end-column="91" />
               <folding />
             </state>
           </provider>
@@ -101,8 +101,8 @@
       <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AvalonBot.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
-              <caret line="2599" column="59" selection-start-line="2599" selection-start-column="50" selection-end-line="2599" selection-end-column="59" />
+            <state relative-caret-position="-1149">
+              <caret line="716" column="19" selection-start-line="716" selection-start-column="14" selection-end-line="716" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -414,7 +414,7 @@
       <workItem from="1478655088217" duration="6665000" />
       <workItem from="1478664463282" duration="2001000" />
       <workItem from="1478678121727" duration="1795000" />
-      <workItem from="1478694137469" duration="417000" />
+      <workItem from="1478694137469" duration="2239000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -434,10 +434,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="372373000" />
+    <option name="totallyTimeSpent" value="374195000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19692533" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -682,6 +682,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AvalonBot.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1149">
+          <caret line="716" column="19" selection-start-line="716" selection-start-column="14" selection-end-line="716" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Script.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="677" column="91" selection-start-line="677" selection-start-column="91" selection-end-line="677" selection-end-column="91" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/connc.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -698,34 +722,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AvalonBot.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="2599" column="59" selection-start-line="2599" selection-start-column="50" selection-end-line="2599" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Constant.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="434" column="0" selection-start-line="434" selection-start-column="0" selection-end-line="434" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Script.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="674" column="0" selection-start-line="674" selection-start-column="0" selection-end-line="674" selection-end-column="0" />
+        <state relative-caret-position="293">
+          <caret line="477" column="48" selection-start-line="477" selection-start-column="48" selection-end-line="477" selection-end-column="48" />
           <folding />
         </state>
       </provider>
