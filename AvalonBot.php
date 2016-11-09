@@ -777,7 +777,7 @@ class AvalonBotChat extends TelegramBotChat {
         }
 
         if ($thereIsAgent) {
-            $randomSecretCodes = Constant::getRandomSubsetFromArray($this->langScript[Script::SECRETCODES],2);
+            $randomSecretCodes = Constant::getRandomSubsetFromArray($this->langScript[Script::SECRETCODES],3);
             $this->agentSecretCode = Constant::arrayToString($randomSecretCodes);
 
             // random agents
@@ -913,7 +913,7 @@ class AvalonBotChat extends TelegramBotChat {
         $this->successQuestCount = 0;
         $this->failQuestCount = 0;
         $this->kingTokenIndex = rand(0, $this->playerCount - 1);
-        if ($this->playerCount >= 8) { // use 8 players or more
+        if ($this->playerCount >= 8 ) { // use 8 players or more
             $this->ladyLakeTokenIndex = $this->kingTokenIndex - 1;
             if ($this->ladyLakeTokenIndex < 0) {
                 $this->ladyLakeTokenIndex = $this->playerCount - 1;
@@ -1316,7 +1316,7 @@ class AvalonBotChat extends TelegramBotChat {
                 }
                 $this->agentsIdNotHaveCode = array();
             }
-            else { // quest no. 3, buat fail is one or more, then broadcast it.
+            else { // quest no. 3, buat fail is two or more, then broadcast it.
                 if ($this->failQuestCount >= 1){
                     // pop all
                     foreach ($this->agentsIdNotHaveCode as $agentID) {
@@ -1329,20 +1329,24 @@ class AvalonBotChat extends TelegramBotChat {
             }
         }
 
-        if ($this->mode == Constant::MODE_CHAOS ) {
-            $startLadyCheck = $this->currentQuestNumberStart0 >= 3 ||
-                ($this->currentQuestNumberStart0 == 2 && $this->failQuestCount == 2);
-            if ($this->currentQuestNumberStart0 == 2 && $this->failQuestCount < 2){
-                // SCRIPT
-                // lady of lake di mode chaos hanya bisa dipakai setelah quest 3 selesai.
-                $text = $this->langScript[Script::PU_LADYCHAOS];
-                $this->apiSendMessage($text);
-            }
-        }
-        else { // MODE NORMAL
-            $startLadyCheck = $this->currentQuestNumberStart0 >= 2;
-        }
-        if ($startLadyCheck && $this->ladyLakeTokenIndex > -1) {
+//        if ($this->mode == Constant::MODE_CHAOS ) {
+//            $startLadyCheck =
+//                $this->currentQuestNumberStart0 >= 3 ||
+//                ($this->currentQuestNumberStart0 == 2 &&
+//                    ($this->playerCount == 10 || $this->failQuestCount == 2)
+//                );
+//            if (!$startLadyCheck && $this->currentQuestNumberStart0 == 2 && $this->failQuestCount < 2){
+//                // SCRIPT
+//                // lady of lake di mode chaos hanya bisa dipakai setelah quest 3 selesai.
+//                $text = $this->langScript[Script::PU_LADYCHAOS];
+//                $this->apiSendMessage($text);
+//            }
+//        }
+//        else { // MODE NORMAL
+//            $startLadyCheck = $this->currentQuestNumberStart0 >= 2;
+//        }
+
+        if ($this->currentQuestNumberStart0 >= 2 && $this->ladyLakeTokenIndex > -1) {
             // do lady of the lake
             $this->gameStatus = Constant::EXEC_LADY_OF_LAKE_PRIVATE;
 
