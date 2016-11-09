@@ -7,7 +7,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8a73f481-ab87-4211-bcdc-4a86725a2d7e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Constant.php" afterPath="$PROJECT_DIR$/Constant.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Script.php" afterPath="$PROJECT_DIR$/Script.php" />
     </list>
     <ignored path="avalon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="Constant.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Constant.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Constant.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="397">
-              <caret line="429" column="40" selection-start-line="429" selection-start-column="40" selection-end-line="429" selection-end-column="40" />
+            <state relative-caret-position="182">
+              <caret line="434" column="0" selection-start-line="434" selection-start-column="0" selection-end-line="434" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -88,11 +88,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Script.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Script.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Script.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8624">
-              <caret line="392" column="55" selection-start-line="392" selection-start-column="55" selection-end-line="392" selection-end-column="55" />
+            <state relative-caret-position="281">
+              <caret line="674" column="0" selection-start-line="674" selection-start-column="0" selection-end-line="674" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -101,8 +101,8 @@
       <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AvalonBot.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="22">
-              <caret line="1341" column="47" selection-start-line="1341" selection-start-column="47" selection-end-line="1341" selection-end-column="47" />
+            <state relative-caret-position="215">
+              <caret line="2599" column="59" selection-start-line="2599" selection-start-column="50" selection-end-line="2599" selection-end-column="59" />
               <folding />
             </state>
           </provider>
@@ -161,9 +161,9 @@
         <option value="$PROJECT_DIR$/devlongpolllog.txt" />
         <option value="$PROJECT_DIR$/f.txt" />
         <option value="$PROJECT_DIR$/connc.txt" />
-        <option value="$PROJECT_DIR$/Script.php" />
         <option value="$PROJECT_DIR$/AvalonBot.php" />
         <option value="$PROJECT_DIR$/Constant.php" />
+        <option value="$PROJECT_DIR$/Script.php" />
       </list>
     </option>
   </component>
@@ -208,8 +208,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -225,6 +225,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="avalon" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="avalon" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="avalon" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vendor" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
@@ -399,7 +413,8 @@
       <workItem from="1478624456612" duration="5753000" />
       <workItem from="1478655088217" duration="6665000" />
       <workItem from="1478664463282" duration="2001000" />
-      <workItem from="1478678121727" duration="1683000" />
+      <workItem from="1478678121727" duration="1795000" />
+      <workItem from="1478694137469" duration="417000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -419,7 +434,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="371844000" />
+    <option name="totallyTimeSpent" value="372373000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
@@ -691,26 +706,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Script.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8624">
-          <caret line="392" column="55" selection-start-line="392" selection-start-column="55" selection-end-line="392" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AvalonBot.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="1341" column="47" selection-start-line="1341" selection-start-column="47" selection-end-line="1341" selection-end-column="47" />
+        <state relative-caret-position="215">
+          <caret line="2599" column="59" selection-start-line="2599" selection-start-column="50" selection-end-line="2599" selection-end-column="59" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Constant.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="397">
-          <caret line="429" column="40" selection-start-line="429" selection-start-column="40" selection-end-line="429" selection-end-column="40" />
+        <state relative-caret-position="182">
+          <caret line="434" column="0" selection-start-line="434" selection-start-column="0" selection-end-line="434" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Script.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="674" column="0" selection-start-line="674" selection-start-column="0" selection-end-line="674" selection-end-column="0" />
           <folding />
         </state>
       </provider>

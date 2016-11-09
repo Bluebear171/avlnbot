@@ -668,9 +668,9 @@ class Script{
                 = "Hanya admin yang dapat menggunakan perintah ini.";
 
             Script::$script["en"][Script::PU_MAINTENANCE]
-                = "Currently there is a maintenance for avalon bot.\nPlease try again later.";
+                = "Currently there is a maintenance for avalon bot.. Fixing the balance between the good and EVIL. ⌒⌒　　　⌒ “⊂(　っ☉ω☉)っ.\n\nDo not forget to always support this project by clicking <a href=\"http://telegram.me/storebot?start=avalonbg_bot\">Rate me</a>";
             Script::$script["id"][Script::PU_MAINTENANCE]
-                = "Saat ini, bot sedang dalam maintenance. Silakan coba beberapa saat lagi.";
+                = "Saat ini, bot sedang dalam maintenance.. Memperbaiki balance antara kubu baik dan JAHAT. ⌒⌒　　　⌒ “⊂(　っ☉ω☉)っ.\n\nJangan lupa untuk selalu support project ini dengan mengklik <a href=\"http://telegram.me/storebot?start=avalonbg_bot\">Rate me</a>";
 
 
             Script::$script["en"][Script::PU_CONTACT]
