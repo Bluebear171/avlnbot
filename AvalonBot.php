@@ -190,31 +190,31 @@ class AvalonBotChat extends TelegramBotChat {
 //                    $message6["from"]["username"] = "Paulanakho";
                     $this->addNewPlayer($message6["from"]);
                     $this->sendJoinSuccessToGroup($message6["from"]["id"]);
+////
+//                    $message7["from"]["id"] = "291655534";
+//                    $message7["from"]["first_name"] = "testHerman";
+//////                    $message7["from"]["last_name"] = "ululu";
+//////                    $message7["from"]["username"] = "chrono06";
+//                    $this->addNewPlayer($message7["from"]);
+//                    $this->sendJoinSuccessToGroup($message7["from"]["id"]);
 //
-                    $message7["from"]["id"] = "291655534";
-                    $message7["from"]["first_name"] = "testHerman";
-////                    $message7["from"]["last_name"] = "ululu";
-////                    $message7["from"]["username"] = "chrono06";
-                    $this->addNewPlayer($message7["from"]);
-                    $this->sendJoinSuccessToGroup($message7["from"]["id"]);
+////
+//                    $message8["from"]["id"] = "248185104";
+//                    $message8["from"]["first_name"] = "testLucy";
+////                    $message8["from"]["last_name"] = "ululu";
+////                    $message8["from"]["username"] = "arclaire";
+//                    $this->addNewPlayer($message8["from"]);
+//                    $this->sendJoinSuccessToGroup($message8["from"]["id"]);
 
+//                    $message9["from"]["id"] = "1";
+//                    $message9["from"]["first_name"] = "test9";
+//                    $this->addNewPlayer($message9["from"]);
+//                    $this->sendJoinSuccessToGroup($message9["from"]["id"]);
 //
-                    $message8["from"]["id"] = "248185104";
-                    $message8["from"]["first_name"] = "testLucy";
-//                    $message8["from"]["last_name"] = "ululu";
-//                    $message8["from"]["username"] = "arclaire";
-                    $this->addNewPlayer($message8["from"]);
-                    $this->sendJoinSuccessToGroup($message8["from"]["id"]);
-
-                    $message9["from"]["id"] = "1";
-                    $message9["from"]["first_name"] = "test9";
-                    $this->addNewPlayer($message9["from"]);
-                    $this->sendJoinSuccessToGroup($message9["from"]["id"]);
-
-                    $message10["from"]["id"] = "2";
-                    $message10["from"]["first_name"] = "test10";
-                    $this->addNewPlayer($message10["from"]);
-                    $this->sendJoinSuccessToGroup($message10["from"]["id"]);
+//                    $message10["from"]["id"] = "2";
+//                    $message10["from"]["first_name"] = "test10";
+//                    $this->addNewPlayer($message10["from"]);
+//                    $this->sendJoinSuccessToGroup($message10["from"]["id"]);
                 }
             }
         }
@@ -227,7 +227,7 @@ class AvalonBotChat extends TelegramBotChat {
             if ($this->gameStatus == Constant::NOT_CREATED) {
                 $this->sendCreateFirstToGroup();
             }
-            if ($this->gameStatus == Constant::CREATED) {
+            else if ($this->gameStatus == Constant::CREATED) {
                 $sender_id = $message["from"]["id"];
 
                 //check if already join
@@ -264,6 +264,98 @@ class AvalonBotChat extends TelegramBotChat {
             }
         }
     }
+
+    public function command_flee($params, $message) {
+        if (!$this->isGroup) {
+            $this->sendWarningOnlyGroup();
+        } else {
+            if ($this->gameStatus == Constant::NOT_CREATED) {
+                $this->sendCreateFirstToGroup();
+            }
+            else if ($this->gameStatus == Constant::CREATED) {
+                $sender_id = $message["from"]["id"];
+
+                //check if already join
+
+                // http://stackoverflow.com/questions/369602/delete-an-element-from-an-array
+
+                //get the key
+                $array_index = array_search($sender_id, $this->playerIDs);
+                if ($array_index === FALSE) {
+                    // not joined yet, do nothing
+                }
+                else {
+                    // already join, remove from array
+                    if ($array_index > -1) {
+                        // delete the key
+                        unset($this->playerIDs[$array_index]);
+                        $this->playerIDs = array_values($this->playerIDs);
+                        // SCRIPT
+                        // "%s flee. pemain tersisa
+                        $text = sprintf($this->langScript[Script::PU_FLEE_SUCCESS],
+                            $this->getPlayerIDString($sender_id),
+                            count($this->playerIDs));
+                        $this->apiSendMessage($text);
+                    }
+                }
+
+            }
+            else {
+                // SCRIPT
+                // send message cannot flee
+                $sender_id = $message["from"]["id"];
+                if (in_array($sender_id, $this->playerIDs)) {
+                    $text = sprintf($this->langScript[Script::PU_FLEE_FAIL],
+                        $this->getPlayerIDString($sender_id));
+                    $this->apiSendMessage($text);
+                }
+            }
+        }
+    }
+
+    public function command_forcestart($params, $message) {
+        if (!$this->isGroup) { // if not in group, send message only group
+            $this->sendWarningOnlyGroup();
+        } else {
+            if ($this->gameStatus == Constant::NOT_CREATED) { // not created yet, ask to create
+                $this->sendCreateFirstToGroup();
+            }
+            else if ($this->gameStatus == Constant::CREATED) { // has created, check admin
+                // check if all is admin
+                if (isset ($message["chat"]["all_members_are_administrators"])
+                    && $message["chat"]["all_members_are_administrators"]){
+                    $isAdmin = true;
+                }
+                else {
+                    $status = $this->getStatusMember($message["from"]["id"]);
+                    if ($status == "creator" || $status == "administrator") {
+                        $isAdmin = true;
+                    }
+                    else {
+                        $isAdmin = false;
+                    }
+                }
+                if ($isAdmin) { // if it is admin
+                    // start the game if already has enough players
+                    // check if 5 or more than 5 players already
+                    $player_count = count($this->playerIDs);
+                    // more than 5 players, start it
+                    if ($player_count >= Constant::MIN_PLAYER) {
+                        $this->playerCount = $player_count;
+                        $this->startGame();
+                    } else { // less than 5 players
+                        $text = sprintf($this->langScript[Script::PU_NEED_MORE_PLAYERS],
+                            Constant::MIN_PLAYER);
+                        $this->apiSendMessage($text);
+                    }
+                }
+                else { // if it is not admin
+                    $this->sendOnlyAdmin();
+                }
+            }
+        }
+    }
+
 
     public function command_done($params, $message) {
         if ($this->isGroup) {
@@ -442,6 +534,7 @@ class AvalonBotChat extends TelegramBotChat {
             }
         }
     }
+
 
     // view my stats
     public function command_stats($params, $message) {

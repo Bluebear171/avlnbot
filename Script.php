@@ -146,6 +146,9 @@ class Script{
     const PU_HOWTOPLAY = 112;
     const PU_RATEME = 113;
     const PU_ROLELIST = 114;
+    const PU_FLEE_SUCCESS = 115;
+    const PU_FLEE_FAIL = 116;
+    const PU_NEED_MORE_PLAYERS = 117;
 
     const PU_MERLININFO = 120;
     const PU_PERCIVALINFO = 121;
@@ -616,6 +619,21 @@ class Script{
                 = "%s joined. <b>%d</b> players. min <b>%d</b>. max <b>%d</b>.";
             Script::$script["id"][Script::PU_JOINSUCCESS]
                 = "%s bergabung. <b>%d</b> pemain. min <b>%d</b>. max <b>%d</b>.";
+
+            Script::$script["en"][Script::PU_FLEE_SUCCESS]
+                = "%s fleed. <b>%d</b> players left.";
+            Script::$script["id"][Script::PU_FLEE_SUCCESS]
+                = "%s kabur. <b>%d</b> pemain tersisa.";
+
+            Script::$script["en"][Script::PU_FLEE_FAIL]
+                = "%s cannot flee. The game has already started.";
+            Script::$script["id"][Script::PU_FLEE_FAIL]
+                = "%s tidak dapat kabur. Game sudah dimulai";
+
+            Script::$script["en"][Script::PU_NEED_MORE_PLAYERS]
+                = "We need minimum %d players to start the game.";
+            Script::$script["id"][Script::PU_NEED_MORE_PLAYERS]
+                = "Dibutuhkan min %d pemain untuk memulai game.";
 
 
 

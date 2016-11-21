@@ -176,9 +176,13 @@ class Constant{
                 Constant::$_60 = 18;
                 Constant::$_90 = 22;
 
-                Constant::$_startGame = 6;
-                Constant::$_startGame_r1 = 2;
-                Constant::$_startGame_r2 = 4;
+//                Constant::$_startGame = 6;
+//                Constant::$_startGame_r1 = 2;
+//                Constant::$_startGame_r2 = 4;
+
+                Constant::$_startGame = 120;
+                Constant::$_startGame_r1 = 60;
+                Constant::$_startGame_r2 = 90;
 
 //                Constant::$_120 = 8;
 //                Constant::$_30 = 2;
@@ -195,9 +199,9 @@ class Constant{
                 Constant::$_60 = 60;
                 Constant::$_90 = 90;
 
-                Constant::$_startGame = Constant::$_120 + Constant::$_30;
-                Constant::$_startGame_r1 = Constant::$_60 + Constant::$_30;
-                Constant::$_startGame_r2 = Constant::$_90 + Constant::$_30;
+                Constant::$_startGame = Constant::$_120;
+                Constant::$_startGame_r1 = Constant::$_60;
+                Constant::$_startGame_r2 = Constant::$_90;
             }
 
             Constant::$_discussAssignQuestGroup = Constant::$_120;

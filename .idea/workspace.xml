@@ -6,6 +6,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8a73f481-ab87-4211-bcdc-4a86725a2d7e" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AvalonBot.php" afterPath="$PROJECT_DIR$/AvalonBot.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Constant.php" afterPath="$PROJECT_DIR$/Constant.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Script.php" afterPath="$PROJECT_DIR$/Script.php" />
     </list>
@@ -28,21 +30,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="Constant.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Constant.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Constant.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="477" column="48" selection-start-line="477" selection-start-column="48" selection-end-line="477" selection-end-column="48" />
+            <state relative-caret-position="345">
+              <caret line="182" column="44" selection-start-line="182" selection-start-column="44" selection-end-line="182" selection-end-column="44" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="checkredis.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/checkredis.php">
+      <file leaf-file-name="Redis Structure.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Redis Structure.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="11" column="40" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
+            <state relative-caret-position="506">
+              <caret line="23" column="36" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -68,11 +70,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="longpolllog.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/longpolllog.txt">
+      <file leaf-file-name="composer.lock" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/composer.lock">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="242">
+              <caret line="11" column="32" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Script.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Script.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="4352">
+              <caret line="628" column="66" selection-start-line="628" selection-start-column="66" selection-end-line="628" selection-end-column="66" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/AvalonBot.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="271">
+              <caret line="227" column="48" selection-start-line="227" selection-start-column="48" selection-end-line="227" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -83,26 +105,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Script.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Script.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="347">
-              <caret line="677" column="91" selection-start-line="677" selection-start-column="91" selection-end-line="677" selection-end-column="91" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AvalonBot.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AvalonBot.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1149">
-              <caret line="716" column="19" selection-start-line="716" selection-start-column="14" selection-end-line="716" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -121,8 +123,8 @@
       <file leaf-file-name="TelegramBot.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TelegramBot.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11110">
-              <caret line="505" column="39" selection-start-line="505" selection-start-column="39" selection-end-line="505" selection-end-column="39" />
+            <state relative-caret-position="259">
+              <caret line="126" column="45" selection-start-line="126" selection-start-column="45" selection-end-line="126" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -160,10 +162,10 @@
         <option value="$PROJECT_DIR$/checkredis.php" />
         <option value="$PROJECT_DIR$/devlongpolllog.txt" />
         <option value="$PROJECT_DIR$/f.txt" />
-        <option value="$PROJECT_DIR$/connc.txt" />
-        <option value="$PROJECT_DIR$/AvalonBot.php" />
-        <option value="$PROJECT_DIR$/Constant.php" />
         <option value="$PROJECT_DIR$/Script.php" />
+        <option value="$PROJECT_DIR$/Constant.php" />
+        <option value="$PROJECT_DIR$/AvalonBot.php" />
+        <option value="$PROJECT_DIR$/connc.txt" />
       </list>
     </option>
   </component>
@@ -247,7 +249,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/GitHub/PortableGit_284a859b0e6deba86edc624fef1e4db2aa8241a9/cmd/git.exe" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -414,7 +416,10 @@
       <workItem from="1478655088217" duration="6665000" />
       <workItem from="1478664463282" duration="2001000" />
       <workItem from="1478678121727" duration="1795000" />
-      <workItem from="1478694137469" duration="2239000" />
+      <workItem from="1478694137469" duration="2310000" />
+      <workItem from="1478759412983" duration="538000" />
+      <workItem from="1478765527450" duration="1052000" />
+      <workItem from="1479698390220" duration="4299000" />
     </task>
     <task id="LOCAL-00001" summary="stop f to maintenance">
       <created>1476688294186</created>
@@ -434,7 +439,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="374195000" />
+    <option name="totallyTimeSpent" value="380155000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -444,6 +449,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32520324" sideWeight="0.50292826" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32520324" sideWeight="0.49707174" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -455,7 +461,6 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3284553" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32520324" sideWeight="0.49707174" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
@@ -530,38 +535,10 @@
     <entry file="file://$PROJECT_DIR$/test.txt" />
     <entry file="file://$PROJECT_DIR$/serverlog.txt" />
     <entry file="file://$PROJECT_DIR$/test.php" />
-    <entry file="file://$PROJECT_DIR$/composer.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/composer.lock">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="32" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/_types.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
           <caret line="105" column="13" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Redis Structure.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="23" column="36" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/changef.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
         </state>
       </provider>
     </entry>
@@ -649,11 +626,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/devlongpolllog.txt" />
-    <entry file="file://$PROJECT_DIR$/changeconnc.php">
+    <entry file="file://$PROJECT_DIR$/longpolllog.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="8" column="6" selection-start-line="8" selection-start-column="6" selection-end-line="8" selection-end-column="6" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/devlongpolllog.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/changef.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
           <folding />
         </state>
       </provider>
@@ -666,7 +658,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/longpolllog.txt">
+    <entry file="file://$PROJECT_DIR$/composer.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -674,10 +666,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TelegramBot.php">
+    <entry file="file://$PROJECT_DIR$/composer.lock">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11110">
-          <caret line="505" column="39" selection-start-line="505" selection-start-column="39" selection-end-line="505" selection-end-column="39" />
+        <state relative-caret-position="242">
+          <caret line="11" column="32" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Redis Structure.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="23" column="36" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="36" />
           <folding />
         </state>
       </provider>
@@ -690,26 +690,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AvalonBot.php">
+    <entry file="file://$PROJECT_DIR$/changeconnc.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1149">
-          <caret line="716" column="19" selection-start-line="716" selection-start-column="14" selection-end-line="716" selection-end-column="19" />
+        <state relative-caret-position="176">
+          <caret line="8" column="6" selection-start-line="8" selection-start-column="6" selection-end-line="8" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TelegramBot.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="126" column="45" selection-start-line="126" selection-start-column="45" selection-end-line="126" selection-end-column="45" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Script.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
-          <caret line="677" column="91" selection-start-line="677" selection-start-column="91" selection-end-line="677" selection-end-column="91" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/connc.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
+        <state relative-caret-position="4352">
+          <caret line="628" column="66" selection-start-line="628" selection-start-column="66" selection-end-line="628" selection-end-column="66" />
           <folding />
         </state>
       </provider>
@@ -724,8 +724,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Constant.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="477" column="48" selection-start-line="477" selection-start-column="48" selection-end-line="477" selection-end-column="48" />
+        <state relative-caret-position="345">
+          <caret line="182" column="44" selection-start-line="182" selection-start-column="44" selection-end-line="182" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/connc.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AvalonBot.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="227" column="48" selection-start-line="227" selection-start-column="48" selection-end-line="227" selection-end-column="48" />
           <folding />
         </state>
       </provider>
