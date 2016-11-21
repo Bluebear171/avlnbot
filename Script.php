@@ -621,7 +621,7 @@ class Script{
                 = "%s bergabung. <b>%d</b> pemain. min <b>%d</b>. max <b>%d</b>.";
 
             Script::$script["en"][Script::PU_FLEE_SUCCESS]
-                = "%s fleed. <b>%d</b> players left.";
+                = "%s fleed. <b>%d</b> players remaining.";
             Script::$script["id"][Script::PU_FLEE_SUCCESS]
                 = "%s kabur. <b>%d</b> pemain tersisa.";
 
